@@ -1,0 +1,22 @@
+name: Funder_API
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - selenium
+  - pip
+  - pip:
+      - webdriver-manager
+
+
+#conda env create -f environment.yml
+
+# To activate this environment, use
+#
+#     $ conda activate Funder_API
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
