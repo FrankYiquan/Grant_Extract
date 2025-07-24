@@ -95,4 +95,4 @@ def get_NCN_grant(grantId):
         "error": "found grant but no amount or startdate"
     }
 
-print(get_NCN_grant("2rhi2r3h"))
+print(get_NCN_grant("UMO-2023/49/B/ST2/04085"))
