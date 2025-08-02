@@ -60,7 +60,7 @@ result = get_MDI_grant("RYC2019-028510-I")
 print(result)
          
     
-   
+# 308.600.182 => 308,600,182''
         
 
 
