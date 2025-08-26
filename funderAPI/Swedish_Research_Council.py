@@ -28,5 +28,5 @@ def extract_Swedish_Research_Council_grant(projectId, apiKey = "Bearer VRSwecris
     }
 
 
-# print(extract_Swedish_Research_Council_grant("2021-03651"))
+#print(extract_Swedish_Research_Council_grant("2021-03651", "Bearer DTaURVYva7l6qNYX7zdLN8Tg"))
 

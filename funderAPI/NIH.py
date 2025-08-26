@@ -11,7 +11,7 @@ def get_award_from_NIH(award_id: str):
             "project_nums": [award_id]
         },
         "format": "json",
-        "sort_field":"project_start_date",
+        "sort_field":"fiscal_year",
         "sort_order":"desc"
     }
 
@@ -34,7 +34,7 @@ def get_award_from_NIH(award_id: str):
 
 #list of NIH institutes
 nih_institutes = [
-    "National Cancer Institute (NCI)",
+    "National Cancer Institute",
     "National Institute of Allergy and Infectious Diseases",
     "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
     "National Institute of Child Health and Human Development",
@@ -87,5 +87,7 @@ def filter_nih_from_unique_funders():
 # # Example usage
 # award_id = "R35GM147556"
 
+# award_id = "75N91019D00024"
+# print(get_award_from_NIH(award_id))
 
 
