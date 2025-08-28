@@ -8,7 +8,7 @@ def get_jsps_grant(projectId, apiKey = "pH9N5nJjVvOCjTpZ91Fp"):
     normalized_key = projectId.split("JP")[1] if "JP" in projectId else projectId
 
     url = f"https://kaken.nii.ac.jp/opensearch/?appid={apiKey}&kw={normalized_key}&format=xml"
-    print(url)
+    # print(url)
 
     response = requests.get(url)
     amount = None
