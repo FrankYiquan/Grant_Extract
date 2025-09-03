@@ -87,7 +87,8 @@ def filter_nih_from_unique_funders():
 # # Example usage
 # award_id = "R35GM147556"
 
-# award_id = "75N91019D00024"
-# print(get_award_from_NIH(award_id))
+award_id = "R01HD082105"
+
+print(get_award_from_NIH(award_id))
 
 

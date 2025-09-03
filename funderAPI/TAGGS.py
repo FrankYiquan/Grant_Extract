@@ -7,8 +7,7 @@ from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-#TAGGS is the data system for "National Institute on Disability, Independent Living, and Rehabilitation Research
-
+#TAGGS is the data system for funder with parent organization HHS (Health and Human Services)
 def get_TAGGS_grant(projectId):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.get("https://taggs.hhs.gov/SearchAward")
@@ -54,5 +53,4 @@ def get_TAGGS_grant(projectId):
     }
         
         
-
-print(get_TAGGS_grant("erfer"))
+#print(get_TAGGS_grant("NU17CE002724"))
