@@ -32,4 +32,4 @@ def get_Bill_and_Melinda_Gates_Foundation_grant(projectId):
     }
 
             
-print(get_Bill_and_Melinda_Gates_Foundation_grant("INV-046299"))
+#print(get_Bill_and_Melinda_Gates_Foundation_grant("INV-046299"))
