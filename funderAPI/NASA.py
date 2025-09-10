@@ -1,10 +1,12 @@
 import requests
 
+# usa spending works for parent organization belong to federal govenrment, in particular the military-related project
 def extract_NASA_grant(projectId):
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
     #normalize projectId
-    clean_projectId = projectId.replace("-", "")
+    clean_projectId = projectId.replace("-", "") if "-" in projectId else projectId
+    clean_projectId = projectId.replace(" ", "") if " " in clean_projectId else clean_projectId
 
 
     payload ={
@@ -37,6 +39,6 @@ def extract_NASA_grant(projectId):
 
 
 
-print(extract_NASA_grant("80NSSC23K1596"))
+print(extract_NASA_grant("W911NF1410403"))
 # grantId= "FA9550-23-1-0072"
 # print(extract_NASA_grant(grantId))

@@ -30,4 +30,4 @@ def get_Norges_Forskningsrad_grant(projectId):
         "currency": "NOK"
     }
 
-print(get_Norges_Forskningsrad_grant("RCN-314472"))
+# print(get_Norges_Forskningsrad_grant("RCN-314472"))
