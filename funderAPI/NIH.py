@@ -4,6 +4,7 @@ def get_award_from_NIH(award_id: str):
 
     #normalize it to prevent case like U19-AG051426 => U19AG051426
     award_id = award_id.replace("-", "")
+    award_id = award_id.split("NIH")[-1].strip() if "NIH" in award_id else award_id.strip()
     
     url = "https://api.reporter.nih.gov/v2/projects/search"
     params = {
@@ -61,7 +62,9 @@ nih_institutes = [
     "National Institute for Environmental Health Sciences",
     "National Institute of Nursing Research",
     "National Institute on Aging and Aging",
-    "National Institutes of Health"
+    "National Institutes of Health",
+    "National Center for Complementary and Integrative Health",
+    "National Institute on Deafness and Other Communication"
 
 ]
 
@@ -87,8 +90,8 @@ def filter_nih_from_unique_funders():
 # # Example usage
 # award_id = "R35GM147556"
 
-# award_id = "R01AA029267"
+award_id = "NIH CA142746"
 
-# print(get_award_from_NIH(award_id))
+print(get_award_from_NIH(award_id))
 
 

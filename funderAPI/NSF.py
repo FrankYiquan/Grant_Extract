@@ -114,8 +114,11 @@ def filter_nih_from_unique_funders():
 
 
 #filter_nih_from_unique_funders()
-print(check_nsf_funder("United States - Israel Binational Science Foundation"))  # Example usage
+# print(check_nsf_funder("United States - Israel Binational Science Foundation"))  # Example usage
 
 # # Example usage
 # info = get_award_info("")
 # print(info)
+
+
+print(get_nsf_award(1919565))

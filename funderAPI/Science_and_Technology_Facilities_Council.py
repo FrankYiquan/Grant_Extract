@@ -36,4 +36,4 @@ def get_Science_and_Technology_Facilities_Council_grant(grantId):
             "orcid": orcidId
         }
 
-# print(get_Science_and_Technology_Facilities_Council_grant("ST/Y001508/1"))  
+print(get_Science_and_Technology_Facilities_Council_grant("EP/P009565/1"))  

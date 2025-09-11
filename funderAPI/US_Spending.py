@@ -1,7 +1,7 @@
 import requests
 
 # usa spending works for parent organization belong to federal govenrment, in particular the military-related project
-def extract_NASA_grant(projectId):
+def extract_US_Spending_grant(projectId):
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
     #normalize projectId
@@ -39,6 +39,6 @@ def extract_NASA_grant(projectId):
 
 
 
-print(extract_NASA_grant("W911NF1410403"))
+print(extract_US_Spending_grant("W911NF1410403"))
 # grantId= "FA9550-23-1-0072"
-# print(extract_NASA_grant(grantId))
+# print(extract_US_Spending_grant(grantId))
