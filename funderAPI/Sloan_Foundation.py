@@ -12,11 +12,12 @@ import time
 
 def get_ARC_grant(projectId):
 
-    # FG started id is fellowship - fixed $75,000 in two years
+    # FG started id is fellowship - fixed for two years
     if projectId.startswith("FG") or projectId.startswith("fg"):
         fellowship_startDate = projectId.split('-')[1] if '-' in projectId else None
+        fellowship_amount = get_fellowship_amount(int(fellowship_startDate)) # get the fellowship amount based on the start year
         return {
-            "amount": 75000,
+            "amount": fellowship_amount,
             "startDate": fellowship_startDate,
             "currency": "USD"
         }
@@ -53,12 +54,22 @@ def get_ARC_grant(projectId):
         "currency": "USD",
     }
 
-
+# get the fellowship amount based on the start year
+def get_fellowship_amount(fellowship_startDate):
+    if fellowship_startDate > 2020:
+        fellowship_amount = 75000
+    elif 2010 <= fellowship_startDate <= 2020:
+        fellowship_amount = 60000
+    else:
+        fellowship_amount = None 
+    return fellowship_amount
 
 
     
 
 
-print(get_ARC_grant("FG-2022-18328"))
-    
+# print(get_ARC_grant("G-2017-9685"))
+
+
+# print(get_ARC_grant("FG-2010-18328"))
         
