@@ -44,16 +44,16 @@ def get_us_spending_grant_type(award_id):
 def get_US_Spending_grant(award_id):
 
     #normalize award_id: get rid of "-" and spaces
-    normalized_award_id = award_id.replace("-", "") if "-" in award_id else award_id
-    normalized_award_id = award_id.replace(" ", "") if " " in normalized_award_id else normalized_award_id
+    award_id = award_id.replace("-", "") if "-" in award_id else award_id
+    award_id = award_id.replace(" ", "") if " " in award_id else award_id
 
-    award_type_codes = get_us_spending_grant_type(normalized_award_id)
+    award_type_codes = get_us_spending_grant_type(award_id)
 
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
     payload = {
         "filters": {
-                "keywords": [normalized_award_id],
+                "keywords": [award_id],
                 "time_period": [
                 {
                     "start_date": "2007-10-01",
