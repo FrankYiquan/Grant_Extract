@@ -9,7 +9,7 @@ import csv
 
 def get_brandeis_grant():
     base_url = "https://api.openalex.org/works"
-    filter_str = "grants.funder:F4320310134,institutions.id:I6902469,publication_year:>2017,publication_year:<2025"
+    filter_str = "grants.funder:f4320321001,institutions.id:I6902469,publication_year:>2017,publication_year:<2025"
     select_fields = "id,doi,title,publication_year,grants"
 
     output = []
@@ -22,7 +22,7 @@ def get_brandeis_grant():
 
         for asset in data.get('results', []):
             for grant in asset.get('grants', []):
-                if grant.get('funder_display_name') == "Brandeis University" and grant.get('award_id'):
+                if grant.get('funder_display_name') == "National Natural Science Foundation of China" and grant.get('award_id'):
                     output.append({
                         "openAlex_id": asset.get('id'),
                         'doi': asset.get('doi'),
@@ -31,7 +31,7 @@ def get_brandeis_grant():
                         'funder_name': grant.get("funder_display_name"),
                         "award_id": grant.get('award_id')
                     })
-                    # print(grant.get('award_id'))
+                    print(grant.get('award_id'))
 
         # move to next page
         cursor = data.get('meta', {}).get('next_cursor')
@@ -39,11 +39,11 @@ def get_brandeis_grant():
             break
 
     # write to CSV
-    with open("sideJobs/output/brandeis_funded_grant.csv", "w", newline="") as csvfile:
+    with open("sideJobs/output/nsfc_funded_grant.csv", "w", newline="") as csvfile:
         fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "award_id"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in output:
             writer.writerow(row)
 
-# get_brandeis_grant()
+get_brandeis_grant()

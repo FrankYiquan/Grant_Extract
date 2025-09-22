@@ -68,7 +68,7 @@ def get_fellowship_amount(fellowship_startDate):
     
 
 
-# print(get_ARC_grant("G-2017-9685"))
+print(get_ARC_grant("G-2017-9685"))
 
 
 # print(get_ARC_grant("FG-2010-18328"))

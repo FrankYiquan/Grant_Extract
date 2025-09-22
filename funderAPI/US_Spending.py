@@ -46,6 +46,7 @@ def get_US_Spending_grant(award_id):
     #normalize award_id: get rid of "-" and spaces
     award_id = award_id.replace("-", "") if "-" in award_id else award_id
     award_id = award_id.replace(" ", "") if " " in award_id else award_id
+    print(award_id)
 
     award_type_codes = get_us_spending_grant_type(award_id)
 
@@ -117,4 +118,4 @@ def get_US_Spending_grant(award_id):
     }
 
 
-# print(get_US_Spending_grant("80NSSC23K1596"))
+print(get_US_Spending_grant("DE-AC52-07NA27344"))
