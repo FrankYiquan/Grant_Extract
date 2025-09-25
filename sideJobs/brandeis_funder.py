@@ -1,15 +1,10 @@
-
-
 import requests
 import csv
 
-
-import requests
-import csv
-
-def get_brandeis_grant():
+# default institutions Id to Brandeis University # end year is not included - so if you want end year to be 2024, do 2025 # start year is not included - if you want start year to be 2018, do 2017
+def get_brandeis_grant(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
     base_url = "https://api.openalex.org/works"
-    filter_str = "grants.funder:f4320321001,institutions.id:I6902469,publication_year:>2017,publication_year:<2025"
+    filter_str = f"grants.funder:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
     select_fields = "id,doi,title,publication_year,grants"
 
     output = []
@@ -22,7 +17,7 @@ def get_brandeis_grant():
 
         for asset in data.get('results', []):
             for grant in asset.get('grants', []):
-                if grant.get('funder_display_name') == "National Natural Science Foundation of China" and grant.get('award_id'):
+                if grant.get('funder_display_name') == funderName and grant.get('award_id'):
                     output.append({
                         "openAlex_id": asset.get('id'),
                         'doi': asset.get('doi'),
@@ -31,19 +26,18 @@ def get_brandeis_grant():
                         'funder_name': grant.get("funder_display_name"),
                         "award_id": grant.get('award_id')
                     })
-                    print(grant.get('award_id'))
+                    print("Found award:", grant.get('award_id'))
 
         # move to next page
         cursor = data.get('meta', {}).get('next_cursor')
-        if cursor == "null":  # no more pages
+        if not cursor:  # no more pages
             break
 
     # write to CSV
-    with open("sideJobs/output/nsfc_funded_grant.csv", "w", newline="") as csvfile:
+    with open(f"sideJobs/output/{funderName}_funded_grant.csv", "w", newline="") as csvfile:
         fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "award_id"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        for row in output:
-            writer.writerow(row)
+        writer.writerows(output)
 
-get_brandeis_grant()
+get_brandeis_grant(funderId="f4320320006", funderName="Royal Society")

@@ -1,6 +1,8 @@
 #this script fetches NIH award information using the NIH Reporter API
 import requests
-def get_award_from_NIH(award_id: str):
+import csv
+
+def get_award_from_NIH(award_id: str, funder_name: str):
 
     #normalize it to prevent case like U19-AG051426 => U19AG051426
     award_id = award_id.replace("-", "")
@@ -17,55 +19,85 @@ def get_award_from_NIH(award_id: str):
     }
 
     response = requests.post(url, json=params)
-    if response.status_code == 200 and response != None:
+
+
+    amount = None
+    startDate = None
+    principal_investigator = None
+    grant_url = None
+    title = None
+    funderCode = None
+
+
+
+    if response.status_code == 200:
         data = response.json()
-        award_amount = sum(grant['award_amount'] for grant in data['results'])
-        for grant in data['results']:
-            print(f"Year: {grant['fiscal_year']}, Award Amount: {grant['award_amount']}")
-        project_start_date = data['results'][0]['project_start_date'].split('T')[0]  # Strips the time part
-        principal_investigator = data['results'][0]['principal_investigators'][0]['full_name']
+        hits = data.get('meta').get('total')
+        
+        # traverse the json result
+        if hits > 0:
+            amount= sum(grant['award_amount'] for grant in data['results'])
+            for grant in data['results']:
+                print(f"Year: {grant['fiscal_year']}, Award Amount: {grant['award_amount']}")
+            startDate = data['results'][0]['project_start_date'].split('T')[0]  # Strips the time part
+            principal_investigator = data['results'][0]['principal_investigators'][0]['full_name']
+            grant_url =  data.get('meta').get("properties").get("URL")
+            title = data.get('results')[0].get('project_title')
+           
+        else:
+            print(f"Error fetching data for award ID {award_id}: {response.status_code}")
+
+        # match with the 41 code 
+        with open('./resources/funder_41Code.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)  
+
+            # Iterate through rows
+            for row in reader:
+                if row['unique_funder'] == funder_name:
+                    funderCode = row['matched_funder_code']
+                    break
+
+                
+
+        
         return {
-            "award_amount": award_amount,
-            "project_start_date": project_start_date,
-            "principal_investigator": principal_investigator
+            "grantId": award_id,
+            "grantName": title,
+            "funderCode": funderCode,
+            "amount": amount,
+            "startDate": startDate,
+            "grantURL": grant_url,
         }
-    else:
-        print(f"Error fetching data for award ID {award_id}: {response.status_code}")
-        return None
+        
 
 #list of NIH institutes
 nih_institutes = [
-    "National Cancer Institute",
+    "Division of Intramural Research, National Institute of Allergy and Infectious Diseases",
+    "Division of Microbiology and Infectious Diseases, National Institute of Allergy and Infectious Diseases",
+    "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+    "Foundation for the National Institutes of Health",
+    "National Heart, Lung, and Blood Institute",
     "National Institute of Allergy and Infectious Diseases",
     "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
+    "National Institute of Biomedical Imaging and Bioengineering",
     "National Institute of Child Health and Human Development",
-    "National Institute on Drug Abuse",
     "National Institute of Diabetes and Digestive and Kidney Diseases",
     "National Institute of Environmental Health Sciences",
     "National Institute of General Medical Sciences",
-    "National Heart, Lung, and Blood Institute",
     "National Institute of Mental Health",
+    "National Institute of Mental Health and Neurosciences",
     "National Institute of Neurological Disorders and Stroke",
-    "National Institute of Nursing Research",
-    "National Institute on Aging",
-    "National Institute of Deafness and Other Communication Disorders",
-    "National Institute of Dental and Craniofacial Research",
-    "National Institute of Biomedical Imaging and Bioengineering",
-    "National Institute of Minority Health and Health Disparities",
-    "National Institute of Mental Health",
-    "National Library of Medicine",
-    "National Institute of Occupational Safety and Health ",
-    "National Institute on Alcohol Abuse and Alcoholism",
-    "National Institute of Human Genome Research",
     "National Institute of Standards and Technology",
-    "National Institute of Advanced Technology",
-    "National Institute for Environmental Health Sciences",
-    "National Institute of Nursing Research",
-    "National Institute on Aging and Aging",
+    "National Institute on Aging",
+    "National Institute on Alcohol Abuse and Alcoholism",
+    "National Institute on Drug Abuse",
     "National Institutes of Health",
+    "Office of Extramural Research, National Institutes of Health",
+    "National Eye Institute",
+    "U.S. National Library of Medicine",
     "National Center for Complementary and Integrative Health",
-    "National Institute on Deafness and Other Communication"
-
+    "National Institute on Deafness and Other Communication Disorders",
+    "National Cancer Institute"
 ]
 
 #check if a funder name is a NIH institute
@@ -88,10 +120,14 @@ def filter_nih_from_unique_funders():
 #filter_nih_from_unique_funders()
 
 # # Example usage
-# award_id = "R35GM147556"
+award_id = "R35GM147556"
+funder_name = "National Institute of General Medical Sciences"
 
-award_id = "NIH CA142746"
+# award_id = "NIH CA142746"
 
-print(get_award_from_NIH(award_id))
+# award_id = "NIH CA142746"
+# funder_name = "National Institutes of Health"
+
+print(get_award_from_NIH(award_id, funder_name))
 
 

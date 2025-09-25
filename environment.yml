@@ -9,6 +9,8 @@ dependencies:
   - pip
   - pip:
       - webdriver-manager
+      - boto3
+
 
 
 # to create the virtual envrinment 

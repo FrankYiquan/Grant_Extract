@@ -90,11 +90,10 @@ def get_nsfc_grant(projectId):
     return {
         "title": title,
         "amount": amount,
-        "start_": start_date,
+        "start_date": start_date,
         "principal_investigator": principal_investigator,
         "currency": "CNY"
     }
 
 print(get_nsfc_grant("71974204"))
 
-    
