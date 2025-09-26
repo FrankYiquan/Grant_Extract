@@ -26,12 +26,18 @@ def get_brandeis_grant(funderId, funderName, institutionsId="I6902469", startyea
                         'funder_name': grant.get("funder_display_name"),
                         "award_id": grant.get('award_id')
                     })
-                    print("Found award:", grant.get('award_id'))
+                    # print("Found award:", grant.get('award_id'))
 
         # move to next page
         cursor = data.get('meta', {}).get('next_cursor')
         if not cursor:  # no more pages
             break
+    
+    return output
+
+#output the result to csv
+def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
+    output = get_brandeis_grant(funderId, funderName, institutionsId, startyear, endYear)
 
     # write to CSV
     with open(f"sideJobs/output/{funderName}_funded_grant.csv", "w", newline="") as csvfile:
@@ -40,4 +46,10 @@ def get_brandeis_grant(funderId, funderName, institutionsId="I6902469", startyea
         writer.writeheader()
         writer.writerows(output)
 
-get_brandeis_grant(funderId="f4320320006", funderName="Royal Society")
+# output_grant_to_csv(funderId="f4320320006", funderName="Royal Society")
+funderName="National Institutes of Health"
+funderId="f4320332161"
+# result = get_brandeis_grant(funderId, funderName)
+# print(result)
+
+output_grant_to_csv(funderId, funderName)

@@ -43,6 +43,7 @@ def get_award_from_NIH(award_id: str, funder_name: str):
             principal_investigator = data['results'][0]['principal_investigators'][0]['full_name']
             grant_url =  data.get('meta').get("properties").get("URL")
             title = data.get('results')[0].get('project_title')
+            award_id = data.get('results')[0].get('project_serial_num')
            
         else:
             print(f"Error fetching data for award ID {award_id}: {response.status_code}")
@@ -128,6 +129,8 @@ funder_name = "National Institute of General Medical Sciences"
 # award_id = "NIH CA142746"
 # funder_name = "National Institutes of Health"
 
+award_id= "F32 NS112453"
+funderName="National Institutes of Health"
 print(get_award_from_NIH(award_id, funder_name))
 
 
