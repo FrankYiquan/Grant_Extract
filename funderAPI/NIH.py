@@ -1,12 +1,93 @@
+
 #this script fetches NIH award information using the NIH Reporter API
 import requests
 import csv
+import re
+
+# Lists of activity codes and IC codes
+activity_codes = [
+    "C06", "D43", "D71", "DP1", "DP2", "DP3", "DP4", "DP5", "DP7", "F05",
+    "F30", "F31", "F32", "F33", "F37", "F38", "G07", "G08", "G11", "G12",
+    "G13", "G20", "K01", "K02", "K05", "K07", "P2C", "P30", "P40", "P41",
+    "P42", "P50", "P51", "P60", "PL1", "PM1", "PN1", "PN2", "R00", "R01",
+    "R03", "R13", "R15", "R16", "R18", "R21", "R24", "R25", "R28", "R2F",
+    "R30", "R33", "R34", "R35", "R36", "R37", "R50", "R55", "R56", "R61",
+    "RC1", "RC2", "RC3", "RL2", "RM1", "RP1", "RS1", "S06", "S07", "S10",
+    "S11", "S15", "S21", "S22", "SB1", "SC1", "SC2", "SC3", "SI2", "T01",
+    "T02", "T03", "T06", "T14", "T15", "T32", "T34", "T35", "T36", "T37",
+    "T42", "T90", "R90", "TU2", "U01", "U10", "U13", "U18", "U19", "U24",
+    "U2C", "U2R", "U34", "U41", "U42", "U43", "U44"
+]
+
+
+ic_codes = [
+    "TW", "TR", "AT", "CA", "EY", "HG", "HL", "AG", "AA", "AI",
+    "AR", "EB", "HD", "DA", "DC", "DE", "DK", "ES", "GM", "MH",
+    "MD", "NS", "NR", "LM", "OD", "RR"
+]
+
+def standardize_nih_award_id(raw_id):
+    """
+    Standardize NIH award ID into format:
+    <activity_code><IC_code><6-digit serial_number>[-YY]
+    Ignores any prefix before the activity code and handles spaces or dashes.
+    """
+    # Normalize string: remove spaces, replace Unicode dashes with "-"
+    raw_id = re.sub(r"[‐–—]", "-", raw_id)
+    # raw_id = re.sub(r"\s+", "", raw_id)
+    # raw_id = raw_id.replace("_", "")
+    raw_id = raw_id.upper()
+
+    # Find the first occurrence of a 6-digit number to limit search scope
+    six_digit = re.search(r'\d{6}', raw_id)
+    if six_digit:
+        digit_start_index = six_digit.start()
+    else:
+        digit_start_index = len(raw_id)
+    
+    # Search for activity code anywhere in the string
+    matches = [(code, raw_id.find(code)) for code in activity_codes if code in raw_id]
+    if matches and digit_start_index > min(matches, key=lambda x: x[1])[1] + 3:
+        activity_code, start_idx = min(matches, key=lambda x: x[1])
+        
+        # Keep only substring starting from that activity code
+        remaining = raw_id[start_idx + len(activity_code):]
+    else:
+        activity_code = ""
+        remaining = raw_id
+         
+    
+    # Extract IC code
+    ic_code = next((code for code in ic_codes if code in remaining), None)
+    if not ic_code:
+        m = re.search(r'\d{6}', remaining)
+        return m.group(0) if m else "error"
+    
+    remaining = remaining[len(ic_code):]
+
+ 
+    
+    # Extract serial number (first 1-6 digits)
+    serial_match = re.search(r'\d{4,6}', remaining)
+    if not serial_match:
+        return "error"
+    serial_number = serial_match.group().zfill(6)
+
+    remaining = remaining[serial_match.end():]
+    
+    # Extract optional -YY (support year)
+    year_match = re.search(r'\d{2}', remaining)
+    year_suffix = "-" + year_match.group() if year_match else ""
+    
+    standardized_code = f"{activity_code}{ic_code}{serial_number}{year_suffix}"
+    return standardized_code
 
 def get_award_from_NIH(award_id: str, funder_name: str):
-
+    
     #normalize it to prevent case like U19-AG051426 => U19AG051426
-    award_id = award_id.replace("-", "")
-    award_id = award_id.split("NIH")[-1].strip() if "NIH" in award_id else award_id.strip()
+    original_award_id = award_id
+    award_id = standardize_nih_award_id(award_id)
+    print(f"Fetching data for award ID: {award_id}")
     
     url = "https://api.reporter.nih.gov/v2/projects/search"
     params = {
@@ -36,10 +117,15 @@ def get_award_from_NIH(award_id: str, funder_name: str):
         
         # traverse the json result
         if hits > 0:
-            amount= sum(grant['award_amount'] for grant in data['results'])
-            for grant in data['results']:
-                print(f"Year: {grant['fiscal_year']}, Award Amount: {grant['award_amount']}")
-            startDate = data['results'][0]['project_start_date'].split('T')[0]  # Strips the time part
+            amount = sum(grant.get('award_amount', 0) or 0 for grant in data['results'])
+            # for grant in data['results']:
+            #     print(f"Year: {grant['fiscal_year']}, Award Amount: {grant['award_amount']}")
+            # startDate = data['results'][0]['project_start_date'].split('T')[0]  # Strips the time part
+            project_start = data['results'][0].get('project_start_date')
+            if project_start:
+                startDate = project_start.split('T')[0]
+            else:
+                startDate = None 
             principal_investigator = data['results'][0]['principal_investigators'][0]['full_name']
             grant_url =  data.get('meta').get("properties").get("URL")
             title = data.get('results')[0].get('project_title')
@@ -47,6 +133,7 @@ def get_award_from_NIH(award_id: str, funder_name: str):
            
         else:
             print(f"Error fetching data for award ID {award_id}: {response.status_code}")
+            award_id = original_award_id
 
         # match with the 41 code 
         with open('./resources/funder_41Code.csv', newline='') as csvfile:
@@ -121,16 +208,19 @@ def filter_nih_from_unique_funders():
 #filter_nih_from_unique_funders()
 
 # # Example usage
-award_id = "R35GM147556"
-funder_name = "National Institute of General Medical Sciences"
+# award_id = "R35GM147556"
+# funder_name = "National Institute of General Medical Sciences"
 
 # award_id = "NIH CA142746"
 
 # award_id = "NIH CA142746"
 # funder_name = "National Institutes of Health"
 
-award_id= "F32 NS112453"
-funderName="National Institutes of Health"
-print(get_award_from_NIH(award_id, funder_name))
+# award_id= "NCT04111939"
+# funder_name="National Institutes of Health"
+# print(get_award_from_NIH(award_id, funder_name))
 
+# award_id = 'R01'
+# standardized_id = standardize_nih_award_id(award_id)
+# print(f"Standardized ID: {standardized_id}")
 
