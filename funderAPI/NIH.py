@@ -216,9 +216,9 @@ def filter_nih_from_unique_funders():
 # award_id = "NIH CA142746"
 # funder_name = "National Institutes of Health"
 
-# award_id= "NCT04111939"
-# funder_name="National Institutes of Health"
-# print(get_award_from_NIH(award_id, funder_name))
+award_id= "GM111978"
+funder_name="National Institutes of Health"
+print(get_award_from_NIH(award_id, funder_name))
 
 # award_id = 'R01'
 # standardized_id = standardize_nih_award_id(award_id)
