@@ -70,6 +70,14 @@ def export_grant_from_s3(bucket_name, folder_name, output_file=None):
 
 
 def export_grant_asset_linking_from_s3(bucket_name, api_key, output_file=None):
+
+    """
+    Used to retrieve all files from an asset-grant-linking, check for asset IDs via API, and save results to CSV.
+    Parameters:
+    - bucket_name: str, name of the S3 bucket
+    - api_key: str, API key for accessing the asset service
+    - output_file: str, local filename to save the CSV results
+    """
    
     if output_file is None:
             output_file = f'sideJobs/s3/{bucket_name}.csv'
@@ -112,7 +120,7 @@ def export_grant_asset_linking_from_s3(bucket_name, api_key, output_file=None):
                     result.append({
                         "asset_id": asset_id,
                         "doi": doi,
-                        "award_id": data_json.get("award_id", None),
+                        "award_id": data_json.get("awardnumber", None),
                         "is_exist": is_exist
                     })
                     
@@ -126,6 +134,10 @@ def export_grant_asset_linking_from_s3(bucket_name, api_key, output_file=None):
 
 
 def get_assetID(doi, api_key):
+    """
+    Given a DOI, fetch the corresponding asset ID using the provided API key.
+    """
+
     base_url = "https://api-na.hosted.exlibrisgroup.com/esploro/v1/assets"
     headers = {
         "Accept": "application/json",
