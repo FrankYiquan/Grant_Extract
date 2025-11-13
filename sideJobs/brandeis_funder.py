@@ -2,9 +2,17 @@ import requests
 import csv
 
 # default institutions Id to Brandeis University # end year is not included - so if you want end year to be 2024, do 2025 # start year is not included - if you want start year to be 2018, do 2017
-def get_brandeis_grant(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
+import requests
+
+def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469", startyear=2017,endYear=2025):
     base_url = "https://api.openalex.org/works"
-    filter_str = f"grants.funder:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
+
+    # If funderId and funderName BOTH None → do NOT filter by funder
+    if funderId == "all" and funderName == "all":
+        filter_str = f"institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
+    else:
+        filter_str = f"grants.funder:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
+
     select_fields = "id,doi,title,publication_year,grants"
 
     output = []
@@ -15,25 +23,42 @@ def get_brandeis_grant(funderId, funderName, institutionsId="I6902469", startyea
         response = requests.get(url)
         data = response.json()
 
-        for asset in data.get('results', []):
-            for grant in asset.get('grants', []):
-                if grant.get('funder_display_name') == funderName and grant.get('award_id'):
-                    output.append({
-                        "openAlex_id": asset.get('id'),
-                        'doi': asset.get('doi'),
-                        'title': asset.get('title'),
-                        'publication_year': asset.get('publication_year'),
-                        'funder_name': grant.get("funder_display_name"),
-                        "award_id": grant.get('award_id')
-                    })
-                    # print("Found award:", grant.get('award_id'))
+        for asset in data.get("results", []):
+            grants = asset.get("grants", [])
 
-        # move to next page
-        cursor = data.get('meta', {}).get('next_cursor')
-        if not cursor:  # no more pages
+            # Case A: No funderId + no funderName → include ALL grants with award_id
+            if funderId == "all" and funderName == "all":
+                for grant in grants:
+                    if grant.get("award_id"):
+                        output.append({
+                            "openAlex_id": asset.get("id"),
+                            "doi": asset.get("doi"),
+                            "title": asset.get("title"),
+                            "publication_year": asset.get("publication_year"),
+                            "funder_name": grant.get("funder_display_name"),
+                            "award_id": grant.get("award_id")
+                        })
+                continue
+
+            # Case B: filter by funderId / funderName
+            for grant in grants:
+                if grant.get("funder_display_name") == funderName and grant.get("award_id"):
+                    output.append({
+                        "openAlex_id": asset.get("id"),
+                        "doi": asset.get("doi"),
+                        "title": asset.get("title"),
+                        "publication_year": asset.get("publication_year"),
+                        "funder_name": grant.get("funder_display_name"),
+                        "award_id": grant.get("award_id")
+                    })
+
+        # Move to next page
+        cursor = data.get("meta", {}).get("next_cursor")
+        if not cursor:
             break
-    
+
     return output
+
 
 #output the result to csv
 def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
@@ -46,10 +71,9 @@ def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startye
         writer.writeheader()
         writer.writerows(output)
 
+
 # output_grant_to_csv(funderId="f4320320006", funderName="Royal Society")
 funderName="National Institutes of Health"
 funderId="f4320332161"
-# result = get_brandeis_grant(funderId, funderName)
-# print(result)
 
-# output_grant_to_csv(funderId, funderName)
+output_grant_to_csv(funderId, funderName)

@@ -23,13 +23,23 @@ def get_nsf_award(award_id):
         response.raise_for_status()
         data = response.json()
 
-        # Access the first award in the list
-        award = data["response"]["award"][0]
+        amount = None
+        startDate = None
+        endDate = None
+        principal_investigator = None
+        grant_url = None
+        title = None
+        funderCode = None
+        status = "ACTIVE"
 
-        return {
-            "startDate": award["startDate"],
-            "amount": award["fundsObligatedAmt"]
-        }
+        if response.status_code == 200:
+            # Access the first award in the list
+            award = data["response"]["award"][0]
+
+            return {
+                "startDate": award["startDate"],
+                "amount": award["fundsObligatedAmt"]
+            }
 
     except Exception as e:
         print(f"Error: {e}")

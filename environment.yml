@@ -23,3 +23,7 @@ dependencies:
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
+
+# to use airflow and use aws and databricks operators
+# pip install "apache-airflow[amazon,databricks]==2.7.0" \
+#   --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.0/constraints-3.11.txt"

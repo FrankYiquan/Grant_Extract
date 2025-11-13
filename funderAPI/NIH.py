@@ -3,6 +3,7 @@
 import requests
 import csv
 import re
+from datetime import datetime, date
 
 # Lists of activity codes and IC codes
 activity_codes = [
@@ -18,7 +19,6 @@ activity_codes = [
     "T42", "T90", "R90", "TU2", "U01", "U10", "U13", "U18", "U19", "U24",
     "U2C", "U2R", "U34", "U41", "U42", "U43", "U44"
 ]
-
 
 ic_codes = [
     "TW", "TR", "AT", "CA", "EY", "HG", "HL", "AG", "AA", "AI",
@@ -56,7 +56,6 @@ def standardize_nih_award_id(raw_id):
         activity_code = ""
         remaining = raw_id
          
-    
     # Extract IC code
     ic_code = next((code for code in ic_codes if code in remaining), None)
     if not ic_code:
@@ -65,8 +64,6 @@ def standardize_nih_award_id(raw_id):
     
     remaining = remaining[len(ic_code):]
 
- 
-    
     # Extract serial number (first 1-6 digits)
     serial_match = re.search(r'\d{4,6}', remaining)
     if not serial_match:
@@ -87,75 +84,80 @@ def get_award_from_NIH(award_id: str, funder_name: str):
     #normalize it to prevent case like U19-AG051426 => U19AG051426
     original_award_id = award_id
     award_id = standardize_nih_award_id(award_id)
-    print(f"Fetching data for award ID: {award_id}")
-    
     url = "https://api.reporter.nih.gov/v2/projects/search"
     params = {
         "criteria": {
             "project_nums": [award_id]
         },
         "format": "json",
-        "sort_field":"fiscal_year",
-        "sort_order":"desc"
+        "sort_field": "fiscal_year",
+        "sort_order": "desc"
     }
 
     response = requests.post(url, json=params)
 
-
     amount = None
     startDate = None
+    endDate = None
     principal_investigator = None
     grant_url = None
     title = None
     funderCode = None
-
-
+    status = "ACTIVE"
 
     if response.status_code == 200:
         data = response.json()
         hits = data.get('meta').get('total')
         
-        # traverse the json result
         if hits > 0:
             amount = sum(grant.get('award_amount', 0) or 0 for grant in data['results'])
             # for grant in data['results']:
             #     print(f"Year: {grant['fiscal_year']}, Award Amount: {grant['award_amount']}")
-            # startDate = data['results'][0]['project_start_date'].split('T')[0]  # Strips the time part
             project_start = data['results'][0].get('project_start_date')
+            project_end = data['results'][0].get('project_end_date')
             if project_start:
                 startDate = project_start.split('T')[0]
             else:
                 startDate = None 
+
+            if project_end:
+                endDate = project_end.split('T')[0]
+                target_date = datetime.strptime(endDate, "%Y-%m-%d").date()
+                today = date.today()
+                if target_date < today:
+                    status = "HISTORY"
+            else:
+                endDate = None
+            
             principal_investigator = data['results'][0]['principal_investigators'][0]['full_name']
-            grant_url =  data.get('meta').get("properties").get("URL")
-            title = data.get('results')[0].get('project_title')
+            grant_url = data.get('meta').get("properties").get("URL")
+            title = data['results'][0]['project_title']
             award_id = data.get('results')[0].get('project_serial_num')
-           
         else:
-            print(f"Error fetching data for award ID {award_id}: {response.status_code}")
+            print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
             award_id = original_award_id
 
-        # match with the 41 code 
+        # match with funder_41Code.csv
         with open('./resources/funder_41Code.csv', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)  
-
-            # Iterate through rows
+            reader = csv.DictReader(csvfile)
             for row in reader:
                 if row['unique_funder'] == funder_name:
                     funderCode = row['matched_funder_code']
                     break
 
-                
-
+        result = f"""<grant>
+    <grantId>{award_id}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>{funderCode}</funderCode>
+    <amount>{amount}</amount>
+    <startDate>{startDate}</startDate>
+     <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
         
-        return {
-            "grantId": award_id,
-            "grantName": title,
-            "funderCode": funderCode,
-            "amount": amount,
-            "startDate": startDate,
-            "grantURL": grant_url,
-        }
+        return result
         
 
 #list of NIH institutes
@@ -205,22 +207,10 @@ def filter_nih_from_unique_funders():
     
     print(f"Filtered {len(nih_funders)} NIH funders from {len(unique_funders)} unique funders.")
 
-#filter_nih_from_unique_funders()
 
-# # Example usage
-# award_id = "R35GM147556"
-# funder_name = "National Institute of General Medical Sciences"
 
-# award_id = "NIH CA142746"
+# award_id= "GM111978"
+# funder_name="National Institutes of Health"
+# print(get_award_from_NIH(award_id, funder_name))
 
-# award_id = "NIH CA142746"
-# funder_name = "National Institutes of Health"
-
-award_id= "GM111978"
-funder_name="National Institutes of Health"
-print(get_award_from_NIH(award_id, funder_name))
-
-# award_id = 'R01'
-# standardized_id = standardize_nih_award_id(award_id)
-# print(f"Standardized ID: {standardized_id}")
 

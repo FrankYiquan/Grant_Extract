@@ -1,68 +1,50 @@
 import boto3
 import json
-import csv
-
-from funderAPI.NIH import check_nih_funder, get_award_from_NIH
+from funderAPI.NIH import check_nih_funder
 from sideJobs.brandeis_funder import get_brandeis_grant
+from utils.sqs_config import NIH_QUEUE_URL
 
 
+def send_grant_sqs_for_one_funder(
+    funderId,
+    funderName,
+    institutionsId="I6902469",
+    startyear=2017,
+    endYear=2025
+):
+    """
+    funder = {"id": "...", "name": "..."}
+    Designed for Airflow dynamic task mapping.
+    """
 
 
-def send_grant_sqs(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
+    sqs = boto3.client("sqs", region_name="us-east-2")
 
-    sqs = boto3.client("sqs", region_name="us-east-2")  
-    NIH_Queue_URL = "https://sqs.us-east-2.amazonaws.com/050752631001/NIH-Queue"
-    SQS_URL = None
+    # Get awards for THIS funder only
+    grants = get_brandeis_grant(funderId, funderName, institutionsId, startyear, endYear)
 
-    #get all the grant associate with the funder name and institution Id
-    grants = get_brandeis_grant(funderId, funderName, institutionsId, startyear, endYear) #an array
-
-    if check_nih_funder(funderName):
-        SQS_URL = NIH_Queue_URL
-
-    # elif ....:
-    #      SQS_URL = "other queue url"
-
+    queue_url = get_SQS_URL_by_funder(funderName)
+    if not queue_url:
+        raise ValueError(f"No queue defined for funder: {funderName}")
 
     for grant in grants:
         message = {
-            "award_id": grant['award_id'],
-            "funder_name": funderName,
-            "doi": grant['doi'].split("https://doi.org/")[-1] if grant['doi'] else None,
+            "award_id": grant["award_id"],
+            "funder_name": grant["funder_name"],
+            "doi": grant["doi"].split("https://doi.org/")[-1] if grant["doi"] else None,
         }
 
         response = sqs.send_message(
-            QueueUrl=SQS_URL,
+            QueueUrl=queue_url,
             MessageBody=json.dumps(message)
         )
-
         print("Message sent:", response["MessageId"])
 
-
-# def send_grant_local(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
-#      #get all the grant associate with the funder name and institution Id
-#     grants = get_brandeis_grant(funderId, funderName, institutionsId, startyear, endYear) #an array
-#     output = []
-#     processed = 0
-
-#     if check_nih_funder(funderName):
-#         for grant in grants:
-#             result = get_award_from_NIH(grant['award_id'], funderName)
-#             output.append(result)
-#             print("Processed award", processed,":", grant['award_id'])
-#             processed += 1
-
-#     # write to CSV
-#     with open(f"funderAPI/output/{funderName}_funded_grant.csv", "w", newline="") as csvfile:
-#         fieldnames = ["grantId", "grantName", "funderCode", "amount", "startDate", "grantURL"]
-#         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-#         writer.writeheader()
-#         writer.writerows(output)
+    return f"Processed funder: {funderName}"
 
 
-# send_grant_sqs(funderId="f4320332161", funderName="National Institutes of Health")
-
-
-
-
-
+def get_SQS_URL_by_funder(funderName):
+    if check_nih_funder(funderName):
+        return NIH_QUEUE_URL
+   #else if funderName == "NSF":
+    return None
