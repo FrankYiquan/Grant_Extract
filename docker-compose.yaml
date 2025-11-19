@@ -1,0 +1,115 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  airflow-init:
+    build:
+      context: ./airflow
+    entrypoint: /bin/bash
+    command: -c "airflow db init && airflow users create --username admin --password admin --role Admin --firstname Admin --lastname User --email admin@example.com"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "pP4V7EHDsf3M8x_SkQMq1cI0hT_M3UwWioqKdXuUhwo="
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      PYTHONPATH: "/opt/airflow"
+    depends_on:
+      - postgres
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./funderAPI:/opt/airflow/funderAPI
+      - ./sideJobs:/opt/airflow/sideJobs
+      - ./utils:/opt/airflow/utils
+      - ./resources:/opt/airflow/resources
+      - ./main.py:/opt/airflow/main.py
+      - ~/.aws:/home/airflow/.aws:ro
+
+  airflow-webserver:
+    build:
+      context: ./airflow
+    restart: always
+    depends_on:
+      - postgres
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "pP4V7EHDsf3M8x_SkQMq1cI0hT_M3UwWioqKdXuUhwo="
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      PYTHONPATH: "/opt/airflow"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./funderAPI:/opt/airflow/funderAPI
+      - ./sideJobs:/opt/airflow/sideJobs
+      - ./utils:/opt/airflow/utils
+      - ./resources:/opt/airflow/resources
+      - ./main.py:/opt/airflow/main.py
+      - ~/.aws:/home/airflow/.aws:ro
+    ports:
+      - "8080:8080"
+    command: webserver
+
+  airflow-scheduler:
+    build:
+      context: ./airflow
+    restart: always
+    depends_on:
+      - postgres
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      PYTHONPATH: "/opt/airflow"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./funderAPI:/opt/airflow/funderAPI
+      - ./sideJobs:/opt/airflow/sideJobs
+      - ./utils:/opt/airflow/utils
+      - ./resources:/opt/airflow/resources
+      - ./main.py:/opt/airflow/main.py
+      - ~/.aws:/home/airflow/.aws:ro
+    command: scheduler
+
+volumes:
+  postgres_data:
+
+
+## if any changes in docker-compose.yaml, not DockerFile 
+
+# to remove the existing container
+# docker compose down
+
+# or (choose one)
+
+# [optional] docker compose down --remove-orphans
+# docker compose down --remove-orphans
+
+# reserat with new configuration
+# docker compose up -d
+
+#####--------------------------------------------------------------------####
+
+## if change the DockerFile (meaning change the image)
+
+# Remove container 
+# docker compose down --remove-orphans
+
+# Rebuild the image (since you change the image)
+# docker compose build
+
+# rerun airflow-init 
+# docker compose up airflow-init
+
+# start full stack 
+# docker compose up -d
+

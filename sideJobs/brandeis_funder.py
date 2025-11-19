@@ -71,9 +71,13 @@ def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startye
         writer.writeheader()
         writer.writerows(output)
 
+# To Be Implemented
+def get_all_funders(funderId = "all", funderName = "all"):
+    return [{}]
 
-# output_grant_to_csv(funderId="f4320320006", funderName="Royal Society")
-funderName="National Institutes of Health"
-funderId="f4320332161"
 
-output_grant_to_csv(funderId, funderName)
+# # output_grant_to_csv(funderId="f4320320006", funderName="Royal Society")
+# funderName="National Institutes of Health"
+# funderId="f4320332161"
+
+# output_grant_to_csv(funderId, funderName)
