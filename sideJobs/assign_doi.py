@@ -59,12 +59,13 @@ def get_brandeis_asset_doi(institutionsId="I6902469", startyear=2017, endYear=20
         data = response.json()
 
         for asset in data.get('results', []):
-            output.append({
-                "openAlex_id": asset.get('id'),
-                'doi': asset.get('doi'),
-                'title': asset.get('title'),
-                'publication_year': asset.get('publication_year'),
-            })
+            if asset.get('grants'):
+                output.append({
+                    "openAlex_id": asset.get('id'),
+                    'doi': asset.get('doi'),
+                    'title': asset.get('title'),
+                    'publication_year': asset.get('publication_year'),
+                })
 
         # move to next page
         cursor = data.get('meta', {}).get('next_cursor')
@@ -122,7 +123,7 @@ def out_all_doi_and_check_assetId(startYear, endYear, apikey):
     print("CSV file created: {output_path}")
 
 
-# api_key =   
+# api_key = 
 # start_year = 2017
 # end_year = 2025
 # out_all_doi_and_check_assetId(start_year, end_year, api_key)
