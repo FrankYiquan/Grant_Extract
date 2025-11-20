@@ -1,5 +1,7 @@
 from pyspark.sql import SparkSession
 from delta import *
+from pyspark.sql.window import Window
+from pyspark.sql.functions import row_number, col
 
 BRONZE_PATH = "s3a://brandeis-grants-bronze/"
 SILVER_PATH = "s3a://brandeis-grants-silver/"
@@ -13,10 +15,7 @@ spark = (SparkSession.builder
 
 bronze = spark.read.format("delta").load(BRONZE_PATH)
 
-# Basic dedupe logic — keep the row with the highest award_amount
-from pyspark.sql.window import Window
-from pyspark.sql.functions import row_number, col
-
+#
 window = Window.partitionBy("award_id").orderBy(col("award_amount").desc())
 
 silver = (bronze

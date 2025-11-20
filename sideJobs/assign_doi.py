@@ -1,8 +1,10 @@
 import requests
 import pandas as pd
 
-from sideJobs.export_s3 import get_assetID
 import csv
+
+from sideJobs.export_s3 import get_assetID
+
 
 def assign_doi_to_asset(title):
     """
@@ -71,35 +73,59 @@ def get_brandeis_asset_doi(institutionsId="I6902469", startyear=2017, endYear=20
     
     return output
 
-def out_all_doi_and_check_assetId(apikey):
-    assets = get_brandeis_asset_doi()
+import csv
+
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import csv
+
+def out_all_doi_and_check_assetId(startYear, endYear, apikey):
+    assets = get_brandeis_asset_doi(startyear=startYear, endYear=endYear)
+    total = len(assets)
+    print(f"Total assets: {total}")
 
     output = []
+    count_has_assetId = 0
 
-    for asset in assets:
-        asset_id = None
-        has_assetId = False
-        asset_id = get_assetID(asset['doi'], apikey)
-        if asset_id:
-            has_assetId = True
-        output.append({
+    def fetch(asset):
+        unique_doi = asset['doi'].split("https://doi.org/")[-1] if asset['doi'] else None
+        asset_id = get_assetID(unique_doi, apikey)
+        return {
             "openAlex_id": asset['openAlex_id'],
-            'doi': asset['doi'],
-            'title': asset['title'],
-            'publication_year': asset['publication_year'],
-            'asset_id': asset_id,
-            'has_assetId': has_assetId
-        })
+            "doi": asset['doi'],
+            "title": asset['title'],
+            "publication_year": asset['publication_year'],
+            "asset_id": asset_id,
+            "has_assetId": asset_id is not None
+        }
 
-    with open(f"sideJobs/output/all_assets.csv", "w", newline="") as csvfile:
-        fieldnames = ["openAlex_id", "doi", "title", "publication_year", "asset_id", "has_assetId"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    # 20 threads
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        futures = {executor.submit(fetch, a): a for a in assets}
+
+        for idx, future in enumerate(as_completed(futures), start=1):
+            result = future.result()
+            output.append(result)
+            if result["has_assetId"]:
+                count_has_assetId += 1
+
+            if idx % 50 == 0 or idx == total:
+                print(f"[{idx}/{total}] processed — {count_has_assetId} matched")
+
+    print(f"Done. {count_has_assetId}/{total} have asset_id.")
+
+    output_path = f"sideJobs/output/all_assets_{startYear}_{endYear}.csv"
+    with open(output_path, "w", newline="") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=output[0].keys())
         writer.writeheader()
         writer.writerows(output)
+    
+    print("CSV file created: {output_path}")
 
 
-
-# populate_doi_column()
+# api_key =   
+# start_year = 2017
+# end_year = 2025
+# out_all_doi_and_check_assetId(start_year, end_year, api_key)
 
 
 
