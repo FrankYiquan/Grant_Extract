@@ -15,7 +15,6 @@ spark = (SparkSession.builder
 
 bronze = spark.read.format("delta").load(BRONZE_PATH)
 
-#
 window = Window.partitionBy("award_id").orderBy(col("award_amount").desc())
 
 silver = (bronze

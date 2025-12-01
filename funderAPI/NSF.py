@@ -1,6 +1,7 @@
 #this script is used to get information about National Sceience Fundation awards
 import re
 import requests
+from datetime import datetime, date
 
 
 def clean_award_id(award_id):
@@ -18,32 +19,54 @@ def get_nsf_award(award_id):
         return None
     url = f"http://api.nsf.gov/services/v1/awards/{normalized_award_id}.json"
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
 
-        amount = None
-        startDate = None
-        endDate = None
-        principal_investigator = None
-        grant_url = None
-        title = None
-        funderCode = None
-        status = "ACTIVE"
+    response = requests.get(url)
+    data = response.json()
 
-        if response.status_code == 200:
-            # Access the first award in the list
-            award = data["response"]["award"][0]
+    amount = None
+    startDate = None
+    endDate = None
+    principal_investigator = None
+    grant_url = None
+    title = None
+    funderCode = "41___NATIONAL_SCIENCE_FOUNDATION_(ALEXANDRIA)"
+    status = "ACTIVE"
 
-            return {
-                "startDate": award["startDate"],
-                "amount": award["fundsObligatedAmt"]
-            }
+    if response.status_code == 200 and data.get("response", {}).get("metadata", {}).get("totalCount", 0) > 0:
+        # Access the first award in the list
+        award = data["response"]["award"][0]
+        amount = award.get("fundsObligatedAmt")
 
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
+        project_start = award.get("startDate")
+        if project_start:
+            startDate = datetime.strptime(project_start, "%m/%d/%Y").strftime("%Y-%m-%d")
+
+        project_end = award.get("expDate")
+        if project_end:
+            endDate = datetime.strptime(project_end, "%m/%d/%Y").strftime("%Y-%m-%d")
+            end_date = datetime.strptime(project_end, "%m/%d/%Y").date()
+            if end_date < datetime.now().date():
+                status = "HISTORY"
+        
+        title = award.get("title")
+        award_id = award.get("id")
+        grant_url = "https://www.nsf.gov/awardsearch/show-award?AWD_ID=" + award_id
+
+    result = f"""<grant>
+    <grantId>{award_id}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>{funderCode}</funderCode>
+    <amount>{amount}</amount>
+    <startDate>{startDate}</startDate>
+    <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
+        
+    return result
+
+    
         
 NSF_ORGANIZATIONS = [
     "National Science Foundation",
@@ -131,4 +154,8 @@ def filter_nih_from_unique_funders():
 # print(info)
 
 
-print(get_nsf_award(1919565))
+# print(get_nsf_award("DMS-1853342"))
+
+# award_id = "ST/M003469/1"
+# result = clean_award_id(award_id)
+# print(result)

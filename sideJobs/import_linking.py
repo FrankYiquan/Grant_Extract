@@ -49,7 +49,7 @@ def import_asset_grant_linking(assetId, awardId_list, api_key):
 
 
 
-api_key = "l8xxfb341229d69a4020a7042d0846b9e69d"
+api_key = ""
 assetId = "9924085974501921"
 awardId_list = ['DA041022', 'DA041025', 'DA041028', 'DA041048', 'DA041089', 'DA041093', 'DA041106', 'DA041117', 'DA041120', 'DA041123', 'DA041134', 'DA041147', 'DA041148', 'DA041156', 'DA041174', 'NS112810']
 
