@@ -5,20 +5,31 @@ from datetime import datetime, date
 
 
 def clean_award_id(award_id):
-    award_id = str(award_id).strip()
-    match = re.search(r'\d+', award_id)
-    return match.group() if match else None
+    text = str(award_id).strip()
+
+    # Find all digit sequences in the string
+    digit_groups = re.findall(r'\d+', text)
+
+    if not digit_groups:
+        return None
+
+    # If the string contains more than one award code (detected by prefix letters)
+    # Example: "DMR-1809762 CBET-1916877"
+    codes = re.findall(r'[A-Za-z]+[- ]*\d+', text)
+    if len(codes) > 1:
+        # Multiple award codes → return each full ID separately
+        return [re.findall(r'\d+', code)[0] for code in codes]
+
+    # Otherwise: one award code → combine digit pieces
+    return "".join(digit_groups)
 
 def get_nsf_award(award_id):
 
 
     #normalize the award_id to ensure it is a string
     normalized_award_id = clean_award_id(award_id)
-    if not normalized_award_id:
-        print("Invalid award ID format.")
-        return None
+   
     url = f"http://api.nsf.gov/services/v1/awards/{normalized_award_id}.json"
-
 
     response = requests.get(url)
     data = response.json()
@@ -154,8 +165,8 @@ def filter_nih_from_unique_funders():
 # print(info)
 
 
-# print(get_nsf_award("DMS-1853342"))
+print(get_nsf_award("DMS-1853342"))
 
-# award_id = "ST/M003469/1"
+# award_id = "IOS 1845663—SWF"
 # result = clean_award_id(award_id)
 # print(result)
