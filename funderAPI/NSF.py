@@ -11,23 +11,28 @@ def clean_award_id(award_id):
     digit_groups = re.findall(r'\d+', text)
 
     if not digit_groups:
-        return None
+        return []
 
     # If the string contains more than one award code (detected by prefix letters)
     # Example: "DMR-1809762 CBET-1916877"
     codes = re.findall(r'[A-Za-z]+[- ]*\d+', text)
     if len(codes) > 1:
         # Multiple award codes → return each full ID separately
-        return [re.findall(r'\d+', code)[0] for code in codes]
+        return [
+                digits 
+                for code in codes
+                for digits in [re.findall(r'\d+', code)[0]]
+                if len(digits) > 3
+            ]   
 
     # Otherwise: one award code → combine digit pieces
-    return "".join(digit_groups)
+    return ["".join(digit_groups)]
 
-def get_nsf_award(award_id):
+def get_award_from_NSF(award_id):
 
 
     #normalize the award_id to ensure it is a string
-    normalized_award_id = clean_award_id(award_id)
+    normalized_award_id = clean_award_id(award_id)[0]
    
     url = f"http://api.nsf.gov/services/v1/awards/{normalized_award_id}.json"
 
@@ -165,8 +170,8 @@ def filter_nih_from_unique_funders():
 # print(info)
 
 
-print(get_nsf_award("DMS-1853342"))
+# print(get_award_from_NSF("1144152"))
 
-# award_id = "IOS 1845663—SWF"
+# award_id = "DMR-1809762 CBET-1916877 CMMT-2026834 BSF- 2016188"
 # result = clean_award_id(award_id)
 # print(result)
