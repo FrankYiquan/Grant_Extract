@@ -175,7 +175,6 @@ nih_institutes = [
     "National Institute of Environmental Health Sciences",
     "National Institute of General Medical Sciences",
     "National Institute of Mental Health",
-    "National Institute of Mental Health and Neurosciences",
     "National Institute of Neurological Disorders and Stroke",
     "National Institute of Standards and Technology",
     "National Institute on Aging",
