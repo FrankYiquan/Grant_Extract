@@ -168,7 +168,7 @@ def get_assetID(doi, api_key):
     
                     
 # Example usage:
-# export_grant_from_s3('brandeis-grants', 'national_institutes_of_health')
+export_grant_from_s3('brandeis-grants', 'national_science_foundation')
 
 # asset id, award id, doi, isexisit
 

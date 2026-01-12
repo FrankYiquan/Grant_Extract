@@ -36,7 +36,7 @@ def get_eu_commision_grant(projectId):
         "currency": "Euro"
     }
 
-# print(get_eu_commision_grant("EERC\u2013948254"))
+print(get_eu_commision_grant("EERC\u2013948254"))
 
 
 

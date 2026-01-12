@@ -11,9 +11,9 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
     if funderId == "all" and funderName == "all":
         filter_str = f"institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
     else:
-        filter_str = f"grants.funder:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
+        filter_str = f"funders.id:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
 
-    select_fields = "id,doi,title,publication_year,grants"
+    select_fields = "id,doi,title,publication_year,awards"
 
     output = []
     cursor = "*"  # initial cursor
@@ -24,7 +24,7 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
         data = response.json()
 
         for asset in data.get("results", []):
-            grants = asset.get("grants", [])
+            grants = asset.get("awards", [])
 
             # Case A: No funderId + no funderName → include ALL grants with award_id
             if funderId == "all" and funderName == "all":
@@ -36,20 +36,20 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
                             "title": asset.get("title"),
                             "publication_year": asset.get("publication_year"),
                             "funder_name": grant.get("funder_display_name"),
-                            "award_id": grant.get("award_id")
+                            "award_id": grant.get("funder_award_id")
                         })
                 continue
 
             # Case B: filter by funderId / funderName
             for grant in grants:
-                if grant.get("funder_display_name") == funderName and grant.get("award_id"):
+                if grant.get("funder_display_name") == funderName and grant.get("funder_award_id"):
                     output.append({
                         "openAlex_id": asset.get("id"),
                         "doi": asset.get("doi"),
                         "title": asset.get("title"),
                         "publication_year": asset.get("publication_year"),
                         "funder_name": grant.get("funder_display_name"),
-                        "award_id": grant.get("award_id")
+                        "award_id": grant.get("funder_award_id")
                     })
 
         # Move to next page
@@ -81,3 +81,5 @@ def get_all_funders(funderId = "all", funderName = "all"):
 # funderId="f4320306076"
 
 # output_grant_to_csv(funderId, funderName)
+
+output_grant_to_csv(funderId="f4320338335", funderName="H2020 European Research Council")
