@@ -6,6 +6,22 @@ from funderAPI.helper.schema_extract import (
     get_matched_funder_code,
 )
 
+def check_eu_commision_funder(funderName: str) -> bool:
+    eu_commision_aliases = {
+        "SEVENTH FRAMEWORK PROGRAMME",
+        "HORIZON 2020 FRAMEWORK PROGRAMME",
+        "HORIZON 2020",
+        "H2020 MARIE SKŁODOWSKA-CURIE ACTIONS",
+        "HORIZON EUROPE EUROPEAN RESEARCH COUNCIL",
+        "EUROPEAN COMMISSION",
+        "HORIZON EUROPE MARIE SKLODOWSKA-CURIE ACTIONS",
+        "H2020 EUROPEAN RESEARCH COUNCIL",
+        "EUROPEAN RESEARCH COUNCIL",
+    }
+
+    normalized = funderName.strip().upper()
+    return normalized in eu_commision_aliases
+
 def extract_erc_id(text):
     m = re.search(r'(\d{6,})', text)
     return m.group(1) if m else None
@@ -63,6 +79,6 @@ def get_eu_commision_grant(award_id: str, funder_name: str):
 # print(get_eu_commision_grant("306478", "European Research Council"))
 
 
-
+# print(check_eu_commision_funder("H2020 European Research Council"))  # True
 
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
+    <grant>
+        <grantId>101114623</grantId>
+        <grantName>Illuminating neutron stars with radiative plasma physics</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>2211196</amount>
+        <startDate>2024-05-01</startDate>
+        <endDate>2029-04-30</endDate>
+        <grantURL>https://cordis.europa.eu/project/id/101114623</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>ACTIVE</status>
+    </grant>
+    <grant>
+        <grantId>758892</grantId>
+        <grantName>Deciphering super-Earths using Artificial Intelligence</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>1500000</amount>
+        <startDate>2018-01-01</startDate>
+        <endDate>2023-06-30</endDate>
+        <grantURL>https://cordis.europa.eu/project/id/758892</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>HISTORY</status>
+    </grant>
+</grants>

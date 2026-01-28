@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
+    <grant>
+        <grantId>101033496</grantId>
+        <grantName>Direct Experimental probe of the Lorenz invariance violation in the Top-quark physics at the ATLAS experiment.</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>140021.76</amount>
+        <startDate>2021-07-01</startDate>
+        <endDate>2023-09-30</endDate>
+        <grantURL>https://cordis.europa.eu/project/id/101033496</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>HISTORY</status>
+    </grant>
+    <grant>
+        <grantId>101033496</grantId>
+        <grantName>Direct Experimental probe of the Lorenz invariance violation in the Top-quark physics at the ATLAS experiment.</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>140021.76</amount>
+        <startDate>2021-07-01</startDate>
+        <endDate>2023-09-30</endDate>
+        <grantURL>https://cordis.europa.eu/project/id/101033496</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>HISTORY</status>
+    </grant>
+    <grant>
+        <grantId>665667</grantId>
+        <grantName>Experienced Researchers Incoming Fellowship Programme at the Ecole Polytechnique Fédérale de Lausanne</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>6796800</amount>
+        <startDate>2015-07-01</startDate>
+        <endDate>2020-06-30</endDate>
+        <grantURL>https://cordis.europa.eu/project/id/665667</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>HISTORY</status>
+    </grant>
+    <grant>
+        <grantId>734242</grantId>
+        <grantName>Learning and Analysing Massive / Big complex Data</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>337500</amount>
+        <startDate>2017-03-01</startDate>
+        <endDate>2022-08-31</endDate>
+        <grantURL>https://cordis.europa.eu/project/id/734242</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>HISTORY</status>
+    </grant>
+    <grant>
+        <grantId>EU H2020 MSC IF</grantId>
+        <grantName>None</grantName>
+        <funderCode>41___EUROPEAN_COMMISSION_(BRUSSELS)</funderCode>
+        <amount>None</amount>
+        <startDate>None</startDate>
+        <endDate>None</endDate>
+        <grantURL>None</grantURL>
+        <profileVisibility>true</profileVisibility>
+        <status>ACTIVE</status>
+    </grant>
+</grants>

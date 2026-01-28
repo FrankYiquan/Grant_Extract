@@ -2,3 +2,4 @@
 
 NIH_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/050752631001/NIH-Queue"
 NSF_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/050752631001/NSF-Queue"
+EUROPE_RESEARCH_COUNCIL_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/050752631001/Europoean_Commission-Queue"

@@ -2,10 +2,12 @@ import boto3
 import json
 from funderAPI.NIH import check_nih_funder
 from funderAPI.NSF import check_nsf_funder
+from funderAPI.European_Commision import check_eu_commision_funder
 from sideJobs.brandeis_funder import get_brandeis_grant
 
 from utils.sqs_config import NIH_QUEUE_URL
 from utils.sqs_config import NSF_QUEUE_URL
+from utils.sqs_config import EUROPE_RESEARCH_COUNCIL_QUEUE_URL
 
 
 def send_grant_sqs_for_one_funder(
@@ -45,7 +47,8 @@ def send_grant_sqs_for_one_funder(
             QueueUrl=queue_url,
             MessageBody=json.dumps(message)
         )
-        # print("Message sent:", response["MessageId"])
+
+        #print("Message sent:", response["MessageId"])
 
     return f"Processed funder: {funderName}"
 
@@ -55,10 +58,13 @@ def get_SQS_URL_by_funder(funderName):
         return NIH_QUEUE_URL
     elif check_nsf_funder(funderName):
         return NSF_QUEUE_URL
-   #else if funderName == "NSF":
+    elif check_eu_commision_funder(funderName):
+        return EUROPE_RESEARCH_COUNCIL_QUEUE_URL
     return None
 
-# send_grant_sqs_for_one_funder(
-#     funderId="f4320306076",
-#     funderName="National Science Foundation",
+# result = send_grant_sqs_for_one_funder(
+#     funderId="F4320338438",
+#     funderName="H2020 EUROPEAN RESEARCH COUNCIL",
 # )
+
+# print(result)
