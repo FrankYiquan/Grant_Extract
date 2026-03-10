@@ -3,6 +3,8 @@ import requests
 import json
 import csv
 
+from utils.sqs_config import PRODUCTION_EXLIBRIS_API
+
 def export_grant_from_s3(bucket_name, folder_name, output_file=None):
    
     """
@@ -69,7 +71,7 @@ def export_grant_from_s3(bucket_name, folder_name, output_file=None):
 
 
 
-def export_grant_asset_linking_from_s3(bucket_name, api_key, output_file=None):
+def export_grant_asset_linking_from_s3(bucket_name, api_key=PRODUCTION_EXLIBRIS_API, output_file=None):
 
     """
     Used to retrieve all files from an asset-grant-linking, check for asset IDs via API, and save results to CSV.
@@ -120,7 +122,7 @@ def export_grant_asset_linking_from_s3(bucket_name, api_key, output_file=None):
                     result.append({
                         "asset_id": asset_id,
                         "doi": doi,
-                        "award_id": data_json.get("awardnumber", None),
+                        "award_id": data_json.get("awardnumbers", None),
                         "is_exist": is_exist
                     })
                     
@@ -133,7 +135,7 @@ def export_grant_asset_linking_from_s3(bucket_name, api_key, output_file=None):
             print(f"CSV file created: {output_file}")
 
 
-def get_assetID(doi, api_key):
+def get_assetID(doi, api_key=PRODUCTION_EXLIBRIS_API):
     """
     Given a DOI, fetch the corresponding asset ID using the provided API key.
     """
@@ -171,4 +173,4 @@ def get_assetID(doi, api_key):
 # export_grant_from_s3('brandeis-grants', 'national_science_foundation')
 
 # asset id, award id, doi, isexisit
-
+export_grant_asset_linking_from_s3('asset-grant-linking')

@@ -1,5 +1,8 @@
 import requests
 import csv
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from utils.sqs_config import PRODUCTION_EXLIBRIS_API
 
 # def import_all_asset_grant_linking(linking_file, api_key):
 
@@ -10,7 +13,7 @@ import csv
 #             # call the lining methiod 
 
 
-def import_asset_grant_linking(assetId, awardId_list, api_key):
+def import_asset_grant_linking(assetId, awardId_list, api_key=PRODUCTION_EXLIBRIS_API):
 
     """
     Links a list of award IDs to a given asset ID using the Ex Libris Esploro API.
@@ -45,13 +48,45 @@ def import_asset_grant_linking(assetId, awardId_list, api_key):
     except requests.exceptions.RequestException as e:
         print(f"Error linking awards {awardId_list} to asset {assetId}: {e}")
 
-    
+
+def process_asset_grant_file(api_key=PRODUCTION_EXLIBRIS_API, max_workers=10):
+
+    CSV_PATH = "sideJobs/s3/asset-grant-linking.csv"
+
+    asset_awards = defaultdict(list)
+
+    # Read CSV + group awards by asset_id
+    with open(CSV_PATH, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            asset_id = row["asset_id"]
+            award_id = row["award_id"]
+
+            if asset_id and award_id:
+                asset_awards[asset_id].append(award_id)
+
+    print(f"Found {len(asset_awards)} assets to update")
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+
+        futures = []
+
+        for asset_id, award_list in asset_awards.items():
+            futures.append(
+                executor.submit(
+                    import_asset_grant_linking,
+                    asset_id,
+                    award_list,
+                    api_key
+                )
+            )
+
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                print("Error in worker:", e)
 
 
-
-# api_key = ""
-# assetId = "9924085974501921"
-# awardId_list = ['DA041022', 'DA041025', 'DA041028', 'DA041048', 'DA041089', 'DA041093', 'DA041106', 'DA041117', 'DA041120', 'DA041123', 'DA041134', 'DA041147', 'DA041148', 'DA041156', 'DA041174', 'NS112810']
-
-
-# import_asset_grant_linking(assetId, awardId_list, api_key)
+# process_asset_grant_file()

@@ -5,4 +5,7 @@ NSF_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/050752631001/NSF-Queue"
 EUROPE_RESEARCH_COUNCIL_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/050752631001/Europoean_Commission-Queue"
 
 # API_key for ExLibris API
-PRODUCTION_EXLIBRIS_API = ""
+# PRODUCTION_EXLIBRIS_API = "l8xxae90f1424da94746b65d239fe31e7bc8"
+
+# sanbbox
+PRODUCTION_EXLIBRIS_API = "l8xxfb341229d69a4020a7042d0846b9e69d" 

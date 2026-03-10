@@ -1,5 +1,7 @@
 import boto3
 import json
+import csv
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from funderAPI.NIH import check_nih_funder
@@ -12,7 +14,7 @@ from utils.sqs_config import NIH_QUEUE_URL
 from utils.sqs_config import NSF_QUEUE_URL
 from utils.sqs_config import EUROPE_RESEARCH_COUNCIL_QUEUE_URL
 
-from utils.openAlex_id import NATIONAL_SCIENCE_FOUNDATION
+from utils import openAlex_id
 
 
 def process_grant(grant, sqs, queue_url):
@@ -30,12 +32,18 @@ def process_grant(grant, sqs, queue_url):
         "doi": extract_doi
     }
 
-    # response = sqs.send_message(
-    #     QueueUrl=queue_url,
-    #     MessageBody=json.dumps(message)
-    # )
+    response = sqs.send_message(
+        QueueUrl=queue_url,
+        MessageBody=json.dumps(message)
+    )
 
     return "sent"
+
+
+def log_skipped_doi(doi):
+    with open("skipped_dois.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([doi])
 
 
 def send_grant_sqs_for_one_funder(
@@ -57,19 +65,26 @@ def send_grant_sqs_for_one_funder(
 
     num_skip = 0
 
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with open(f"sideJobs/invalid_asset/{funderName}.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile)
 
-        futures = [
-            executor.submit(process_grant, grant, sqs, queue_url)
-            for grant in grants
-        ]
+        with ThreadPoolExecutor(max_workers=20) as executor:
 
-        for future in as_completed(futures):
-            result = future.result()
+            futures = [
+                executor.submit(process_grant, grant, sqs, queue_url)
+                for grant in grants
+            ]
 
-            if isinstance(result, tuple) and result[0] == "skip_invalid":
-                num_skip += 1
-                print(f"Skipping grant with DOI {result[1]}. Total skipped: {num_skip}")
+            for future in as_completed(futures):
+                result = future.result()
+
+                if isinstance(result, tuple) and result[0] == "skip_invalid":
+                    num_skip += 1
+                    doi = result[1]
+
+                    writer.writerow([doi])   # write DOI to file
+
+                    print(f"Skipping grant with DOI {doi}. Total skipped: {num_skip}")
 
     return f"Processed funder: {funderName}"
 
@@ -84,9 +99,8 @@ def get_SQS_URL_by_funder(funderName):
     return None
 
 
-# result = send_grant_sqs_for_one_funder(
-#     funderId=NATIONAL_SCIENCE_FOUNDATION,
-#     funderName="National Science Foundation",
-# )
-
-# print(result)
+# for funderId, funderName in openAlex_id.NSF_FUNDERS.items():
+#     send_grant_sqs_for_one_funder(
+#         funderId=funderId,
+#         funderName=funderName,
+#     )

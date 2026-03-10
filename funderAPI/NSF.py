@@ -105,7 +105,7 @@ NSF_ORGANIZATIONS = [
     "Directorate for Engineering",
     "Division of Chemical, Bioengineering, Environmental, and Transport Systems",
     "Division of Civil, Mechanical, and Manufacturing Innovation",
-    "Division of Electrical, Communications, and Cyber Systems",
+    "Division of Electrical, Communications and Cyber Systems",
     "Division of Industrial Innovation and Partnerships",
     "Division of Materials Research",
     "Division of Electrical, Optical and Magnetic Materials",
@@ -139,6 +139,8 @@ NSF_ORGANIZATIONS = [
     "Directorate for International Science and Engineering",
     "Office of Advanced Cyberinfrastructure",
     "Advanced Cyberinfrastructure Division",
+    "Division of Advanced Cyberinfrastructure",
+    "Division of Civil, Mechanical and Manufacturing Innovation",
     "Antarctic Sciences Program",
     "Arctic Sciences Program"
 ]
