@@ -1,3 +1,4 @@
 __pycache__/
 *.pyc
 utils/sqs_config.py
+.DS_Store
