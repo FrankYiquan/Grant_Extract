@@ -4,6 +4,7 @@ import requests
 import csv
 import re
 from datetime import datetime, date
+from utils.helper import escape_xml
 
 # Lists of activity codes and IC codes
 activity_codes = [
@@ -132,6 +133,7 @@ def get_award_from_NIH(award_id: str, funder_name: str):
             principal_investigator = data['results'][0]['principal_investigators'][0]['full_name']
             grant_url = data.get('meta').get("properties").get("URL")
             title = data['results'][0]['project_title']
+            title = escape_xml(title)
             award_id = data.get('results')[0].get('project_serial_num')
         else:
             print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
@@ -149,6 +151,7 @@ def get_award_from_NIH(award_id: str, funder_name: str):
     <grantId>{award_id}</grantId>
     <grantName>{title}</grantName>
     <funderCode>{funderCode}</funderCode>
+    <currencyOfAmount>researchgrant.currency.usd</currencyOfAmount>
     <amount>{amount}</amount>
     <startDate>{startDate}</startDate>
      <endDate>{endDate}</endDate>
