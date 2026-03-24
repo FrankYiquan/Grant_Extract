@@ -168,7 +168,6 @@ nih_institutes = [
     "Division of Intramural Research, National Institute of Allergy and Infectious Diseases",
     "Division of Microbiology and Infectious Diseases, National Institute of Allergy and Infectious Diseases",
     "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
-    "Foundation for the National Institutes of Health",
     "National Heart, Lung, and Blood Institute",
     "National Institute of Allergy and Infectious Diseases",
     "National Institute of Arthritis and Musculoskeletal and Skin Diseases",
@@ -179,7 +178,6 @@ nih_institutes = [
     "National Institute of General Medical Sciences",
     "National Institute of Mental Health",
     "National Institute of Neurological Disorders and Stroke",
-    "National Institute of Standards and Technology",
     "National Institute on Aging",
     "National Institute on Alcohol Abuse and Alcoholism",
     "National Institute on Drug Abuse",
@@ -189,7 +187,10 @@ nih_institutes = [
     "U.S. National Library of Medicine",
     "National Center for Complementary and Integrative Health",
     "National Institute on Deafness and Other Communication Disorders",
-    "National Cancer Institute"
+    "National Cancer Institute",
+    "National Center for Advancing Translational Sciences",
+    "National Institute on Minority Health and Health Disparities",
+    "National Human Genome Research Institute"
 ]
 
 #check if a funder name is a NIH institute
