@@ -4,6 +4,13 @@ import csv
 # default institutions Id to Brandeis University # end year is not included - so if you want end year to be 2024, do 2025 # start year is not included - if you want start year to be 2018, do 2017
 import requests
 
+skipped_redflag = [
+    "unknown",
+    "n/a",
+    "none",
+    "(nih)"
+]
+
 def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469", startyear=2017,endYear=2025):
     base_url = "https://api.openalex.org/works"
 
@@ -20,29 +27,30 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
 
     while cursor:
         url = f"{base_url}?filter={filter_str}&select={select_fields}&per-page=200&cursor={cursor}"
+        # print(f"Fetching data from OpenAlex API with URL: {url}")
         response = requests.get(url)
         data = response.json()
 
         for asset in data.get("results", []):
             grants = asset.get("awards", [])
 
-            # Case A: No funderId + no funderName → include ALL grants with award_id
-            if funderId == "all" and funderName == "all":
-                for grant in grants:
-                    if grant.get("award_id"):
-                        output.append({
-                            "openAlex_id": asset.get("id"),
-                            "doi": asset.get("doi"),
-                            "title": asset.get("title"),
-                            "publication_year": asset.get("publication_year"),
-                            "funder_name": grant.get("funder_display_name"),
-                            "award_id": grant.get("funder_award_id")
-                        })
-                continue
+            # # Case A: No funderId + no funderName → include ALL grants with award_id
+            # if funderId == "all" and funderName == "all":
+            #     for grant in grants:
+            #         if grant.get("award_id"):
+            #             output.append({
+            #                 "openAlex_id": asset.get("id"),
+            #                 "doi": asset.get("doi"),
+            #                 "title": asset.get("title"),
+            #                 "publication_year": asset.get("publication_year"),
+            #                 "funder_name": grant.get("funder_display_name"),
+            #                 "award_id": grant.get("funder_award_id")
+            #             })
+            #     continue
 
             # Case B: filter by funderId / funderName
             for grant in grants:
-                if grant.get("funder_display_name") == funderName and grant.get("funder_award_id"):
+                if grant.get("funder_display_name") == funderName and grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
                     output.append({
                         "openAlex_id": asset.get("id"),
                         "doi": asset.get("doi"),
@@ -77,9 +85,12 @@ def get_all_funders(funderId = "all", funderName = "all"):
 
 
 # # output_grant_to_csv(funderId="f4320320006", funderName="Royal Society")
-funderName="National Science Foundation"
-funderId="f4320306076"
+# funderName="National Science Foundation"
+# funderId="f4320306076"
 
-output_grant_to_csv(funderId, funderName)
+# # funderName="National Institutes of Health"
+# # funderId="f4320332161"
+
+# output_grant_to_csv(funderId, funderName)
 
 # output_grant_to_csv( funderId="F4320338335", funderName="H2020 European Research Council",)
