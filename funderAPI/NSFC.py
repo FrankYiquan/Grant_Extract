@@ -10,6 +10,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 from selenium.webdriver.common.keys import Keys
 import re
+from utils.helper import escape_xml
+
 
 
 
@@ -111,6 +113,7 @@ def get_nsfc_grant(projectId):
         title_text = title_elem.text  
         # Remove leading number and dot (like "1.") using regex
         title = re.sub(r'^\d+\.', '', title_text).strip()
+        title = escape_xml(title)
 
     except Exception as e:
        pass

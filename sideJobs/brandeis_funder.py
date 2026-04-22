@@ -27,7 +27,8 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
 
     while cursor:
         url = f"{base_url}?filter={filter_str}&select={select_fields}&per-page=200&cursor={cursor}"
-        # print(f"Fetching data from OpenAlex API with URL: {url}")
+        print(f"Fetching data from OpenAlex API with URL: {url}")
+        break
         response = requests.get(url)
         data = response.json()
 
@@ -93,4 +94,4 @@ def get_all_funders(funderId = "all", funderName = "all"):
 
 # output_grant_to_csv(funderId, funderName)
 
-# output_grant_to_csv( funderId="F4320338335", funderName="H2020 European Research Council",)
+get_brandeis_grant( funderId="f4320321001", funderName="National Natural Science Foundation of China",)
