@@ -107,7 +107,7 @@ def get_nsfc_grant(projectId):
         if endDate and int(endDate) < time.localtime().tm_year:
                 status = "HISTORY"
         
-        endDate = f"{endDate}-01-01"
+        endDate = f"{endDate}-12-31"
     
         try:
             # Locate the <a> inside the p with class 'textEllipsis'
