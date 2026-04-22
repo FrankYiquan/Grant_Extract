@@ -28,12 +28,21 @@ def get_nsfc_grant(projectId):
     project_input.send_keys(projectId)
     project_input.send_keys(Keys.ENTER)
 
-    time.sleep(3)
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//p[contains(@class,'textEllipsis')]/a")
+        )
+    )
+
+    current_url = driver.current_url
 
     amount = None
     principal_investigator = None
     start_date = None
+    endDate = None
     title = None
+    status = "ACTIVE"
+    grant_url = None
 
     try:
         # Locate the <a> inside the div with class 'textEllipsis el-col el-col-7'
@@ -62,16 +71,36 @@ def get_nsfc_grant(projectId):
         pass
     try:
         # Locate the div with el-col-5 (start/approved year)
-        year_elem = driver.find_element(
+        start_year_elem = driver.find_element(
             By.XPATH, "//div[contains(@class,'textEllipsis') and contains(@class,'el-col-5') and contains(text(),'批准年度')]"
         )
-        start_year = year_elem.text 
-        match = re.search(r'(\d{4})', year_elem.text)
-        if match:
-            start_date = match.group(1)
+
+        start_year = start_year_elem.text 
+        
+        start_match = re.search(r'(\d{4})', start_year_elem.text)
+
+        if start_match:
+            start_date = start_match.group(1)
+
     except :
         pass
 
+    try:
+        end_year_elem = driver.find_element(
+            By.XPATH, "//div[contains(@class,'textEllipsis') and contains(@class,'el-col-6') and contains(text(),'结题年度')]"
+        )
+        
+        end_year = end_year_elem.text
+        end_match = re.search(r'(\d{4})', end_year_elem.text)
+
+        if end_match:
+            endDate = end_match.group(1)
+    
+    except :
+        pass
+
+    if endDate and int(endDate) < time.localtime().tm_year:
+            status = "HISTORY"
    
     try:
         # Locate the <a> inside the p with class 'textEllipsis'
@@ -83,17 +112,46 @@ def get_nsfc_grant(projectId):
         # Remove leading number and dot (like "1.") using regex
         title = re.sub(r'^\d+\.', '', title_text).strip()
 
-        
     except Exception as e:
        pass
 
-    return {
-        "title": title,
-        "amount": amount,
-        "start_date": start_date,
-        "principal_investigator": principal_investigator,
-        "currency": "CNY"
-    }
+    # to get the grant url, we need to click the title, then js handle the redirection
+    original_window = driver.current_window_handle
 
-print(get_nsfc_grant("71974204"))
+    # click using JS (more reliable)
+    driver.execute_script("arguments[0].click();", title_elem)
+
+    # wait for new window
+    WebDriverWait(driver, 10).until(
+        lambda d: len(d.window_handles) > 1
+    )
+
+    # switch to new window
+    for handle in driver.window_handles:
+        if handle != original_window:
+            driver.switch_to.window(handle)
+            break
+
+    # now get the URL
+    grant_url = driver.current_url
+
+    driver.quit()
+
+
+    result = f"""<grant>
+    <grantId>{projectId}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>41___NATIONAL_NATURAL_SCIENCE_FOUNDATION_OF_CHINA_(BEIJING)</funderCode>
+    <currencyOfAmount>researchgrant.currency.CNY</currencyOfAmount>
+    <amount>{amount}</amount>
+    <startDate>{start_date}</startDate>
+    <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
+
+    return result
+
+# print(get_nsfc_grant("71974204"))
 
