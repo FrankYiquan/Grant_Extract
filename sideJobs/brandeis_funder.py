@@ -8,7 +8,8 @@ skipped_redflag = [
     "unknown",
     "n/a",
     "none",
-    "(nih)"
+    "(nih)",
+    "investissements d&apos"
 ]
 
 def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469", startyear=2017,endYear=2025):
@@ -92,4 +93,4 @@ def get_all_funders(funderId = "all", funderName = "all"):
 
 # output_grant_to_csv(funderId, funderName)
 
-output_grant_to_csv( funderId="f4320334764", funderName="Japan Society for the Promotion of Science",)
+output_grant_to_csv( funderId="f4320320883", funderName="Agence Nationale de la Recherche",)
