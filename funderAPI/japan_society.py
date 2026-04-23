@@ -1,6 +1,8 @@
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
+from utils.helper import escape_xml
+
 
 # API response has two language option: english and japanese
 # prioritize english or fall back to japanese if english not available
@@ -41,6 +43,7 @@ def get_jsps_grant(projectId, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
 
                 if grant_summary is not None:
                     title = grant_summary.findtext('title')
+                    title = escape_xml(title)
 
                     amount = grant_summary.findtext('overallAwardAmount/totalCost')
                 

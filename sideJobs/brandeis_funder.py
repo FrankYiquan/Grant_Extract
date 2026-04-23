@@ -93,4 +93,4 @@ def get_all_funders(funderId = "all", funderName = "all"):
 
 # output_grant_to_csv(funderId, funderName)
 
-output_grant_to_csv( funderId="f4320320883", funderName="Agence Nationale de la Recherche",)
+output_grant_to_csv( funderId="F4320322581", funderName="Vetenskapsrådet",)

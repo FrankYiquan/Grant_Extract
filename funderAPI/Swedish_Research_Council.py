@@ -1,32 +1,72 @@
+from datetime import date
 import requests
+import re
+from utils.helper import escape_xml
 
-def extract_Swedish_Research_Council_grant(projectId, apiKey = "Bearer VRSwecrisAPI2025-1"):
-    
-    normalized_projectId = projectId.split("VR")[1].strip() + "_VR" if projectId.startswith("VR") else projectId
-    final_projectId = normalized_projectId + "_VR" if not normalized_projectId.endswith("_VR") else normalized_projectId
 
-    url = f"https://swecris-api.vr.se/v1/projects/{final_projectId}"
+
+def normalize_id(award_id: str) -> str:
+    m =  re.search(r'\d{4}-\d{5}', award_id)
+    if m:
+        return m.group(0) + "_VR"
+    return award_id
+
+def get_Swedish_Research_Council_grant(projectId, apiKey = "Bearer DTaURVYva7l6qNYX7zdLN8Tg"):
+    awardID = normalize_id(projectId)
+
+    url = f"https://swecris-api.vr.se/v1/projects/{awardID}"
 
     headers = {
     "Authorization": apiKey
     }
 
     response = requests.get(url, headers=headers)
+    print(url)
 
+    amount = None
+    principal_investigator = None
     startDate = None
-    amount = None 
-    if response.status_code == 200 and response != None:
+    endDate = None
+    title = None
+    status = "ACTIVE"
+    grant_url = None
+    funderCode = "41___SWEDISH_RESEARCH_COUNCIL_(STOCKHOLM)"
+
+    if response.status_code == 200:
         data = response.json()
+
+        title = data.get("projectTitleEn")
+        if not title:
+            title = data.get("projectTitleSv")
+        title = escape_xml(title)
+
         startDate = data.get("projectStartDate").split(" ")[0].strip()
+        endDate = data.get("projectEndDate").split(" ")[0].strip()
+        if endDate < date.today().isoformat():
+            status = "HISTORY"
+
         amount = data.get("fundingsSek")
+        
+        awardID = data.get('projectId')
+        if awardID:
+            grant_url = f"https://www.vr.se/english/swecris.html#/project/{awardID}"
     
 
-    return {
-        "startDate": startDate,
-        "amount": amount,
-        "currency": "kr"
-    }
+    result = f"""<grant>
+    <grantId>{awardID if amount else projectId}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>{funderCode}</funderCode>
+    <currencyOfAmount>researchgrant.currency.kr</currencyOfAmount>
+    <amount>{amount}</amount>
+    <startDate>{startDate}</startDate>
+    <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
+
+    return result
 
 
-#print(extract_Swedish_Research_Council_grant("2021-03651", "Bearer DTaURVYva7l6qNYX7zdLN8Tg"))
+print(get_Swedish_Research_Council_grant("VR 2022-03845"))
 
