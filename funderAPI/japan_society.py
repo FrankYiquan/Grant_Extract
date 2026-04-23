@@ -1,7 +1,6 @@
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
-from utils.sqs_config import JAPN_SOC_PUBLIC_KEY
 
 # API response has two language option: english and japanese
 # prioritize english or fall back to japanese if english not available
@@ -12,7 +11,7 @@ def get_summary(grant):
                 return s
     return grant.find('summary')
 
-def get_jsps_grant(projectId, apiKey=JAPN_SOC_PUBLIC_KEY):
+def get_jsps_grant(projectId, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     normalized_key = projectId.split("JP")[1] if "JP" in projectId else projectId
 
     url = f"https://kaken.nii.ac.jp/opensearch/?appid={apiKey}&kw={normalized_key}&format=xml"
