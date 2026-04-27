@@ -2,7 +2,7 @@ import requests
 import csv
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from utils.sqs_config import PRODUCTION_EXLIBRIS_API
+from utils.sqs_config import PRODUCTION_EXLIBRIS_API, SANDBOX_EXLIBRIS_API
 
 # def import_all_asset_grant_linking(linking_file, api_key):
 
@@ -13,7 +13,7 @@ from utils.sqs_config import PRODUCTION_EXLIBRIS_API
 #             # call the lining methiod 
 
 
-def import_asset_grant_linking(assetId, awardId_list, api_key=PRODUCTION_EXLIBRIS_API):
+def import_asset_grant_linking(assetId, awardId_list, api_key=SANDBOX_EXLIBRIS_API):
 
     """
     Links a list of award IDs to a given asset ID using the Ex Libris Esploro API.
@@ -49,22 +49,25 @@ def import_asset_grant_linking(assetId, awardId_list, api_key=PRODUCTION_EXLIBRI
         print(f"Error linking awards {awardId_list} to asset {assetId}: {e}")
 
 
-def process_asset_grant_file(api_key=PRODUCTION_EXLIBRIS_API, max_workers=10):
+def process_asset_grant_file(api_key=SANDBOX_EXLIBRIS_API, max_workers=10, bundle = False):
 
     CSV_PATH = "sideJobs/s3/asset-grant-linking.csv"
 
     asset_awards = defaultdict(list)
-
+    
     # Read CSV + group awards by asset_id
     with open(CSV_PATH, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
 
         for row in reader:
-            asset_id = row["asset_id"]
-            award_id = row["award_id"]
+            if bundle:
+                asset_id = row["asset_id"]
+                award_id = row["award_id"]
 
-            if asset_id and award_id:
-                asset_awards[asset_id].append(award_id)
+                if asset_id and award_id:
+                    asset_awards[asset_id].append(award_id)
+            else:
+                asset_awards[row["asset_id"]].append(row["award_id"])
 
     print(f"Found {len(asset_awards)} assets to update")
 
@@ -89,4 +92,4 @@ def process_asset_grant_file(api_key=PRODUCTION_EXLIBRIS_API, max_workers=10):
                 print("Error in worker:", e)
 
 
-# process_asset_grant_file()
+import_asset_grant_linking("9924345252801921", ["DC006666"])

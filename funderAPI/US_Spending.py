@@ -38,29 +38,43 @@ def get_us_spending_grant_type(award_id):
 
     if count_response.status_code == 200:
         count_data = count_response.json().get("results", {})
+
+        if sum(count_data.values()) > 1:
+            return []
+        
         for award_type, count in count_data.items():
             if count > 0:
                result = award_type_codes.get(award_type)
+               break
     return result
 
-def normalize_award_id(award_id):
+def normalize_id(award_id):
     #normalize award_id: get rid of "-" and spaces
     award_id = award_id.replace("Contract No.", "") if "Contract No." in award_id else award_id
+    award_id = award_id.replace("No.", "") if "Contract No." in award_id else award_id
     award_id = award_id.replace("-", "") if "-" in award_id else award_id
     award_id = award_id.replace(" ", "") if " " in award_id else award_id
-    return award_id
+
+    # a list of common but unstructured id in Brandeis Dataset
+    if "76SF00515" in award_id:
+        return "DEAC0276SF00515"
+    
+    elif "06CH11357" in award_id:
+        return "DEAC0206CH11357"
+    
+    return award_id.strip()
 
 def get_US_Spending_grant(award_id, funder_name):
-    award_id = normalize_award_id(award_id)
+    normalize_award_id = normalize_id(award_id)
 
-    award_type_codes = get_us_spending_grant_type(award_id)
+    award_type_codes = get_us_spending_grant_type(normalize_award_id)
     print(award_type_codes)
 
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
     payload = {
         "filters": {
-                "keywords": [award_id],
+                "keywords": [normalize_award_id],
                 "time_period": [
                 {
                     "start_date": "2007-10-01",
@@ -119,6 +133,7 @@ def get_US_Spending_grant(award_id, funder_name):
         data = response.json()
         if data.get("results"):
             grant = data.get("results")[0]
+          
             amount = grant.get("Award Amount")
             title = grant.get("Description")
             title = escape_xml(title)
@@ -132,7 +147,7 @@ def get_US_Spending_grant(award_id, funder_name):
             internal_id = grant.get("generated_internal_id")
             if internal_id:
                 grant_url = f"https://www.usaspending.gov/award/{internal_id}/"
-    
+
     result = f"""<grant>
     <grantId>{awardID}</grantId>
     <grantName>{title}</grantName>
@@ -149,4 +164,4 @@ def get_US_Spending_grant(award_id, funder_name):
     return result
 
 
-print(get_US_Spending_grant("Contract No. DE-AC02-07CH11359", "U.S. Department of Energy"))
+print(get_US_Spending_grant("AC02-05CH11231", "U.S. Department of Energy"))

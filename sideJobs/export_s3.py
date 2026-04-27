@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import boto3
 import requests
 import json
@@ -97,11 +99,79 @@ def get_assetID(doi, api_key=PRODUCTION_EXLIBRIS_API):
         print(f"Error fetching asset: {e}")
         return None
     
+def process_folder(s3, bucket_name, folder_name, api_key = PRODUCTION_EXLIBRIS_API):
+    """Process one folder (asset)"""
+    inner_response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
+
+    results = []
+    asset_id = None
+    is_exist = False
+    check_assetId = True
+
+    if 'Contents' in inner_response:
+        for obj in inner_response['Contents']:
+            if obj['Key'] == folder_name:
+                continue
+
+            file_obj = s3.get_object(Bucket=bucket_name, Key=obj['Key'])
+            file_data = file_obj['Body'].read().decode('utf-8')
+            data_json = json.loads(file_data)
+
+            doi = data_json.get("doi")
+
+            # only call API ONCE per folder
+            if check_assetId:
+                asset_id = get_assetID(doi, api_key)
+                is_exist = asset_id is not None
+                check_assetId = False
+
+            results.append({
+                "asset_id": asset_id,
+                "doi": doi,
+                "award_id": data_json.get("awardnumber"),
+                "is_exist": is_exist
+            })
+
+    return results
+
+
+def export_grant_asset_linking_from_s3(bucket_name, api_key = PRODUCTION_EXLIBRIS_API, output_file=None, max_workers=10):
+
+    if output_file is None:
+        output_file = f'sideJobs/s3/{bucket_name}.csv'
+
+    s3 = boto3.client('s3')
+
+    response = s3.list_objects_v2(Bucket=bucket_name, Delimiter='/')
+
+    all_results = []
+
+    if 'CommonPrefixes' in response:
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = []
+
+            for prefix in response['CommonPrefixes']:
+                folder_name = prefix['Prefix']
+                futures.append(
+                    executor.submit(process_folder, s3, bucket_name, folder_name, api_key)
+                )
+
+            for future in as_completed(futures):
+                all_results.extend(future.result())
+
+    # write CSV
+    with open(output_file, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["asset_id", "doi", "award_id", "is_exist"])
+        writer.writeheader()
+        writer.writerows(all_results)
+
+    print(f"CSV file created: {output_file}")
 
     
                    
 # Example usage:
-export_grant_from_s3('brandeis-grants', 'national_institutes_of_health')
+# export_grant_from_s3('brandeis-grants', 'national_institutes_of_health')
 
 # asset id, award id, doi, isexisit
-# export_grant_asset_linking_from_s3('asset-grant-linking')
+export_grant_asset_linking_from_s3('asset-grant-linking')
