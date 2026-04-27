@@ -132,6 +132,8 @@ def extract_ANDLR_grant(award_id: str):
 
                         if endDate < date.today():
                             status = "HISTORY"
+    driver.quit()
+    
     result = f"""<grant>
     <grantId>{awardID}</grantId>
     <grantName>{title}</grantName>

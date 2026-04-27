@@ -5,6 +5,7 @@ from funderAPI.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
 )
+from utils.helper import escape_xml
 
 def check_eu_commision_funder(funderName: str) -> bool:
     eu_commision_aliases = {
@@ -59,6 +60,7 @@ def get_eu_commision_grant(award_id: str, funder_name: str):
         startDate = startDate_elem.text if startDate_elem is not None else None
         endDate = endDate_elem.text if endDate_elem is not None else None
         title = title_elem.text if title_elem is not None else None
+        title = escape_xml(title)
 
         status = get_grant_status_from_end_date(endDate)
 
