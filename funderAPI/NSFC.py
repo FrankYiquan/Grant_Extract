@@ -11,6 +11,7 @@ import time
 from selenium.webdriver.common.keys import Keys
 import re
 from utils.helper import escape_xml
+from funderAPI.helper.schema_extract import get_grant_status_from_end_date
 
 
 def get_nsfc_grant(projectId):
@@ -103,11 +104,9 @@ def get_nsfc_grant(projectId):
         
         except :
             pass
-
-        if endDate and int(endDate) < time.localtime().tm_year:
-                status = "HISTORY"
         
         endDate = f"{endDate}-12-31"
+        status = get_grant_status_from_end_date(endDate)
     
         try:
             # Locate the <a> inside the p with class 'textEllipsis'

@@ -1,6 +1,7 @@
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
+from funderAPI.helper.schema_extract import get_grant_status_from_end_date
 from utils.helper import escape_xml
 
 
@@ -59,13 +60,7 @@ def get_jsps_grant(projectId, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
                         endDate = grant.findtext('.//endFiscalYear')
                         endDate = f"{endDate}-12-31" if endDate else None
 
-                    try:
-                        if endDate:
-                            end_dt = datetime.strptime(endDate, "%Y-%m-%d")
-                            if end_dt < datetime.now():
-                                status = "HISTORY"
-                    except Exception:
-                        pass  # ignore bad date format
+                    status = get_grant_status_from_end_date(endDate)
 
     result = f"""<grant>
     <grantId>{award_id}</grantId>

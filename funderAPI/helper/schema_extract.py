@@ -37,7 +37,7 @@ def get_matched_funder_code(
     with csv_path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            if row.get(name_col) == funder_name:
+            if row.get(name_col).lower() == funder_name.lower():
                 return row.get(code_col)
 
     return None

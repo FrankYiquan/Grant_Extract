@@ -2,7 +2,10 @@ from datetime import date
 import requests
 import re
 from utils.helper import escape_xml
-
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 
 
 def normalize_id(award_id: str) -> str:
@@ -11,7 +14,7 @@ def normalize_id(award_id: str) -> str:
         return m.group(0) + "_VR"
     return award_id
 
-def get_Swedish_Research_Council_grant(projectId, apiKey = "Bearer DTaURVYva7l6qNYX7zdLN8Tg"):
+def get_Swedish_Research_Council_grant(projectId, funder_name, apiKey = "Bearer DTaURVYva7l6qNYX7zdLN8Tg"):
     awardID = normalize_id(projectId)
 
     url = f"https://swecris-api.vr.se/v1/projects/{awardID}"
@@ -30,7 +33,7 @@ def get_Swedish_Research_Council_grant(projectId, apiKey = "Bearer DTaURVYva7l6q
     title = None
     status = "ACTIVE"
     grant_url = None
-    funderCode = "41___SWEDISH_RESEARCH_COUNCIL_(STOCKHOLM)"
+    funderCode = get_matched_funder_code(funder_name)
 
     if response.status_code == 200:
         data = response.json()
@@ -42,8 +45,7 @@ def get_Swedish_Research_Council_grant(projectId, apiKey = "Bearer DTaURVYva7l6q
 
         startDate = data.get("projectStartDate").split(" ")[0].strip()
         endDate = data.get("projectEndDate").split(" ")[0].strip()
-        if endDate < date.today().isoformat():
-            status = "HISTORY"
+        status = get_grant_status_from_end_date(endDate)
 
         amount = data.get("fundingsSek")
         
@@ -68,5 +70,5 @@ def get_Swedish_Research_Council_grant(projectId, apiKey = "Bearer DTaURVYva7l6q
     return result
 
 
-print(get_Swedish_Research_Council_grant("VR 2022-03845"))
+print(get_Swedish_Research_Council_grant("VR 2022-03845", "Vetenskapsrådet"))
 

@@ -1,9 +1,12 @@
 #this script is used to get information about National Sceience Fundation awards
 import re
 import requests
-from datetime import datetime, date
-
+from datetime import datetime
 from utils.helper import escape_xml
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 
 
 def clean_award_id(award_id):
@@ -30,9 +33,7 @@ def clean_award_id(award_id):
     # Otherwise: one award code → combine digit pieces
     return ["".join(digit_groups)]
 
-def get_award_from_NSF(award_id):
-
-
+def get_award_from_NSF(award_id, funder_name):
     #normalize the award_id to ensure it is a string
     normalized_award_id = clean_award_id(award_id)[0]
    
@@ -47,7 +48,7 @@ def get_award_from_NSF(award_id):
     principal_investigator = None
     grant_url = None
     title = None
-    funderCode = "41___NATIONAL_SCIENCE_FOUNDATION_(ALEXANDRIA)"
+    funderCode = get_matched_funder_code(funder_name)
     status = "ACTIVE"
 
     if response.status_code == 200 and data.get("response", {}).get("metadata", {}).get("totalCount", 0) > 0:
@@ -62,9 +63,7 @@ def get_award_from_NSF(award_id):
         project_end = award.get("expDate")
         if project_end:
             endDate = datetime.strptime(project_end, "%m/%d/%Y").strftime("%Y-%m-%d")
-            end_date = datetime.strptime(project_end, "%m/%d/%Y").date()
-            if end_date < datetime.now().date():
-                status = "HISTORY"
+            status = get_grant_status_from_end_date(endDate)
         
         title = award.get("title")
         title = escape_xml(title)
@@ -168,16 +167,6 @@ def filter_nih_from_unique_funders():
     print(f"Filtered {len(nsf_funders)} NSF funders from {len(unique_funders)} unique funders.")
 
 
-#filter_nih_from_unique_funders()
-# print(check_nsf_funder("United States - Israel Binational Science Foundation"))  # Example usage
 
-# # Example usage
-# info = get_award_info("")
-# print(info)
-
-
-# print(get_award_from_NSF("1144152"))
-
-# award_id = "DMR-1809762 CBET-1916877 CMMT-2026834 BSF- 2016188"
-# result = clean_award_id(award_id)
-# print(result)
+# award_id = "DMR-1809762"
+# print(get_award_from_NSF(award_id, "National Science Foundation"))

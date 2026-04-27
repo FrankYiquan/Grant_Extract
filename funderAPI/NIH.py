@@ -5,6 +5,10 @@ import csv
 import re
 from datetime import datetime, date
 from utils.helper import escape_xml
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 
 # Lists of activity codes and IC codes
 activity_codes = [
@@ -103,7 +107,7 @@ def get_award_from_NIH(award_id: str, funder_name: str):
     principal_investigator = None
     grant_url = None
     title = None
-    funderCode = None
+    funderCode = get_matched_funder_code(funder_name)
     status = "ACTIVE"
 
     if response.status_code == 200:
@@ -123,10 +127,7 @@ def get_award_from_NIH(award_id: str, funder_name: str):
 
             if project_end:
                 endDate = project_end.split('T')[0]
-                target_date = datetime.strptime(endDate, "%Y-%m-%d").date()
-                today = date.today()
-                if target_date < today:
-                    status = "HISTORY"
+                status = get_grant_status_from_end_date(endDate)
             else:
                 endDate = None
             
@@ -139,13 +140,6 @@ def get_award_from_NIH(award_id: str, funder_name: str):
             print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
             award_id = original_award_id
 
-        # match with funder_41Code.csv
-        with open('./resources/funder_41Code.csv', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if row['unique_funder'] == funder_name:
-                    funderCode = row['matched_funder_code']
-                    break
 
         result = f"""<grant>
     <grantId>{award_id}</grantId>
@@ -212,9 +206,10 @@ def filter_nih_from_unique_funders():
 
 
 
-# award_id= "R35 GM22463"
-# # funder_name="National Institutes of Health"
-# # print(get_award_from_NIH(award_id, funder_name))
-# print(standardize_nih_award_id(award_id))
+# award_id= "RR029205"
+# funder_name="National Institutes of Health"
+# print(get_award_from_NIH(award_id, funder_name))
+
+
 
 
