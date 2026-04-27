@@ -3,7 +3,7 @@ import requests
 from datetime import datetime, date
 from funderAPI.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
 from utils.helper import escape_xml
-
+    
 
 # # usa spending works for parent organization belong to federal govenrment, in particular the military-related project
 # determine what type of grant it is 
@@ -43,13 +43,18 @@ def get_us_spending_grant_type(award_id):
                result = award_type_codes.get(award_type)
     return result
 
-def get_US_Spending_grant(award_id, funder_name):
-
+def normalize_award_id(award_id):
     #normalize award_id: get rid of "-" and spaces
+    award_id = award_id.replace("Contract No.", "") if "Contract No." in award_id else award_id
     award_id = award_id.replace("-", "") if "-" in award_id else award_id
     award_id = award_id.replace(" ", "") if " " in award_id else award_id
+    return award_id
+
+def get_US_Spending_grant(award_id, funder_name):
+    award_id = normalize_award_id(award_id)
 
     award_type_codes = get_us_spending_grant_type(award_id)
+    print(award_type_codes)
 
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
@@ -124,9 +129,9 @@ def get_US_Spending_grant(award_id, funder_name):
             endDate = grant.get("End Date")
             status = get_grant_status_from_end_date(endDate)
             
-            internal_id = grant.get("recipient_id")
+            internal_id = grant.get("generated_internal_id")
             if internal_id:
-                grant_url = f"https://www.usaspending.gov/recipient/{internal_id}"
+                grant_url = f"https://www.usaspending.gov/award/{internal_id}/"
     
     result = f"""<grant>
     <grantId>{awardID}</grantId>
@@ -144,4 +149,4 @@ def get_US_Spending_grant(award_id, funder_name):
     return result
 
 
-# print(get_US_Spending_grant("DE-AC52-07NA27344", "U.S. Department of Energy"))
+print(get_US_Spending_grant("Contract No. DE-AC02-07CH11359", "U.S. Department of Energy"))
