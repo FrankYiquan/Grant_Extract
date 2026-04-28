@@ -48,7 +48,7 @@ def get_us_spending_grant_type(award_ids: list[str]) -> list[list[str]]:
     return result
 
 def normalize_id(award_id: str, funder_name: str) -> list[str]:
-    distracted_start_word = ["Contract No.", "No.", "ECA", "."]
+    distracted_start_word = ["Contract No.", "No.", "ECA", ".", "AFOSR"]
 
     for word in distracted_start_word:
         if award_id.startswith(word):
@@ -93,6 +93,10 @@ def get_US_Spending_grant(award_id: str, funder_name: str) -> str:
     funderCode = get_matched_funder_code(funder_name)
     status = "ACTIVE"
     awardID = award_id
+
+    # sometimes, DE appear in other non-DE award ID; treat it as DE award ID
+    if cleaned_award_id.startswith("DE") and funder_name != "U.S. Department of Energy":
+        funderCode = get_matched_funder_code("U.S. Department of Energy")
 
     for award_type_code in award_type_codes:
         payload = {
@@ -189,5 +193,5 @@ def get_US_Spending_grant(award_id: str, funder_name: str) -> str:
     return result
 
 
-print(get_US_Spending_grant("DE-AC02-", "U.S. Department of Energy"))
+print(get_US_Spending_grant("DE-SC0019040", "Army Research Office"))
 # print(normalize_id("05CH11231", "U.S. Department of Energy"))
