@@ -1,39 +1,77 @@
 import requests
-import datetime
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
+from utils.helper import escape_xml
+from datetime import datetime
 
-def get_Science_and_Technology_Facilities_Council_grant(grantId):
+
+def get_Science_and_Technology_Facilities_Council_grant(grantId, funder_name):
     url = f"https://gtr.ukri.org/api/projects?ref={grantId}"
 
     response = requests.get(url, headers={"Accept": "application/json"})
+
+    amount = None
+    startDate = None
+    endDate = None
+    principal_investigator = None
+    grant_url = None
+    title = None
+    funderCode = get_matched_funder_code(funder_name)
+    status = "ACTIVE"
 
     if response.status_code == 200:
         data = response.json()
         project = data["projectOverview"]["projectComposition"]["project"]
 
-        title = project["title"]
+        title = escape_xml(project["title"])
         amount = project["fund"]["valuePounds"]
 
-        start = datetime.datetime.utcfromtimestamp(project["fund"]["start"]/1000)
-        #end = datetime.datetime.utcfromtimestamp(project["fund"]["end"]/1000)
+        startDate = datetime.utcfromtimestamp(
+            project["fund"]["start"] / 1000
+        ).strftime("%Y-%m-%d")
 
-        people = data["projectOverview"]["projectComposition"]["personRoles"]
+        end = project.get("fund", {}).get("end")
+        if end:
+            endDate = datetime.utcfromtimestamp(
+                end / 1000
+            ).strftime("%Y-%m-%d")
 
-        for person in people:
-           if any(
-                    role["name"].lower() in ["principal_investigator", "principal investigator"]
-                    for role in person["roles"]
-                ):
-               name = person["fullName"]
-               orcidId = person["orcidId"]
+        if endDate:
+            status = get_grant_status_from_end_date(endDate)
 
-        return {
-            "title": title,
-            "startDate": start.strftime("%Y-%m-%d"),
-            #"endDate": end.strftime("%Y-%m-%d"),
-            "amount": amount,
-            "currency": "GBP", #pounds
-            "principal_investigator": name,
-            "orcid": orcidId
-        }
+        grant_url = project.get("resourceUrl").replace("/api", "")
+        grantId = project.get("grantReference")
 
-print(get_Science_and_Technology_Facilities_Council_grant("EP/P009565/1"))  
+
+        # people = data["projectOverview"]["projectComposition"]["personRoles"]
+
+        # for person in people:
+        #    if any(
+        #             role["name"].lower() in ["principal_investigator", "principal investigator"]
+        #             for role in person["roles"]
+        #         ):
+        #        name = person["fullName"]
+        #        orcidId = person["orcidId"]
+
+    result = f"""<grant>
+    <grantId>{grantId}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>{funderCode}</funderCode>
+    <currencyOfAmount>researchgrant.currency.usd</currencyOfAmount>
+    <amount>{amount}</amount>
+    <startDate>{startDate}</startDate>
+    <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
+        
+    return result
+
+       
+
+funder_name = "Science and Technology Facilities Council"
+grant_id = "ST/N000234/1"
+print(get_Science_and_Technology_Facilities_Council_grant(grant_id, funder_name))  

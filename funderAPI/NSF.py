@@ -168,5 +168,6 @@ def filter_nih_from_unique_funders():
 
 
 
-# award_id = "DMR-1809762"
+award_id = "1234567"
 # print(get_award_from_NSF(award_id, "National Science Foundation"))
+print(clean_award_id(award_id))

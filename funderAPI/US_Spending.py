@@ -1,6 +1,4 @@
-import csv
 import requests
-from datetime import datetime, date
 from funderAPI.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
 from utils.helper import escape_xml
     
