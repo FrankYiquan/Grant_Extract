@@ -73,5 +73,5 @@ def get_Science_and_Technology_Facilities_Council_grant(grantId, funder_name):
        
 
 funder_name = "Science and Technology Facilities Council"
-grant_id = "ST/N000234/1"
+grant_id = "GRIDPP"
 print(get_Science_and_Technology_Facilities_Council_grant(grant_id, funder_name))  
