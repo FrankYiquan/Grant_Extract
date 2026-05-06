@@ -14,9 +14,8 @@ def get_Swiss_National_Science_Foundation_grant(projectId, funder_name):
     normalized_projectId = projectId
     matches = re.findall(r"\d{5,}", projectId)
     if matches:
-        normalized_projectId = matches[0]
+        normalized_projectId = matches[-1]
    
-
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json"
@@ -77,4 +76,4 @@ def get_Swiss_National_Science_Foundation_grant(projectId, funder_name):
 
 
 
-# print(get_Swiss_National_Science_Foundation_grant("135018", "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung"))
+print(get_Swiss_National_Science_Foundation_grant("310030B_182825", "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung"))
