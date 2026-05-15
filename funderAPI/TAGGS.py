@@ -13,8 +13,10 @@ from datetime import datetime
 
 #TAGGS is the data system for funder with parent organization HHS (Health and Human Services)
 def get_TAGGS_grant(projectId, funder_name):
-    projectId = projectId.split("‐")[0] if "‐" in projectId else projectId
-    projectId = projectId.replace("#", "") if "#" in projectId else projectId
+    match = re.match(r'^(90[A-Z]{4}[0-9]{4})', projectId)
+
+    if match:
+        projectId = match.group(1)
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     url = "https://taggs.hhs.gov/SearchAward"
@@ -55,10 +57,12 @@ def get_TAGGS_grant(projectId, funder_name):
     table = driver.find_element(By.ID, "GridView_DXMainTable")
     rows = table.find_elements(By.TAG_NAME, "tr")
 
-    amount_str = driver.find_element(By.CLASS_NAME, "number").text.split("$")[-1].strip()
-   
+    hasData = True
+    if rows[4].text == "No data to display":
+        hasData = False
+
     # title is the same acroos all years and data is sorted by start date with the most recent one first
-    if amount_str != "0":
+    if hasData:
         data = rows[-3].find_elements(By.TAG_NAME, "td")
         link = data[7].find_element(By.TAG_NAME, "a")
 
@@ -119,4 +123,4 @@ def get_TAGGS_grant(projectId, funder_name):
     return result
         
         
-print(get_TAGGS_grant("90AR5024‐01‐00", "National Institute on Disability, Independent Living, and Rehabilitation Research"))
+print(get_TAGGS_grant("U01CK000592", "National Institute on Disability, Independent Living, and Rehabilitation Research"))

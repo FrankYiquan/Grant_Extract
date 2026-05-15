@@ -28,7 +28,7 @@ activity_codes = [
 ic_codes = [
     "TW", "TR", "AT", "CA", "EY", "HG", "HL", "AG", "AA", "AI",
     "AR", "EB", "HD", "DA", "DC", "DE", "DK", "ES", "GM", "MH",
-    "MD", "NS", "NR", "LM", "OD", "RR"
+    "MD", "NS", "NR", "LM", "OD", "RR", "CE"
 ]
 
 def standardize_nih_award_id(raw_id):
@@ -206,9 +206,10 @@ def filter_nih_from_unique_funders():
 
 
 
-# award_id= "RR029205"
-# funder_name="National Institutes of Health"
-# print(get_award_from_NIH(award_id, funder_name))
+award_id= "NU17CE002724"
+funder_name="National Institutes of Health"
+print(get_award_from_NIH(award_id, funder_name))
+# print(standardize_nih_award_id(award_id))
 
 
 
