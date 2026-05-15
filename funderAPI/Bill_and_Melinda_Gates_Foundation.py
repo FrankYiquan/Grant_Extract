@@ -1,6 +1,13 @@
 import requests
+from utils.helper import escape_xml
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 
-def get_Bill_and_Melinda_Gates_Foundation_grant(projectId):
+def get_Bill_and_Melinda_Gates_Foundation_grant(projectId, funder_name):
 
     projectId = projectId.split(",")[0].strip() if "," in projectId else projectId
     projectId = projectId.replace(" ", "") if " " in projectId else projectId
@@ -13,23 +20,46 @@ def get_Bill_and_Melinda_Gates_Foundation_grant(projectId):
 
     amount = None
     startDate = None
+    endDate = None
+    principal_investigator = None
+    grant_url = None
     title = None
-  
+    funderCode = get_matched_funder_code(funder_name)
+    status = "ACTIVE"
 
-    if response.status_code == 200 and response:
+    if response.status_code == 200:
         data = response.json()
         if data["totalResults"] > 0:
             grant = data['results'][0]
             title = grant.get("grantTopic")
             amount = grant.get("awardedAmount").split("$")[-1] if "$" in grant.get("awardedAmount", "") else grant.get("awardedAmount")
-            startDate = grant.get("date")
+            startDate_str = grant.get("date")
+            startDate = datetime.strptime(startDate_str, "%B %Y").strftime("%Y-%m-01")
+            if grant.get("grantStatus") == "Closed":
+                duration = int(grant.get("grantDuration"))
+                endDate_str = startDate_str + relativedelta(months=duration)
+                endDate = endDate_str.strftime("%Y-%m-%d")
+                status = "HISTORY"
+            grant_url = "https://www.gatesfoundation.org" + grant.get("url")
+
+
+
+
     
-    return {
-        "title": title,
-        "amount": amount,
-        "start_date": startDate,
-        "currency": "USD"
-    }
+    result = f"""<grant>
+    <grantId>{projectId}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>{funderCode}</funderCode>
+    <currencyOfAmount>researchgrant.currency.usd</currencyOfAmount>
+    <amount>{amount}</amount>
+    <startDate>{startDate}</startDate>
+    <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
+        
+    return result
 
             
-#print(get_Bill_and_Melinda_Gates_Foundation_grant("INV-046299"))
+print(get_Bill_and_Melinda_Gates_Foundation_grant("INV-046299", "Bill and Melinda Gates Foundation"))
