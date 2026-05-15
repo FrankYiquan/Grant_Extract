@@ -28,7 +28,7 @@ def get_NOVWO_grant(projectId, funder_name):
             project = data['projects'][0]
 
             amount = project.get("award_amount")
-            title = project.get("title")
+            title = escape_xml(project.get("title"))
             startDate = project.get("start_date").split("T")[0] 
             endDate = project.get("end_date")
             if endDate:

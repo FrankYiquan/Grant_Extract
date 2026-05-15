@@ -31,7 +31,7 @@ def get_Bill_and_Melinda_Gates_Foundation_grant(projectId, funder_name):
         data = response.json()
         if data["totalResults"] > 0:
             grant = data['results'][0]
-            title = grant.get("grantTopic")
+            title = escape_xml(grant.get("grantTopic"))
             amount = grant.get("awardedAmount").split("$")[-1] if "$" in grant.get("awardedAmount", "") else grant.get("awardedAmount")
             startDate_str = grant.get("date")
             startDate = datetime.strptime(startDate_str, "%B %Y").strftime("%Y-%m-01")
