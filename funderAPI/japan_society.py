@@ -1,7 +1,10 @@
 from datetime import datetime
 import requests
 import xml.etree.ElementTree as ET
-from funderAPI.helper.schema_extract import get_grant_status_from_end_date
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 from utils.helper import escape_xml
 
 
@@ -14,7 +17,7 @@ def get_summary(grant):
                 return s
     return grant.find('summary')
 
-def get_jsps_grant(projectId, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
+def get_jsps_grant(projectId, funder_name, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     normalized_key = projectId.split("JP")[1] if "JP" in projectId else projectId
 
     url = f"https://kaken.nii.ac.jp/opensearch/?appid={apiKey}&kw={normalized_key}&format=xml"
@@ -26,7 +29,7 @@ def get_jsps_grant(projectId, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     endDate = None
     grant_url = None
     title = None
-    funderCode = "41___JAPAN_SOCIETY_FOR_THE_PROMOTION_OF_SCIENCE_(TOKYO)"
+    funderCode = get_matched_funder_code(funder_name)
     status = "ACTIVE"
     award_id = projectId
 

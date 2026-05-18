@@ -10,6 +10,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 from datetime import date
 import re
+from utils.helper import escape_xml
+from funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 
 month_map = {
     "janvier": 1, "février": 2, "mars": 3, "avril": 4,
@@ -31,7 +36,7 @@ def normalize_id(award_id: str) -> str:
     
     return '-'.join(parts[:4])  # keep up to 3rd dash
 
-def extract_ANDLR_grant(award_id: str):
+def extract_ANDLR_grant(award_id: str, funder_name: str):
     normalize_award_id = normalize_id(award_id)
     url = f"https://dataanr.opendatasoft.com/api/explore/v2.1/catalog/datasets/20-ans-de-l-anr-liste-projets-plan-d-action_2005-a-2024/records?where=code_projet_anr='{normalize_award_id}'&limit=1"
 
@@ -42,7 +47,7 @@ def extract_ANDLR_grant(award_id: str):
     grant_url = None
     title = None
     awardID = normalize_award_id
-    funderCode = "41___AGENCE_NATIONALE_DE_LA_RECHERCHE_(PARIS)"
+    funderCode = get_matched_funder_code(funder_name)
     status = "ACTIVE"
 
     # first, look for general dataset where there is only title and link provided
@@ -138,7 +143,7 @@ def extract_ANDLR_grant(award_id: str):
     <grantId>{awardID}</grantId>
     <grantName>{title}</grantName>
     <funderCode>{funderCode}</funderCode>
-    <currencyOfAmount>researchgrant.currency.EUR</currencyOfAmount>
+    <currencyOfAmount>researchgrant.currency.eur</currencyOfAmount>
     <amount>{amount}</amount>
     <startDate>{startDate}</startDate>
     <endDate>{endDate}</endDate>
@@ -150,4 +155,4 @@ def extract_ANDLR_grant(award_id: str):
     return result
             
 
-# print(extract_ANDLR_grant('ANR-14-CE13-0034'))
+# print(extract_ANDLR_grant('ANR-14-CE13-0034', "Agence Nationale de la Recherche"))
