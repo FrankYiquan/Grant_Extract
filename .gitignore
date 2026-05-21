@@ -3,3 +3,6 @@ __pycache__/
 utils/sqs_config.py
 .DS_Store
 chrome_profile/
+*.egg-info/
+build/
+dist/

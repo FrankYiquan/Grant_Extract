@@ -1,0 +1,148 @@
+import requests
+import csv
+import pandas as pd
+import requests
+from funder_pipeline.utils.current_funder import funders
+from pathlib import Path
+
+
+skipped_redflag = [
+    "unknown",
+    "n/a",
+    "none",
+    "(nih)",
+    "investissements d&apos",
+    "in2p3"
+]
+
+# default institutions Id to Brandeis University 
+# end year is not included - so if you want end year to be 2024, do 2025 
+# start year is not included - if you want start year to be 2018, do 2017
+def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469", startyear=2018,endYear=2024):
+    """
+    If funderId and funderName are both None → return ALL grants for the university
+    If funderId and funderName are provided → return grants for that specific funder
+    """
+    base_url = "https://api.openalex.org/works"
+    startyear = startyear - 1
+    endYear = endYear + 1
+
+    # If funderId and funderName BOTH None → do NOT filter by funder
+    if funderId == "all" and funderName == "all":
+        filter_str = f"institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
+    else:
+        filter_str = f"funders.id:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
+
+    select_fields = "id,doi,title,publication_year,awards"
+
+    output = []
+    cursor = "*"  # initial cursor
+
+    while cursor:
+        url = f"{base_url}?filter={filter_str}&select={select_fields}&per-page=200&cursor={cursor}"
+        response = requests.get(url)
+        data = response.json()
+
+        for asset in data.get("results", []):
+            grants = asset.get("awards", [])
+
+            # Case A: No funderId + no funderName → include ALL grants with award_id
+            if funderId == "all" and funderName == "all":
+                for grant in grants:
+                    if grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
+                        output.append({
+                            "openAlex_id": asset.get("id"),
+                            "doi": asset.get("doi"),
+                            "title": asset.get("title"),
+                            "publication_year": asset.get("publication_year"),
+                            "funder_name": grant.get("funder_display_name"),
+                            "funder_openAlex_id": grant.get("funder_id").split("https://openalex.org/")[-1],
+                            "award_id": grant.get("funder_award_id")
+                        })
+            # Case B: filter by funderId / funderName            
+            else:
+                for grant in grants:
+                    if grant.get("funder_display_name") == funderName and grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
+                        output.append({
+                            "openAlex_id": asset.get("id"),
+                            "doi": asset.get("doi"),
+                            "title": asset.get("title"),
+                            "publication_year": asset.get("publication_year"),
+                            "funder_name": grant.get("funder_display_name"),
+                            "funder_openAlex_id": grant.get("funder_id").split("https://openalex.org/")[-1],
+                            "award_id": grant.get("funder_award_id")
+                        })
+
+        # Move to next page
+        cursor = data.get("meta", {}).get("next_cursor")
+        if not cursor:
+            break
+
+    return output
+
+
+#output the result to csv
+def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
+    output = get_brandeis_grant(funderId, funderName, institutionsId, startyear, endYear)
+
+    # write to CSV
+    output_dir = (
+        Path("outputs")
+        / "award_id"
+        / f"{funderName}_funded_awards.csv"
+    )
+    with open(output_dir, "w", newline="") as csvfile:
+        fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "funder_openAlex_id", "award_id"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(output)
+    
+    print(f"Grants for {funderName} exported to {output_dir}")
+
+def run_unique_funder(args):
+    """
+    This function counts the unique funders for an university within a specified time range and exports the results to a CSV file.
+    """
+    
+    grants = get_brandeis_grant("all", "all", args.institutions_id, args.start_year, args.end_year)
+
+    funder_counts = {}
+
+    for grant in grants:
+        funder_id = grant.get("funder_openAlex_id")
+
+        if funder_id not in funder_counts:
+
+            funder_counts[funder_id] = {
+                "funder_name": grant.get("funder_name"),
+                "funder_openAlex_id": funder_id,
+                "count": 1,
+                "Is_Implemented": grant.get("funder_name") in funders
+            }
+
+        else:
+            funder_counts[funder_id]["count"] += 1
+
+    # Convert to sorted list
+    result = sorted(
+        funder_counts.values(),
+        key=lambda x: x["count"],
+        reverse=True
+    )
+
+    # Create dataframe
+    df = pd.DataFrame(result)
+
+    # Export CSV
+    output_dir = (
+        Path("outputs")
+        / "funder_count"
+        / f"unique_funders_{args.start_year}_{args.end_year}.csv"
+    )
+    df.to_csv(output_dir, index=False)
+
+    print(f"Unique funder count exported to {output_dir}")
+
+    return df
+
+
