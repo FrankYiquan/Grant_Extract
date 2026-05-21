@@ -29,6 +29,9 @@ def add_months(start_date, months):
     return date(year, month, 1)
 
 def normalize_id(award_id: str) -> str:
+    if award_id.startswith("NR"):
+        award_id = award_id.replace("NR", "ANR")
+
     parts = award_id.split('-')
     
     if len(parts) <= 4:  # 3 or fewer dashes
@@ -136,9 +139,7 @@ def extract_ANDLR_grant(award_id: str, funder_name: str):
                         endDate = add_months(startDate, duration_months)
 
                         if endDate < date.today():
-                            status = "HISTORY"
-    driver.quit()
-    
+                            status = "HISTORY"    
     result = f"""<grant>
     <grantId>{awardID}</grantId>
     <grantName>{title}</grantName>
@@ -155,4 +156,4 @@ def extract_ANDLR_grant(award_id: str, funder_name: str):
     return result
             
 
-# print(extract_ANDLR_grant('ANR-14-CE13-0034', "Agence Nationale de la Recherche"))
+print(extract_ANDLR_grant('NR-21-CE49-0008-01', "Agence Nationale de la Recherche"))

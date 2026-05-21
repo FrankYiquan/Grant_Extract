@@ -99,8 +99,11 @@ def get_SQS_URL_by_funder(funderName):
     return None
 
 
-for funderId, funderName in openAlex_id.NIH_FUNDERS.items():
-    send_grant_sqs_for_one_funder(
-        funderId=funderId,
-        funderName=funderName,
-    )
+# for funderId, funderName in openAlex_id.NIH_FUNDERS.items():
+#     send_grant_sqs_for_one_funder(
+#         funderId=funderId,
+#         funderName=funderName,
+#     )
+
+
+# if __name__ == "__main__":

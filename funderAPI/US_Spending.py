@@ -191,5 +191,5 @@ def get_US_Spending_grant(award_id: str, funder_name: str) -> str:
     return result
 
 
-print(get_US_Spending_grant("DE-SC0019040", "Army Research Office"))
+print(get_US_Spending_grant("DE-AC02-06CH11357", "Army Research Office"))
 # print(normalize_id("05CH11231", "U.S. Department of Energy"))
