@@ -86,7 +86,7 @@ def run_award_per_funder(args):
     """
     This function retrieves grants for a specific funder and university within a specified time range, and exports the results to a CSV file.
     """
-    
+
     output = get_brandeis_grant(args.funder_id, args.institutions_id, args.start_year, args.end_year)
     funder_name = output[0]["funder_name"] if output else "Unknown Funder"
 
@@ -95,8 +95,9 @@ def run_award_per_funder(args):
     output_dir = (
         Path("outputs")
         / "award_id"
-        / f"{funder_name}_funded_awards.csv"
+        / f"{funder_name}_{args.start_year}_{args.end_year}_funded_awards.csv"
     )
+    
     with open(output_dir, "w", newline="") as csvfile:
         fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "funder_openAlex_id", "award_id"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

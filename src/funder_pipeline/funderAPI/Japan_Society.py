@@ -69,7 +69,7 @@ def get_jsps_grant(projectId, funder_name, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     <grantId>{award_id}</grantId>
     <grantName>{title}</grantName>
     <funderCode>{funderCode}</funderCode>
-    <currencyOfAmount>researchgrant.currency.JPY</currencyOfAmount>
+    <currencyOfAmount>researchgrant.currency.jpy</currencyOfAmount>
     <amount>{amount}</amount>
     <startDate>{startDate}</startDate>
     <endDate>{endDate}</endDate>

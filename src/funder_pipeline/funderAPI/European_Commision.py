@@ -68,6 +68,7 @@ def get_eu_commision_grant(award_id: str, funder_name: str):
     <grantId>{award_id}</grantId>
     <grantName>{title}</grantName>
     <funderCode>{funderCode}</funderCode>
+    <currencyOfAmount>researchgrant.currency.eur</currencyOfAmount>
     <amount>{amount}</amount>
     <startDate>{startDate}</startDate>
     <endDate>{endDate}</endDate>

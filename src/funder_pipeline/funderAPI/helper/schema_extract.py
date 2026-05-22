@@ -2,6 +2,7 @@ import csv
 from pathlib import Path
 from typing import Optional
 from datetime import datetime, date
+from pathlib import Path
 
 
 def get_grant_status_from_end_date(endDate: Optional[str]) -> str:
@@ -20,10 +21,15 @@ def get_grant_status_from_end_date(endDate: Optional[str]) -> str:
     target_date = datetime.strptime(endDate, "%Y-%m-%d").date()
     return "HISTORY" if target_date < date.today() else "ACTIVE"
 
+RESOURCE_PATH = (
+    Path(__file__).resolve().parent.parent.parent
+    / "resources"
+    / "funder_41Code.csv"
+)
 
 def get_matched_funder_code(
     funder_name: str,
-    csv_path: str | Path = "./resources/funder_41Code.csv",
+    csv_path: str | Path = RESOURCE_PATH,
     *,
     name_col: str = "unique_funder",
     code_col: str = "matched_funder_code",
