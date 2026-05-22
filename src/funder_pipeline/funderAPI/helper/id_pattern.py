@@ -1,4 +1,8 @@
 FUNDER_PATTERNS = {
+    "Ministerio de Ciencia e Innovación":{
+        "prefixes": ["SEV", "PGC", "MDM"],
+    },
+
     "Science_and_Technology_Facilities_Council": {
         "prefixes": ["ST/", "PP/"],
         "keywords": ["ATLAS", "ATLAS Upgrades", "GRIDPP"],
@@ -9,7 +13,7 @@ FUNDER_PATTERNS = {
     },
 
     "Department_of_Energy": {
-        "prefixes": ["DE-"],
+        "prefixes": ["DE-", "AC02", "DOE"],
         "regex": [r"^DE[A-Z0-9\-]+"],
     },
 

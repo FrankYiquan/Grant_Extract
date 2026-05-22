@@ -73,4 +73,5 @@ funders = [
     "Bill and Melinda Gates Foundation",
     "Norges Forskningsråd",
     "Australian Research Council",
+    "Office of Science"
 ]

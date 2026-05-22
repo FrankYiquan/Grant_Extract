@@ -18,7 +18,7 @@ skipped_redflag = [
 # default institutions Id to Brandeis University 
 # end year is not included - so if you want end year to be 2024, do 2025 
 # start year is not included - if you want start year to be 2018, do 2017
-def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469", startyear=2018,endYear=2024):
+def get_brandeis_grant(funderId=None, institutionsId="I6902469", startyear=2018,endYear=2024):
     """
     If funderId and funderName are both None → return ALL grants for the university
     If funderId and funderName are provided → return grants for that specific funder
@@ -28,7 +28,7 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
     endYear = endYear + 1
 
     # If funderId and funderName BOTH None → do NOT filter by funder
-    if funderId == "all" and funderName == "all":
+    if funderId == "all":
         filter_str = f"institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
     else:
         filter_str = f"funders.id:{funderId},institutions.id:{institutionsId},publication_year:>{startyear},publication_year:<{endYear}"
@@ -47,7 +47,7 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
             grants = asset.get("awards", [])
 
             # Case A: No funderId + no funderName → include ALL grants with award_id
-            if funderId == "all" and funderName == "all":
+            if funderId == "all":
                 for grant in grants:
                     if grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
                         output.append({
@@ -62,7 +62,8 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
             # Case B: filter by funderId / funderName            
             else:
                 for grant in grants:
-                    if grant.get("funder_display_name") == funderName and grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
+                    grant_openAlex_id = grant.get("funder_id", "").split("https://openalex.org/")[-1]
+                    if grant_openAlex_id.lower() == funderId.lower() and grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
                         output.append({
                             "openAlex_id": asset.get("id"),
                             "doi": asset.get("doi"),
@@ -81,15 +82,20 @@ def get_brandeis_grant(funderId=None, funderName=None, institutionsId="I6902469"
     return output
 
 
-#output the result to csv
-def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startyear=2017, endYear=2025):
-    output = get_brandeis_grant(funderId, funderName, institutionsId, startyear, endYear)
+def run_award_per_funder(args):
+    """
+    This function retrieves grants for a specific funder and university within a specified time range, and exports the results to a CSV file.
+    """
+    
+    output = get_brandeis_grant(args.funder_id, args.institutions_id, args.start_year, args.end_year)
+    funder_name = output[0]["funder_name"] if output else "Unknown Funder"
+
 
     # write to CSV
     output_dir = (
         Path("outputs")
         / "award_id"
-        / f"{funderName}_funded_awards.csv"
+        / f"{funder_name}_funded_awards.csv"
     )
     with open(output_dir, "w", newline="") as csvfile:
         fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "funder_openAlex_id", "award_id"]
@@ -97,14 +103,14 @@ def output_grant_to_csv(funderId, funderName, institutionsId="I6902469", startye
         writer.writeheader()
         writer.writerows(output)
     
-    print(f"Grants for {funderName} exported to {output_dir}")
+    print(f"Awards for {funder_name} exported to {output_dir}")
 
 def run_unique_funder(args):
     """
     This function counts the unique funders for an university within a specified time range and exports the results to a CSV file.
     """
     
-    grants = get_brandeis_grant("all", "all", args.institutions_id, args.start_year, args.end_year)
+    grants = get_brandeis_grant("all", args.institutions_id, args.start_year, args.end_year)
 
     funder_counts = {}
 

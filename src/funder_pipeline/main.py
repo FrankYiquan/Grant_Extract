@@ -4,7 +4,7 @@ import csv
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from funder_pipeline.cli.unique_funder import register_unique_funder_command
+from funder_pipeline.cli.preprocess import register_funder_awards_command, register_unique_funder_command
 from funder_pipeline.funderAPI.NIH import check_nih_funder
 from funder_pipeline.funderAPI.NSF import check_nsf_funder
 from funder_pipeline.funderAPI.European_Commision import check_eu_commision_funder
@@ -109,20 +109,34 @@ def get_SQS_URL_by_funder(funderName):
 #     )
 
 def main():
+
     parser = argparse.ArgumentParser(
         prog="fp",
+        formatter_class=argparse.RawTextHelpFormatter,
         description="Research funder ETL pipeline"
     )
 
-    subparsers = parser.add_subparsers(dest="command")
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True
+    )
+
     register_unique_funder_command(subparsers)
+    register_funder_awards_command(subparsers)
 
     args = parser.parse_args()
 
-    if hasattr(args, "func"):
-        args.func(args)
-    else:
-        parser.print_help()
+    try:
+        # Run validation if command has one
+        if hasattr(args, "validate_func"):
+            args.validate_func(args, parser)
+
+        # Run command
+        if hasattr(args, "func"):
+            args.func(args)
+
+    except ValueError as e:
+        parser.error(str(e))
 
 
 if __name__ == "__main__":
