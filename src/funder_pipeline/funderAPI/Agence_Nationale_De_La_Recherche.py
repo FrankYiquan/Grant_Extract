@@ -10,7 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 from datetime import date
 import re
-from funder_pipeline.utils.helper import escape_xml
+from funder_pipeline.utils.helper import add_months, escape_xml
 from funder_pipeline.funderAPI.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
@@ -21,12 +21,6 @@ month_map = {
     "mai": 5, "juin": 6, "juillet": 7, "août": 8,
     "septembre": 9, "octobre": 10, "novembre": 11, "décembre": 12
 }
-
-# Add a certain number of months to a date, handling year rollover
-def add_months(start_date, months):
-    year = start_date.year + (start_date.month - 1 + months) // 12
-    month = (start_date.month - 1 + months) % 12 + 1
-    return date(year, month, 1)
 
 def normalize_id(award_id: str) -> str:
     if award_id.startswith("NR"):

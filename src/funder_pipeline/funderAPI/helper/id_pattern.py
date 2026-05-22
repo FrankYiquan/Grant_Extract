@@ -1,6 +1,10 @@
 FUNDER_PATTERNS = {
+    "Agencia Nacional de Investigación y Desarrollo": {
+        "prefixes": ["FONDECYT"],
+    },
+
     "Ministerio de Ciencia e Innovación":{
-        "prefixes": ["SEV", "PGC", "MDM"],
+        "prefixes": ["SEV", "PGC", "MDM", "ESP"],
     },
 
     "Science_and_Technology_Facilities_Council": {

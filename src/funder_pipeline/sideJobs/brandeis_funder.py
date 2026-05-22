@@ -12,7 +12,7 @@ skipped_redflag = [
     "none",
     "(nih)",
     "investissements d&apos",
-    "in2p3"
+    "in2p3",
 ]
 
 # default institutions Id to Brandeis University 
@@ -97,7 +97,7 @@ def run_award_per_funder(args):
         / "award_id"
         / f"{funder_name}_{args.start_year}_{args.end_year}_funded_awards.csv"
     )
-    
+
     with open(output_dir, "w", newline="") as csvfile:
         fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "funder_openAlex_id", "award_id"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

@@ -17,8 +17,14 @@ def get_grant_status_from_end_date(endDate: Optional[str]) -> str:
     """
     if not endDate:
         return "ACTIVE"
+    
+    if isinstance(endDate, str):
+        target_date = datetime.strptime(endDate, "%Y-%m-%d").date()
+    elif isinstance(endDate, date):
+        target_date = endDate
+    else:
+        raise TypeError("endDate must be str or datetime.date")
 
-    target_date = datetime.strptime(endDate, "%Y-%m-%d").date()
     return "HISTORY" if target_date < date.today() else "ACTIVE"
 
 RESOURCE_PATH = (
