@@ -85,5 +85,15 @@ funders = [
     "Argonne National Laboratory",
     "Lawrence Berkeley National Laboratory",
     "Basic Energy Sciences",
-    "John Templeton Foundation"
+    "John Templeton Foundation",
+    "Los Alamos National Laboratory",
+    "SLAC National Accelerator Laboratory",
+    "National Nuclear Security Administration",
+    "National Energy Research Scientific Computing Center",
+    "Office of International Science and Engineering",
+    "Office of Naval Research",
+    "Biotechnology and Biological Sciences Research Council",
+    "Defense Advanced Research Projects Agency",
+    "U.S. Department of Defense"<
+    "U.S. Department of Health and Human Services"
 ]

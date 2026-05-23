@@ -125,13 +125,5 @@ def get_templeton_grant(award_id, funder_name):
 
     return result
 
-
-
-    
-
-    
-
-
-
-result = get_templeton_grant("61075", "John Templeton Foundation") 
-print(result)  
+# result = get_templeton_grant("61075", "John Templeton Foundation") 
+# print(result)  

@@ -28,7 +28,7 @@ activity_codes = [
 ic_codes = [
     "TW", "TR", "AT", "CA", "EY", "HG", "HL", "AG", "AA", "AI",
     "AR", "EB", "HD", "DA", "DC", "DE", "DK", "ES", "GM", "MH",
-    "MD", "NS", "NR", "LM", "OD", "RR", "CE"
+    "MD", "NS", "NR", "LM", "OD", "RR", "CE", "HHSN"
 ]
 
 def standardize_nih_award_id(raw_id):
@@ -37,6 +37,10 @@ def standardize_nih_award_id(raw_id):
     <activity_code><IC_code><6-digit serial_number>[-YY]
     Ignores any prefix before the activity code and handles spaces or dashes.
     """
+
+    if raw_id.startswith("HHSN"):
+        return raw_id[len("HHSN"):]
+        
     # Normalize string: remove spaces, replace Unicode dashes with "-"
     raw_id = re.sub(r"[‐–—]", "-", raw_id)
     # raw_id = re.sub(r"\s+", "", raw_id)
@@ -135,7 +139,8 @@ def get_award_from_NIH(award_id: str, funder_name: str):
             grant_url = data.get('meta').get("properties").get("URL")
             title = data['results'][0]['project_title']
             title = escape_xml(title)
-            award_id = data.get('results')[0].get('project_serial_num')
+            serial_num = data.get('results')[0].get('project_serial_num')
+            award_id = serial_num if serial_num else award_id
         else:
             print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
             award_id = original_award_id
@@ -206,7 +211,7 @@ def filter_nih_from_unique_funders():
 
 
 
-# award_id= "NU17CE002724"
+# award_id= "HHSN272201200026C"
 # funder_name="National Institutes of Health"
 # print(get_award_from_NIH(award_id, funder_name))
 # print(standardize_nih_award_id(award_id))

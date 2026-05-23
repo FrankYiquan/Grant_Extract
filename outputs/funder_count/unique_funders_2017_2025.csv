@@ -66,10 +66,10 @@ China Postdoctoral Science Foundation,F4320321543,82,False
 Engineering and Physical Sciences Research Council,F4320334627,81,True
 Consejo Superior de Investigaciones Científicas,F4320334857,79,False
 John Templeton Foundation,F4320306193,77,True
-Los Alamos National Laboratory,F4320338304,72,False
+Los Alamos National Laboratory,F4320338304,72,True
 Junta de Andalucía,F4320326754,72,False
 Leverhulme Trust,F4320319993,69,False
-SLAC National Accelerator Laboratory,F4320338381,68,False
+SLAC National Accelerator Laboratory,F4320338381,68,True
 National Institute of Allergy and Infectious Diseases,F4320337355,68,True
 Javna Agencija za Raziskovalno Dejavnost RS,F4320322554,68,False
 Simons Foundation,F4320306164,66,False
@@ -85,8 +85,8 @@ Fondo Nacional de Desarrollo Científico y Tecnológico,F4320338073,56,True
 Univerzita Karlova v Praze,F4320309755,56,False
 HORIZON EUROPE Marie Sklodowska-Curie Actions,F4320338438,56,True
 Ministero dell'Università e della Ricerca,F4320331528,55,False
-National Nuclear Security Administration,F4320332369,54,False
-National Energy Research Scientific Computing Center,F4320317220,51,False
+National Nuclear Security Administration,F4320332369,54,True
+National Energy Research Scientific Computing Center,F4320317220,51,True
 "Forskningsrådet om Hälsa, Arbetsliv och Välfärd",F4320324004,48,False
 Comisión Nacional de Investigación Científica y Tecnológica,F4320334812,46,False
 Australian Research Council,F4320334704,45,True
@@ -107,18 +107,18 @@ Royal Society,F4320320006,33,False
 Brandeis University,F4320310134,32,False
 Oak Ridge National Laboratory,F4320338287,31,False
 Ministry of Science and Technology of the People's Republic of China,F4320321540,31,False
-Office of International Science and Engineering,F4320337370,29,False
+Office of International Science and Engineering,F4320337370,29,True
 Biological and Environmental Research,F4320337509,29,False
 "National Heart, Lung, and Blood Institute",F4320337338,28,True
 Fermilab,F4320338288,27,False
 Seventh Framework Programme,F4320333065,26,True
-Office of Naval Research,F4320337345,26,False
+Office of Naval Research,F4320337345,26,True
 National Institute of Child Health and Human Development,F4320337364,25,True
-Biotechnology and Biological Sciences Research Council,F4320334629,24,False
+Biotechnology and Biological Sciences Research Council,F4320334629,24,True
 Russian Science Foundation,F4320324099,24,False
 "Ministero dell’Istruzione, dell’Università e della Ricerca",F4320321873,24,False
 National Center for Complementary and Integrative Health,F4320337593,24,True
-Defense Advanced Research Projects Agency,F4320332180,23,False
+Defense Advanced Research Projects Agency,F4320332180,23,True
 Foundation for the National Institutes of Health,F4320306080,23,True
 Division of Mathematical Sciences,F4320337380,23,True
 Harvard University,F4320309622,22,False
@@ -131,11 +131,11 @@ Cancer Research UK,F4320319985,19,False
 Multidisciplinary University Research Initiative,F4320333591,19,False
 Alzheimer's Association,F4320306219,19,False
 Canadian Institutes of Health Research,F4320334506,19,False
-U.S. Department of Health and Human Services,F4320306085,19,False
+U.S. Department of Health and Human Services,F4320306085,19,True
 Istituto Nazionale di Fisica Nucleare,F4320327843,19,False
 "Nemzeti Kutatási, Fejlesztési és Innovaciós Alap",F4320335908,19,False
 "Ministry of Science and Technology, Taiwan",F4320322795,18,False
-U.S. Department of Defense,F4320306078,18,False
+U.S. Department of Defense,F4320306078,18,True
 Economic and Social Research Council,F4320334630,18,False
 Directorate for Mathematical and Physical Sciences,F4320332172,17,True
 Howard Hughes Medical Institute,F4320306082,17,False
