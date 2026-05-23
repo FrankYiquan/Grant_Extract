@@ -81,4 +81,4 @@ def get_jsps_grant(projectId, funder_name, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     return result
 
 
-print(get_jsps_grant("15H05896"))
+print(get_jsps_grant("25120007", "Japan Society for the Promotion of Science"))

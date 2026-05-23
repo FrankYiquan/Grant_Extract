@@ -13,6 +13,7 @@ skipped_redflag = [
     "(nih)",
     "investissements d&apos",
     "in2p3",
+    "501100011033"
 ]
 
 # default institutions Id to Brandeis University 
@@ -49,7 +50,8 @@ def get_brandeis_grant(funderId=None, institutionsId="I6902469", startyear=2018,
             # Case A: No funderId + no funderName → include ALL grants with award_id
             if funderId == "all":
                 for grant in grants:
-                    if grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
+                    award_id = grant.get("funder_award_id")
+                    if award_id and not any(flag.lower() in award_id.lower() for flag in skipped_redflag):
                         output.append({
                             "openAlex_id": asset.get("id"),
                             "doi": asset.get("doi"),
@@ -62,8 +64,9 @@ def get_brandeis_grant(funderId=None, institutionsId="I6902469", startyear=2018,
             # Case B: filter by funderId / funderName            
             else:
                 for grant in grants:
+                    award_id = grant.get("funder_award_id")
                     grant_openAlex_id = grant.get("funder_id", "").split("https://openalex.org/")[-1]
-                    if grant_openAlex_id.lower() == funderId.lower() and grant.get("funder_award_id") and grant.get("funder_award_id").lower() not in skipped_redflag:
+                    if grant_openAlex_id.lower() == funderId.lower() and award_id and not any(flag.lower() in award_id.lower() for flag in skipped_redflag):
                         output.append({
                             "openAlex_id": asset.get("id"),
                             "doi": asset.get("doi"),
@@ -121,7 +124,7 @@ def run_unique_funder(args):
         if funder_id not in funder_counts:
 
             funder_counts[funder_id] = {
-                "funder_name": grant.get("funder_name"),
+                "funder_name": grant.get("funder_name").strip(),
                 "funder_openAlex_id": funder_id,
                 "count": 1,
                 "Is_Implemented": grant.get("funder_name") in funders

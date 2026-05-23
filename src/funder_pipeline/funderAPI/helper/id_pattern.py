@@ -26,7 +26,7 @@ FUNDER_PATTERNS = {
     },
 
     "Ministerio_de_Ciencia_e_Innovación": {
-        "prefixes": ["MCIN"],
+        "prefixes": ["MCIN", "AEI"],
     },
 
     "Swiss_National_Science_Foundation": {
@@ -34,7 +34,7 @@ FUNDER_PATTERNS = {
     },
 
     "National_Science_Foundation": {
-        "prefixes": ["NSF", "AST"],
+        "prefixes": ["NSF", "AST", "OISE"],
         "regex": [
             r"^AST[-/]?\d+"
         ],

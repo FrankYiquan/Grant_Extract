@@ -76,5 +76,14 @@ funders = [
     "Office of Science",
     "European Regional Development Fund",
     "Agencia Nacional de Investigación y Desarrollo",
-    "H2020 European Research Council"
+    "H2020 European Research Council",
+    "Narodowa Agencja Wymiany Akademickiej",
+    "Ministerio de Ciencia, Innovación y Universidades",
+    "High Energy Physics",
+    "European Research Council",
+    "Ministry of Education, Culture, Sports, Science and Technology",
+    "Argonne National Laboratory",
+    "Lawrence Berkeley National Laboratory",
+    "Basic Energy Sciences",
+    "John Templeton Foundation"
 ]

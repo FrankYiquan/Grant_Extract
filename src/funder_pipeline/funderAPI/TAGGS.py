@@ -119,7 +119,6 @@ def get_TAGGS_grant(projectId, funder_name):
     <status>{status}</status>
 </grant>"""
 
-    driver.quit()
     return result
         
         
