@@ -5,12 +5,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
+import re
 import time
+from funder_pipeline.funderAPI.helper.schema_extract import (
+    get_grant_status_from_end_date,
+    get_matched_funder_code,
+)
 
-def get_NCN_grant(grantId):
+def get_NCN_grant(grantId, funder_name):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.get("https://projekty.ncn.gov.pl")
     time.sleep(2)
+
+    amount = None
+    startDate = None
+    endDate = None
+    principal_investigator = None
+    grant_url = None
+    title = None
+    funderCode = get_matched_funder_code(funder_name)
+    status = "ACTIVE"
 
     # Locate input field and submit search
     project_input = driver.find_element(By.ID, "idprojekt")
@@ -25,74 +39,104 @@ def get_NCN_grant(grantId):
         )
     except TimeoutException:
         driver.quit()
-        return {
-            "amount": None,
-            "currency": None,
-            "start_date": None,
-            "error": f"No results found for grantId: {grantId}"
-        }
+        pass
 
     # If grant found, proceed
     if results:
         href = results[0].get_attribute("href")
+
         driver.get(href)
 
+        grant_url = href
+
         try:
-            project_info_div = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "div.strona"))
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "div.important")
+                )
             )
+
         except TimeoutException:
             driver.quit()
-            return {
-                "amount": None,
-                "currency": None,
-                "start_date": None,
-                "error": "cannot load grant detail page"
-            }
+        
+        # ----------------------------
+        # grantId
+        # ----------------------------
+        grantId = (
+            driver.find_element(
+                By.CSS_SELECTOR,
+                "div.important p.row2"
+            )
+            .text.strip()
+        )
 
-        # extract amount and start date
+        # ----------------------------
+        # title
+        # ----------------------------
+        title = (
+            driver.find_element(
+                By.CSS_SELECTOR,
+                "div.important h2"
+            )
+            .text.strip()
+        )
+
+        # ----------------------------
+        # find all info blocks
+        # ----------------------------
         divs = driver.find_elements(By.CSS_SELECTOR, "div.strona")
 
-        target_div = None
         for div in divs:
-            if "Przyznana kwota" in div.text:
-                target_div = div
-                break
+            text = div.text
+            # ----------------------------
+            # amount
+            # ----------------------------
+            if "Przyznana kwota" in text:
+                match = re.search(
+                    r"Przyznana kwota.*?:\s*([\d\s]+)",
+                    text
+                )
 
-        amount = None
-        start_date = None
-        currency = None
+                if match:
+                    amount = re.sub(r"\D", "", match.group(1))
 
-        if target_div:
-            lines = target_div.text.split("\n")
+            # ----------------------------
+            # start date
+            # ----------------------------
+            start_match = re.search(
+                r"Rozpoczęcie projektu.*?:\s*([\d-]+)",
+                text
+            )
 
-            for line in lines:
-                if "Przyznana kwota" in line:
-                    parts = line.split(":", 1)
-                    if len(parts) > 1:
-                        amount_str = parts[1].strip()
-                        amount_parts = amount_str.split()
-                        currency = amount_parts[-1]
-                        number_str = "".join(amount_parts[:-1])
-                        amount = int(number_str)
-                elif "Rozpoczęcie projektu" in line:
-                    parts = line.split(":", 1)
-                    if len(parts) > 1:
-                        start_date = parts[1].strip()
+            if start_match:
+                startDate = start_match.group(1)
 
-        driver.quit()
-        return {
-            "amount": amount,
-            "currency": currency,
-            "start_date": start_date
-        }
+            # ----------------------------
+            # end date
+            # ----------------------------
+            end_match = re.search(
+                r"Zakończenie projektu.*?:\s*([\d-]+)",
+                text
+            )
 
-    driver.quit()
-    return {
-        "amount": None,
-        "currency": None,
-        "start_date": None,
-        "error": "found grant but no amount or startdate"
-    }
+            if end_match:
+                endDate = end_match.group(1)
+                status = get_grant_status_from_end_date(endDate)
 
-print(get_NCN_grant("UMO-2023/49/B/ST2/04085"))
+    result = f"""<grant>
+    <grantId>{grantId}</grantId>
+    <grantName>{title}</grantName>
+    <funderCode>{funderCode}</funderCode>
+    <currencyOfAmount>researchgrant.currency.clp</currencyOfAmount>
+    <amount>{amount}</amount>
+    <startDate>{startDate}</startDate>
+    <endDate>{endDate}</endDate>
+    <grantURL>{grant_url}</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>{status}</status>
+</grant>"""
+        
+    return result    
+
+    
+# print(get_NCN_grant("UMO-2023/49/B/ST2/04085", "Narodowe Centrum Nauki"))

@@ -74,5 +74,7 @@ funders = [
     "Norges Forskningsråd",
     "Australian Research Council",
     "Office of Science",
-    "European Regional Development Fund"
+    "European Regional Development Fund",
+    "Agencia Nacional de Investigación y Desarrollo",
+    "H2020 European Research Council"
 ]
