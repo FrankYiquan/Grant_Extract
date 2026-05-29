@@ -2,11 +2,10 @@ from datetime import date
 import requests
 import re
 from funder_pipeline.utils.helper import escape_xml
-from funder_pipeline.funderAPI.helper.schema_extract import (
+from funder_pipeline.handlers.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
 )
-
 
 def normalize_id(award_id: str) -> str:
     m =  re.search(r'\d{4}-\d{5}', award_id)
@@ -14,7 +13,8 @@ def normalize_id(award_id: str) -> str:
         return m.group(0) + "_VR"
     return award_id
 
-def get_Swedish_Research_Council_grant(projectId, funder_name, apiKey = "Bearer DTaURVYva7l6qNYX7zdLN8Tg"):
+# original name: Vetenskapsrådet
+def extract_Swedish_Research_Council_award(projectId, funder_name, apiKey = "Bearer DTaURVYva7l6qNYX7zdLN8Tg"):
     awardID = normalize_id(projectId)
 
     url = f"https://swecris-api.vr.se/v1/projects/{awardID}"
@@ -70,5 +70,5 @@ def get_Swedish_Research_Council_grant(projectId, funder_name, apiKey = "Bearer 
     return result
 
 
-print(get_Swedish_Research_Council_grant("VR 2022-03845", "Vetenskapsrådet"))
+# print(extract_Swedish_Research_Council_award("VR 2022-03845", "Vetenskapsrådet"))
 

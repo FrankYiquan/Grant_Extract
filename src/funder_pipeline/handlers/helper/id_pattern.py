@@ -1,7 +1,7 @@
 FUNDER_PATTERNS = {
-    "Narodowe Centrum Nauki": {
-        "prefixes": ["UMO", "NCN", "PPN", "PPO", "OPUS"],
-    },
+    # "Narodowe Centrum Nauki": {
+    #     "prefixes": ["UMO", "NCN", "PPN", "PPO", "OPUS"],
+    # },
 
     "Agencia Nacional de Investigación y Desarrollo": {
         "prefixes": ["FONDECYT"],

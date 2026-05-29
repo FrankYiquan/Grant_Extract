@@ -7,12 +7,12 @@ from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from funder_pipeline.utils.helper import escape_xml
-from funder_pipeline.funderAPI.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
+from funder_pipeline.handlers.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
 import re
 from datetime import datetime
 
 #TAGGS is the data system for funder with parent organization HHS (Health and Human Services)
-def get_TAGGS_grant(projectId, funder_name):
+def extract_TAGGS_award(projectId, funder_name):
     match = re.match(r'^(90[A-Z]{4}[0-9]{4})', projectId)
 
     if match:
@@ -122,4 +122,4 @@ def get_TAGGS_grant(projectId, funder_name):
     return result
         
         
-print(get_TAGGS_grant("R01HD090103", "National Institute on Disability, Independent Living, and Rehabilitation Research"))
+# print(extract_TAGGS_award("R01HD090103", "National Institute on Disability, Independent Living, and Rehabilitation Research"))

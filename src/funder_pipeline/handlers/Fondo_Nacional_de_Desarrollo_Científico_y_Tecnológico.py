@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 from funder_pipeline.utils.helper import escape_xml, add_months
-from funder_pipeline.funderAPI.helper.schema_extract import (
+from funder_pipeline.handlers.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
 )

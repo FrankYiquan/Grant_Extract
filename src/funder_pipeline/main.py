@@ -5,9 +5,9 @@ import csv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from funder_pipeline.cli.preprocess import register_funder_awards_command, register_unique_funder_command
-from funder_pipeline.funderAPI.NIH import check_nih_funder
-from funder_pipeline.funderAPI.NSF import check_nsf_funder
-from funder_pipeline.funderAPI.European_Commision import check_eu_commision_funder
+from funder_pipeline.handlers.NIH import check_nih_funder
+from funder_pipeline.handlers.NSF import check_nsf_funder
+from funder_pipeline.handlers.European_Commision import check_eu_commision_funder
 from funder_pipeline.sideJobs.brandeis_funder import get_brandeis_grant
 from funder_pipeline.sideJobs.remove_invalid import is_valid_asset
 

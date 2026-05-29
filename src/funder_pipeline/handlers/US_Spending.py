@@ -1,5 +1,5 @@
 import requests
-from funder_pipeline.funderAPI.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
+from funder_pipeline.handlers.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
 from funder_pipeline.utils.helper import escape_xml
     
 
@@ -66,7 +66,7 @@ def normalize_id(award_id: str, funder_name: str) -> list[str]:
     
     return result
 
-def get_US_Spending_grant(award_id: str, funder_name: str) -> str:
+def extract_US_Spending_award(award_id: str, funder_name: str) -> str:
     # clean out the characters that are not acceptable by API
     distracted_characters = ["-", " "]
     cleaned_award_id = award_id
@@ -191,5 +191,5 @@ def get_US_Spending_grant(award_id: str, funder_name: str) -> str:
     return result
 
 
-print(get_US_Spending_grant("DE-AC02-06CH11357", "Army Research Office"))
+# print(extract_US_Spending_award("DE-AC02-06CH11357", "Army Research Office"))
 # print(normalize_id("05CH11231", "U.S. Department of Energy"))

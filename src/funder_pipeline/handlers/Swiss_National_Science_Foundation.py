@@ -1,7 +1,7 @@
 #https://data.snf.ch/grants
 
 import requests
-from funder_pipeline.funderAPI.helper.schema_extract import (
+from funder_pipeline.handlers.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
 )
@@ -76,4 +76,4 @@ def get_Swiss_National_Science_Foundation_grant(projectId, funder_name):
 
 
 
-print(get_Swiss_National_Science_Foundation_grant("310030B_182825", "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung"))
+# print(get_Swiss_National_Science_Foundation_grant("310030B_182825", "Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung"))

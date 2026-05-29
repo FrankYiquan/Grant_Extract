@@ -11,10 +11,10 @@ import time
 from selenium.webdriver.common.keys import Keys
 import re
 from funder_pipeline.utils.helper import escape_xml
-from funder_pipeline.funderAPI.helper.schema_extract import get_grant_status_from_end_date
+from funder_pipeline.handlers.helper.schema_extract import get_grant_status_from_end_date
 
 
-def get_nsfc_grant(projectId):
+def extract_nsfc_award(projectId):
     projectId = projectId.replace(" ", "") if " " in projectId else projectId
     projectId = projectId.split("NSFC-")[-1] if "NSFC-" in projectId else projectId
   
@@ -160,4 +160,4 @@ def get_nsfc_grant(projectId):
 
     return result
 
-print(get_nsfc_grant("71974204"))
+# print(extract_nsfc_award("71974204"))

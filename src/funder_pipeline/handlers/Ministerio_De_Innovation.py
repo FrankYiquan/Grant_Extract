@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from funder_pipeline.utils.helper import escape_xml
-from funder_pipeline.funderAPI.helper.schema_extract import (
+from funder_pipeline.handlers.helper.schema_extract import (
     get_matched_funder_code,
 )
 

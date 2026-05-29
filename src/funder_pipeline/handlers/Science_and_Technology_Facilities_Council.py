@@ -1,5 +1,5 @@
 import requests
-from funder_pipeline.funderAPI.helper.schema_extract import (
+from funder_pipeline.handlers.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
 )
@@ -7,7 +7,7 @@ from funder_pipeline.utils.helper import escape_xml
 from datetime import datetime
 
 
-def get_Science_and_Technology_Facilities_Council_grant(grantId, funder_name):
+def extract_Science_and_Technology_Facilities_Council_award(grantId, funder_name):
     url = f"https://gtr.ukri.org/api/projects?ref={grantId}"
 
     response = requests.get(url, headers={"Accept": "application/json"})
@@ -74,4 +74,4 @@ def get_Science_and_Technology_Facilities_Council_grant(grantId, funder_name):
 
 funder_name = "Science and Technology Facilities Council"
 grant_id = "GRIDPP"
-print(get_Science_and_Technology_Facilities_Council_grant(grant_id, funder_name))  
+print(extract_Science_and_Technology_Facilities_Council_award(grant_id, funder_name))  
