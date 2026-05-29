@@ -48,6 +48,7 @@ FUNDER_PATTERNS = {
     },
 
     "National_Institutes_of_Health": {
+        "prefixes": ["HHSN"],
         "regex": [
             r"^[A-Z]\d{2}[A-Z]{2}\d{6}$"
         ],

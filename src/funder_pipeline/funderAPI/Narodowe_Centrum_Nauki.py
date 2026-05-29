@@ -12,7 +12,7 @@ from funder_pipeline.funderAPI.helper.schema_extract import (
     get_matched_funder_code,
 )
 
-def get_NCN_grant(grantId, funder_name):
+def extract_NCN_award(grantId, funder_name):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.get("https://projekty.ncn.gov.pl")
     time.sleep(2)
@@ -139,4 +139,4 @@ def get_NCN_grant(grantId, funder_name):
     return result    
 
     
-# print(get_NCN_grant("UMO-2023/49/B/ST2/04085", "Narodowe Centrum Nauki"))
+# print(extract_NCN_award("UMO-2023/49/B/ST2/04085", "Narodowe Centrum Nauki"))

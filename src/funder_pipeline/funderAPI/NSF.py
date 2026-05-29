@@ -33,7 +33,7 @@ def clean_award_id(award_id):
     # Otherwise: one award code → combine digit pieces
     return ["".join(digit_groups)]
 
-def get_award_from_NSF(award_id, funder_name):
+def extract_NSF_award(award_id, funder_name):
     #normalize the award_id to ensure it is a string
     normalized_award_id = clean_award_id(award_id)[0]
    
@@ -169,4 +169,4 @@ def filter_nih_from_unique_funders():
 
 
 # award_id = "AST20023"
-# print(get_award_from_NSF(award_id, "National Science Foundation"))
+# print(extract_NSF_award(award_id, "National Science Foundation"))

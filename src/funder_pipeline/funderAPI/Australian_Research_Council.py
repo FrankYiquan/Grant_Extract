@@ -5,7 +5,7 @@ from funder_pipeline.funderAPI.helper.schema_extract import (
     get_matched_funder_code,
 )
 
-def get_ARC_grant(projectId, funder_name):
+def extract_ARC_award(projectId, funder_name):
 
     url = f"https://dataportal.arc.gov.au/NCGP/API/grants/{projectId}"
 
@@ -48,4 +48,4 @@ def get_ARC_grant(projectId, funder_name):
     return result
 
 
-print(get_ARC_grant("DP150103442", "Australian Research Council")) 
+# print(extract_ARC_award("DP150103442", "Australian Research Council")) 

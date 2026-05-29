@@ -29,7 +29,7 @@ def extract_erc_id(text):
 
 # print(extract_erc_id("ERC 101089007"))
 
-def get_eu_commision_grant(award_id: str, funder_name: str):
+def extract_eu_commision_award(award_id: str, funder_name: str):
     ns = {'ns': 'http://cordis.europa.eu'}
 
     normalized_award_id = extract_erc_id(award_id)
@@ -78,10 +78,5 @@ def get_eu_commision_grant(award_id: str, funder_name: str):
 </grant>"""
         
     return result
-
-# print(get_eu_commision_grant("306478", "European Research Council"))
-
-
-# print(check_eu_commision_funder("H2020 European Research Council"))  # True
 
 

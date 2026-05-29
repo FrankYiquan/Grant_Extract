@@ -33,7 +33,7 @@ def normalize_id(award_id: str) -> str:
     
     return '-'.join(parts[:4])  # keep up to 3rd dash
 
-def extract_ANDLR_grant(award_id: str, funder_name: str):
+def extract_ANDLR_award(award_id: str, funder_name: str):
     normalize_award_id = normalize_id(award_id)
     url = f"https://dataanr.opendatasoft.com/api/explore/v2.1/catalog/datasets/20-ans-de-l-anr-liste-projets-plan-d-action_2005-a-2024/records?where=code_projet_anr='{normalize_award_id}'&limit=1"
 
@@ -150,4 +150,4 @@ def extract_ANDLR_grant(award_id: str, funder_name: str):
     return result
             
 
-# print(extract_ANDLR_grant('NR-21-CE49-0008-01', "Agence Nationale de la Recherche"))
+# print(eextract_ANDLR_award('NR-21-CE49-0008-01', "Agence Nationale de la Recherche"))

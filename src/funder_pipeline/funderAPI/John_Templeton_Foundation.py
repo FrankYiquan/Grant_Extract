@@ -40,7 +40,7 @@ def extract_start_date(year_text):
     return None
 
 
-def get_templeton_grant(award_id, funder_name):
+def extract_templeton_award(award_id, funder_name):
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     url = "https://www.templeton.org/grants/grant-database"
@@ -125,5 +125,5 @@ def get_templeton_grant(award_id, funder_name):
 
     return result
 
-# result = get_templeton_grant("61075", "John Templeton Foundation") 
+# result = extract_templeton_award("61075", "John Templeton Foundation") 
 # print(result)  

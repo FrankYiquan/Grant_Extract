@@ -17,7 +17,7 @@ def get_summary(grant):
                 return s
     return grant.find('summary')
 
-def get_jsps_grant(projectId, funder_name, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
+def extract_jsps_award(projectId, funder_name, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     normalized_key = projectId.split("JP")[1] if "JP" in projectId else projectId
 
     url = f"https://kaken.nii.ac.jp/opensearch/?appid={apiKey}&kw={normalized_key}&format=xml"
@@ -81,4 +81,4 @@ def get_jsps_grant(projectId, funder_name, apiKey="pH9N5nJjVvOCjTpZ91Fp"):
     return result
 
 
-print(get_jsps_grant("25120007", "Japan Society for the Promotion of Science"))
+# print(extract_jsps_award("25120007", "Japan Society for the Promotion of Science"))

@@ -6,7 +6,7 @@ from funder_pipeline.funderAPI.helper.schema_extract import (
     get_matched_funder_code,
 )
 
-def get_NOVWO_grant(projectId, funder_name):
+def extract_NOVWO_award(projectId, funder_name):
 
     normalized_key = projectId.split("-")[-1] if "-" in projectId else projectId
     url = f"https://nwopen-api.nwo.nl/NWOpen-API/api/Projects?project_id={normalized_key}"
@@ -59,7 +59,7 @@ def get_NOVWO_grant(projectId, funder_name):
         
     return result
 
-# print(get_NOVWO_grant("1292.19.202", "Nederlandse Organisatie voor Wetenschappelijk Onderzoek"))
+# print(extract_NOVWO_award("1292.19.202", "Nederlandse Organisatie voor Wetenschappelijk Onderzoek"))
 
 
 

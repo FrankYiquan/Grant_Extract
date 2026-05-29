@@ -1,5 +1,7 @@
 import argparse
+from funder_pipeline.utils.current_funder import funders
 
+# openAlex Id for Brandeis University
 DEFAULT_INSTITUTION_ID = "I6902469"
 
 def parse_year(value):
@@ -12,6 +14,14 @@ def parse_year(value):
         raise argparse.ArgumentTypeError(
             "Year must be an integer or 'all'"
         )
+    
+def parse_funder_id(value):
+    if value not in funders:
+        raise argparse.ArgumentTypeError(
+            "Unsupported funder ID."
+        )
+
+    return value
 
 def validate_year_range(args, parser):
     if (isinstance(args.start_year, int) and isinstance(args.end_year, int) and args.start_year > args.end_year):
@@ -40,3 +50,6 @@ def add_common_grant_args(parser):
         default=DEFAULT_INSTITUTION_ID,
         help="OpenAlex institution ID."
     )
+
+
+

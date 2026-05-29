@@ -88,7 +88,7 @@ def standardize_nih_award_id(raw_id):
     standardized_code = f"{activity_code}{ic_code}{serial_number}{year_suffix}"
     return standardized_code
 
-def get_award_from_NIH(award_id: str, funder_name: str):
+def extract_NIH_award(award_id: str, funder_name: str):
     
     #normalize it to prevent case like U19-AG051426 => U19AG051426
     original_award_id = award_id
@@ -144,7 +144,6 @@ def get_award_from_NIH(award_id: str, funder_name: str):
         else:
             print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
             award_id = original_award_id
-
 
         result = f"""<grant>
     <grantId>{award_id}</grantId>
@@ -213,7 +212,7 @@ def filter_nih_from_unique_funders():
 
 # award_id= "HHSN272201200026C"
 # funder_name="National Institutes of Health"
-# print(get_award_from_NIH(award_id, funder_name))
+# print(extract_NIH_award(award_id, funder_name))
 # print(standardize_nih_award_id(award_id))
 
 

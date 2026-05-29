@@ -15,7 +15,7 @@ award_csv = (
     / "BDH_HISTORICA.csv"
 )
 
-def get_fondo_nacional_de_desarrollo_cientifico_y_tecnologico_grant(award_id, funder_name):
+def extract_fondo_nacional_de_desarrollo_cientifico_y_tecnologico_award(award_id, funder_name):
     df = pd.read_csv(award_csv, sep=";")
     records = df.to_dict(orient="records")
 
@@ -57,5 +57,5 @@ def get_fondo_nacional_de_desarrollo_cientifico_y_tecnologico_grant(award_id, fu
     return result
 
 
-print(get_fondo_nacional_de_desarrollo_cientifico_y_tecnologico_grant("FONDECYT 1820247", "Agencia Nacional de Investigación y Desarrollo"))
+# print(extract_fondo_nacional_de_desarrollo_cientifico_y_tecnologico_award("FONDECYT 1820247", "Agencia Nacional de Investigación y Desarrollo"))
 

@@ -6,8 +6,7 @@ from funder_pipeline.funderAPI.helper.schema_extract import (
 )
 from datetime import datetime
 
-def get_Norges_Forskningsrad_grant(projectId, funder_name):
-
+def extract_Norges_Forskningsrad_award(projectId, funder_name):
     normalized_key = projectId.split("-")[-1] if "-" in projectId else projectId
 
     url = f"https://prosjektbanken.forskningsradet.no/prosjektbanken/rest/projectlist?Kilde=FORISS&distribution=Ar&chart=bar&calcType=funding&Sprak=no&sortBy=score&sortOrder=desc&resultCount=30&offset=0&Fritekst={normalized_key}&source=FORISS&projectId={normalized_key}"
@@ -55,4 +54,4 @@ def get_Norges_Forskningsrad_grant(projectId, funder_name):
         
     return result
 
-# print(get_Norges_Forskningsrad_grant("RCN-314472", "Norges Forskningsråd"))
+# print(extract_Norges_Forskningsrad_award("RCN-314472", "Norges Forskningsråd"))

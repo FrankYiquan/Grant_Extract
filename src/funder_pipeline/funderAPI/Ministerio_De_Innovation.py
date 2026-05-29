@@ -11,10 +11,7 @@ from funder_pipeline.funderAPI.helper.schema_extract import (
     get_matched_funder_code,
 )
 
-
-
-def get_MDI_grant(award_id, funder_name):
-     
+def extract_MDI_award(award_id, funder_name):
     award_id = award_id.replace(",", "") if "," in award_id else award_id
     award_id =  max(award_id.split(), key=len)
 
@@ -108,7 +105,7 @@ def get_MDI_grant(award_id, funder_name):
 
     return result
 
-# result = get_MDI_grant("RYC2019-028510-I", "Ministerio de Ciencia e Innovación")
+# result = extract_MDI_award("RYC2019-028510-I", "Ministerio de Ciencia e Innovación")
 # print(result)    
 
 

@@ -127,7 +127,7 @@ def run_unique_funder(args):
                 "funder_name": grant.get("funder_name").strip(),
                 "funder_openAlex_id": funder_id,
                 "count": 1,
-                "Is_Implemented": grant.get("funder_name") in funders
+                "Is_Implemented": funder_id in funders
             }
 
         else:
