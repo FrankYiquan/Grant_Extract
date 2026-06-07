@@ -12,7 +12,7 @@ def extract_tag(xml, tag):
     )
     return match.group(1).strip() if match else None
 
-def extract_all_awards(awards, start_year, end_year, funder_id, funder_name):
+def extract_all_awards(awards, start_year, end_year, funder_name):
     """Extract information for all awards by routing them to their appropriate handlers and return the extraction results."""
 
     successful_awards = []
@@ -74,8 +74,16 @@ def extract_all_awards(awards, start_year, end_year, funder_id, funder_name):
         failed_awards, 
         error_awards, 
         award_asset_links)
-
-    return successful_awards, failed_awards, error_awards, award_asset_links, import_awards_output_dir, failed_awards_output_dir, error_awards_output_dir, award_asset_links_output_dir
+    
+    return {
+        "success_count": len(successful_awards),
+        "failed_count": len(failed_awards),
+        "error_count": len(error_awards),
+        "success_file": import_awards_output_dir,
+        "failed_file": failed_awards_output_dir,
+        "error_file": error_awards_output_dir,
+        "link_file": award_asset_links_output_dir
+    }
 
 def output_extraction_logs(funder_name, start_year, end_year, successful_awards, failed_awards, error_awards, award_asset_links):
     """Output the extraction logs including successful awards, failed awards, error awards and award-asset linking info to separate CSV files for record keeping and later use."""
