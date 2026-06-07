@@ -1,5 +1,6 @@
 from funder_pipeline.stages.extract.fetch_openAlex import export_awards_per_funder
 from funder_pipeline.stages.extract.remove_invalid import filter_invalid_assets
+from funder_pipeline.stages.transform.extract_awards import extract_all_awards
 from funder_pipeline.stages.transform.routing import route_all_awards_to_handlers
 
 
@@ -29,7 +30,25 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
     print(f"Routing outcomes for {funder_name} saved to {routing_outcomes_output_dir}")
     print()
 
-    
+    # 4. extracted award through funder API and recrod award asset linking info
+    # this step is important for the later asset import and linking in Espero
+    successful_awards, failed_awards, error_awards, award_asset_links, import_awards_output_dir, failed_awards_output_dir, error_awards_output_dir, award_asset_links_output_dir = extract_all_awards(
+        routing_outcomes, 
+        startYear, 
+        endYear, 
+        openAlex_id, 
+        funder_name)
+    print(f"After extraction, success: {len(successful_awards)}, failed: {len(failed_awards)}, error: {len(error_awards)}")
+    print(f"Extracted (success) awards saved to {import_awards_output_dir}")
+    print(f"Failed awards saved to {failed_awards_output_dir}")
+    print(f"Error awards saved to {error_awards_output_dir}")
+    print(f"Award-Asset linking info saved to {award_asset_links_output_dir}")
+    print()
+
+
+
+
+
 
 
 
