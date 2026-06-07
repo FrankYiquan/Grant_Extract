@@ -1,5 +1,5 @@
 from funder_pipeline.cli.common import add_common_grant_args, parse_funder_id, validate_year_range
-from funder_pipeline.sideJobs.brandeis_funder import run_unique_funder, run_award_per_funder
+from funder_pipeline.stages.extract.fetch_openAlex import run_unique_funder, run_award_per_funder
 
 def register_unique_funder_command(subparsers):
     parser = subparsers.add_parser(

@@ -84,30 +84,52 @@ def get_brandeis_grant(funderId=None, institutionsId="I6902469", startyear=2018,
 
     return output
 
+def export_awards_per_funder(
+    funder_id,
+    institution_id,
+    start_year,
+    end_year,
+):
+    output = get_brandeis_grant(
+        funder_id,
+        institution_id,
+        start_year,
+        end_year,
+    )
 
-def run_award_per_funder(args):
-    """
-    This function retrieves grants for a specific funder and university within a specified time range, and exports the results to a CSV file.
-    """
-
-    output = get_brandeis_grant(args.funder_id, args.institutions_id, args.start_year, args.end_year)
     funder_name = output[0]["funder_name"] if output else "Unknown Funder"
 
-
-    # write to CSV
     output_dir = (
         Path("outputs")
         / "award_id"
-        / f"{funder_name}_{args.start_year}_{args.end_year}_funded_awards.csv"
+        / f"{funder_name}_{start_year}_{end_year}_funded_awards.csv"
     )
 
     with open(output_dir, "w", newline="") as csvfile:
-        fieldnames = ["openAlex_id", "doi", "title", "publication_year", "funder_name", "funder_openAlex_id", "award_id"]
+        fieldnames = [
+            "openAlex_id",
+            "doi",
+            "title",
+            "publication_year",
+            "funder_name",
+            "funder_openAlex_id",
+            "award_id",
+        ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(output)
-    
-    print(f"Awards for {funder_name} exported to {output_dir}")
+
+    return funder_name, output_dir, output
+
+def run_award_per_funder(args):
+    funder_name, output_dir, _ = export_awards_per_funder(
+        args.funder_id,
+        args.institutions_id,
+        args.start_year,
+        args.end_year,
+    )
+
+    print(f"Assets and Awards info for {funder_name} exported to {output_dir}")
 
 def run_unique_funder(args):
     """

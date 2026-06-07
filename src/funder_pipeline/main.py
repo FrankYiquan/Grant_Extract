@@ -8,8 +8,8 @@ from funder_pipeline.cli.preprocess import register_funder_awards_command, regis
 from funder_pipeline.handlers.NIH import check_nih_funder
 from funder_pipeline.handlers.NSF import check_nsf_funder
 from funder_pipeline.handlers.European_Commision import check_eu_commision_funder
-from funder_pipeline.sideJobs.brandeis_funder import get_brandeis_grant
-from funder_pipeline.sideJobs.remove_invalid import is_valid_asset
+from funder_pipeline.stages.extract.fetch_openAlex import get_brandeis_grant
+from funder_pipeline.stages.extract.remove_invalid import is_valid_asset
 
 from funder_pipeline.utils.sqs_config import NIH_QUEUE_URL
 from funder_pipeline.utils.sqs_config import NSF_QUEUE_URL

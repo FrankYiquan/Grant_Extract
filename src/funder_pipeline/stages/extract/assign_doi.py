@@ -3,7 +3,7 @@ import pandas as pd
 
 import csv
 
-from funder_pipeline.sideJobs.export_s3 import get_assetID
+from funder_pipeline.stages.load.export_s3 import get_assetID
 
 
 def assign_doi_to_asset(title):
