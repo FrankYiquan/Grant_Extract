@@ -1,10 +1,11 @@
 import requests
-import csv
+import csv, logging
 import pandas as pd
 import requests
 from funder_pipeline.utils.current_funder import funders
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
 
 skipped_redflag = [
     "unknown",
@@ -51,7 +52,8 @@ def get_brandeis_grant(funderId=None, institutionsId="I6902469", startyear=2018,
             if funderId == "all":
                 for grant in grants:
                     award_id = grant.get("funder_award_id")
-                    if award_id and not any(flag.lower() in award_id.lower() for flag in skipped_redflag):
+                    asset_doi = asset.get("doi", "")
+                    if asset_doi and award_id and not any(flag.lower() in award_id.lower() for flag in skipped_redflag):
                         output.append({
                             "openAlex_id": asset.get("id"),
                             "doi": asset.get("doi"),
@@ -65,8 +67,9 @@ def get_brandeis_grant(funderId=None, institutionsId="I6902469", startyear=2018,
             else:
                 for grant in grants:
                     award_id = grant.get("funder_award_id")
+                    asset_doi = asset.get("doi")
                     grant_openAlex_id = grant.get("funder_id", "").split("https://openalex.org/")[-1]
-                    if grant_openAlex_id.lower() == funderId.lower() and award_id and not any(flag.lower() in award_id.lower() for flag in skipped_redflag):
+                    if asset_doi and grant_openAlex_id.lower() == funderId.lower() and award_id and not any(flag.lower() in award_id.lower() for flag in skipped_redflag):
                         output.append({
                             "openAlex_id": asset.get("id"),
                             "doi": asset.get("doi"),
@@ -101,7 +104,7 @@ def export_awards_per_funder(
 
     output_dir = (
         Path("outputs")
-        / "award_id"
+        / "award_ids"
         / f"{funder_name}_{start_year}_{end_year}_funded_awards.csv"
     )
 
@@ -129,7 +132,11 @@ def run_award_per_funder(args):
         args.end_year,
     )
 
-    print(f"Assets and Awards info for {funder_name} exported to {output_dir}")
+    logger.info(
+        "Assets and Awards info for %s exported to %s",
+        funder_name,
+        output_dir
+    )
 
 def run_unique_funder(args):
     """
@@ -173,7 +180,10 @@ def run_unique_funder(args):
     )
     df.to_csv(output_dir, index=False)
 
-    print(f"Unique funder count exported to {output_dir}")
+    logger.info(
+        "Unique funder count exported to %s",
+        output_dir  
+    )
 
     return df
 

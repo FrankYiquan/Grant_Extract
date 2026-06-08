@@ -72,6 +72,6 @@ def extract_Science_and_Technology_Facilities_Council_award(grantId, funder_name
 
        
 
-funder_name = "Science and Technology Facilities Council"
-grant_id = "GRIDPP"
-print(extract_Science_and_Technology_Facilities_Council_award(grant_id, funder_name))  
+# funder_name = "Science and Technology Facilities Council"
+# grant_id = "GRIDPP"
+# print(extract_Science_and_Technology_Facilities_Council_award(grant_id, funder_name))  

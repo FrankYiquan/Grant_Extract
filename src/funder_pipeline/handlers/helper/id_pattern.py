@@ -33,24 +33,10 @@ FUNDER_PATTERNS = {
         "prefixes": ["SNSF", "PCEFP2", "P2SKP3", "P400PB", "IZRJZ3"],
     },
 
-    "National_Science_Foundation": {
-        "prefixes": ["NSF", "AST", "OISE"],
-        "regex": [
-            r"^AST[-/]?\d+"
-        ],
-    },
-
     "TAGGS": {
         "prefixes": ["NU", "U48"],
         "regex": [
             r"^90[A-Za-z]{2}"
-        ],
-    },
-
-    "National_Institutes_of_Health": {
-        "prefixes": ["HHSN"],
-        "regex": [
-            r"^[A-Z]\d{2}[A-Z]{2}\d{6}$"
         ],
     },
 
@@ -72,5 +58,19 @@ FUNDER_PATTERNS = {
 
     "Bill_and_Melinda_Gates_Foundation": {
         "prefixes": ["INV", "OPP"],
-    }
+    },
+
+    "National_Science_Foundation": {
+        "prefixes": ["NSF", "AST", "OISE"],
+        "regex": [
+            r"^AST[-/]?\d+"
+        ],
+    },
+
+    "National_Institutes_of_Health": {
+        "prefixes": ["HHSN"],
+        "regex": [
+            r"^[A-Z]\d{2}[A-Z]{2}\d{6}$"
+        ],
+    },
 }

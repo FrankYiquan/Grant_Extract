@@ -146,12 +146,6 @@ funders = {
         "handler": extract_fondo_nacional_de_desarrollo_cientifico_y_tecnologico_award
     },
 
-    "F4320332161": {
-        "name": "National Institutes of Health",
-        "prefixes": activity_codes + ic_codes,
-        "handler": extract_NIH_award,
-    },
-
     "F4320332162": {
         "name": "Centers for Disease Control and Prevention",
         "handler": extract_NIH_award,
@@ -512,4 +506,11 @@ funders = {
         "name": "U.S. Department of Defense",
         "handler": extract_US_Spending_award,
     },
+
+    "F4320332161": {
+        "name": "National Institutes of Health",
+        "prefixes": activity_codes,
+        "regex": [rf"^({'|'.join(ic_codes)})\d{{6,}}$"],
+        "handler": extract_NIH_award,
+    }
 }

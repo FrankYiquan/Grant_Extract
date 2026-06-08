@@ -4,10 +4,22 @@ from funder_pipeline.stages.transform.extract_awards import extract_all_awards
 from funder_pipeline.stages.transform.routing import route_all_awards_to_handlers
 import logging
 
+from funder_pipeline.utils.logging import log_stage, log_summary
+
 logger = logging.getLogger(__name__)
 
 
 def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
+
+    logger.info("")
+    logger.info("=" * 80)
+    logger.info(
+        "PIPELINE RUN: funder_id=%s (%s-%s)",
+        openAlex_id,
+        startYear,
+        endYear
+    )
+    logger.info("=" * 80)
 
     # 1. fetch assets info and associated award data from OpenAlex
     # a copy of data is stored
@@ -18,15 +30,13 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
         end_year=endYear
     )
 
-    logger.info(
-        "Assets and Awards info for %s exported to %s",
-        funder_name,
-        output_dir
-    )
-    logger.info(
-        "Total awards for %s: %d",
-        funder_name,
-        len(assets_awards)
+    log_stage(
+        "[1/4] OpenAlex Award Collection",
+        {
+            "Funder": funder_name,
+            "Total Awards": len(assets_awards),
+            "Output File": output_dir,
+        }
     )
 
     # 2. Call the Espero API to filter out the assets that is not associated with a faculty (sometimes, it contains assets from a students)
@@ -37,16 +47,13 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
         endYear
     )
 
-    logger.info(
-        "Valid awards for %s: %d",
-        funder_name,
-        len(valid_awards)
-    )
-    logger.info(
-        "Invalid awards for %s: %d; their doi are in %s",
-        funder_name,
-        len(invalid_dois),
-        invalid_asset_output_dir
+    log_stage(
+        "[2/4] Asset Validation",
+        {
+            "Valid Awards": len(valid_awards),
+            "Invalid Asset": len(invalid_dois),
+            "Invalid Asset File": invalid_asset_output_dir,
+        }
     )
 
     # 3. Route the awards to different handlers based on the funder id or award ID patterns
@@ -58,10 +65,12 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
         endYear
     )
 
-    logger.info(
-        "Routing outcomes for %s saved to %s",
-        funder_name,
-        routing_outcomes_output_dir
+    log_stage(
+        "[3/4] Award Routing",
+        {
+            "Awards Routed": len(routing_outcomes),
+            "Routing File": routing_outcomes_output_dir,
+        }
     )
 
     # 4. extracted award through funder API and recrod award asset linking info
@@ -73,29 +82,43 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
         funder_name
     )
 
-    logger.info(
-        "After extraction, success: %d, failed: %d, error: %d",
-        extraction_summary["success_count"],
-        extraction_summary["failed_count"],
-        extraction_summary["error_count"]
+    log_stage(
+        "[4/4] Award Extraction",
+        {
+            "Success": extraction_summary["success_count"],
+            "Failed": extraction_summary["failed_count"],
+            "Error": extraction_summary["error_count"],
+            "Success File": extraction_summary["success_file"],
+            "Failed File": extraction_summary["failed_file"],
+            "Error File": extraction_summary["error_file"],
+            "Link File": extraction_summary["link_file"],
+        }
     )
 
-    logger.info(
-        "Extracted (success) awards saved to %s",
-        extraction_summary["success_file"]
+    # final log summary
+    log_summary(
+        {
+            "Funder": funder_name,
+            "Years": f"{startYear}-{endYear}",
+            "Awards Collected": len(assets_awards),
+            "Valid Awards": len(valid_awards),
+            "Invalid Awards": len(invalid_dois),
+            "Awards Routed": len(routing_outcomes),
+            "Extract Success": extraction_summary["success_count"],
+            "Extract Failed": extraction_summary["failed_count"],
+            "Extract Error": extraction_summary["error_count"],
+        }
     )
 
-    logger.info(
-        "Failed awards saved to %s",
-        extraction_summary["failed_file"]
-    )
+    logger.info("")
+    logger.info("=" * 80)
+    logger.info("PIPELINE COMPLETE")
+    logger.info("=" * 80)
 
-    logger.info(
-        "Error awards saved to %s",
-        extraction_summary["error_file"]
-    )
-
-    logger.info(
-        "Award-Asset linking info saved to %s",
-        extraction_summary["link_file"]
+def run_extract_awards(args):
+    get_award_data(
+        startYear=args.start_year,
+        endYear=args.end_year,
+        openAlex_id=args.funder_id,
+        institutionsId=args.institutions_id
     )

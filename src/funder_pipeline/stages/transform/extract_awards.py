@@ -60,6 +60,7 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
             except Exception as e:
                 error_awards.append({
                     "award": award["award"],
+                    "funder_name": award["final_funder_name"],
                     "doi": award["doi"],   
                     "error_type": type(e).__name__,
                     "error_message": str(e)
@@ -155,6 +156,7 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
         fieldnames = [
             "award",
             "doi",
+            "funder_name",
             "error_type",
             "error_message"
         ]

@@ -24,7 +24,7 @@ def extract_Swedish_Research_Council_award(projectId, funder_name, apiKey = "Bea
     }
 
     response = requests.get(url, headers=headers)
-    print(url)
+    # print(url)
 
     amount = None
     principal_investigator = None

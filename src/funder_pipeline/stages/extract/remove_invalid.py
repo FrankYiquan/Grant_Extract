@@ -37,7 +37,7 @@ def filter_invalid_assets(awards, funder_name, start_year, end_year):
     # Group awards by doi
     awards_sort_by_doi = defaultdict(list)
     for award in awards:
-        awards_sort_by_doi[award["doi"]].append(award)
+        awards_sort_by_doi[award["doi"].split("https://doi.org/")[-1]].append(award)
     
     # filtering
     valid_awards = []

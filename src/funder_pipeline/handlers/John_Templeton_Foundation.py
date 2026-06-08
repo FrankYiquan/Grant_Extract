@@ -1,15 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 import time
 from funder_pipeline.utils.helper import escape_xml
 from funder_pipeline.handlers.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
 import re
 from datetime import datetime
+from funder_pipeline.utils.web_scrap import get_driver
 
 def clean_amount(amount_text):
     """
@@ -41,74 +39,73 @@ def extract_start_date(year_text):
 
 
 def extract_templeton_award(award_id, funder_name):
+    with get_driver() as driver:
+        url = "https://www.templeton.org/grants/grant-database"
+        driver.get(url)
+        time.sleep(2)
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    url = "https://www.templeton.org/grants/grant-database"
-    driver.get(url)
-    time.sleep(2)
+        amount = None
+        startDate = None
+        endDate = None
+        principal_investigator = None
+        grant_url = None
+        title = None
+        funderCode = get_matched_funder_code(funder_name)
+        status = "ACTIVE"
 
-    amount = None
-    startDate = None
-    endDate = None
-    principal_investigator = None
-    grant_url = None
-    title = None
-    funderCode = get_matched_funder_code(funder_name)
-    status = "ACTIVE"
+        wait = WebDriverWait(driver, 20)
 
-    wait = WebDriverWait(driver, 20)
-
-    # accept cookie
-    cookie_btn = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable(
-        (By.CSS_SELECTOR, "button.btn.btn-desktop")
+        # accept cookie
+        cookie_btn = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "button.btn.btn-desktop")
+        )
     )
-)
 
-    cookie_btn.click()
+        cookie_btn.click()
 
-    # locate input and input award id
-    search_box =  wait.until(
-        EC.presence_of_element_located((
+        # locate input and input award id
+        search_box =  wait.until(
+            EC.presence_of_element_located((
+                By.CSS_SELECTOR,
+                "#grants-table_filter input"
+            ))
+        )
+        search_box.send_keys(award_id)
+
+        time.sleep(1)
+
+        first_row = driver.find_element(
             By.CSS_SELECTOR,
-            "#grants-table_filter input"
-        ))
-    )
-    search_box.send_keys(award_id)
+            "#grants-table tbody tr"
+        )
 
-    time.sleep(1)
+        # awards found
+        if "No matching records found" not in first_row.text:
+            cols = first_row.find_elements(By.TAG_NAME, "td")
+            
+            award_id = cols[1].text
+            title = escape_xml(cols[2].text)
+            amount = clean_amount(cols[5].text)
+            # principal_investigator = cols[3].text
 
-    first_row = driver.find_element(
-        By.CSS_SELECTOR,
-        "#grants-table tbody tr"
-    )
+            grant_url = cols[2].find_element(
+                By.TAG_NAME, "a"
+            ).get_attribute("href")
 
-    # awards found
-    if "No matching records found" not in first_row.text:
-        cols = first_row.find_elements(By.TAG_NAME, "td")
-        
-        award_id = cols[1].text
-        title = escape_xml(cols[2].text)
-        amount = clean_amount(cols[5].text)
-        # principal_investigator = cols[3].text
+            # visist detail project page
+            driver.get(grant_url)
 
-        grant_url = cols[2].find_element(
-            By.TAG_NAME, "a"
-        ).get_attribute("href")
+            date_text = driver.find_element(
+                By.CSS_SELECTOR,
+                ".topic-tag"
+            ).text.strip()
 
-        # visist detail project page
-        driver.get(grant_url)
+            # start/end Date locate on the top left corner
+            start_str, end_str = date_text.split(" - ")
 
-        date_text = driver.find_element(
-            By.CSS_SELECTOR,
-            ".topic-tag"
-        ).text.strip()
-
-        # start/end Date locate on the top left corner
-        start_str, end_str = date_text.split(" - ")
-
-        startDate = datetime.strptime(start_str, "%B %Y").strftime("%Y-%m-01")
-        endDate = datetime.strptime(end_str, "%B %Y").strftime("%Y-%m-01")
+            startDate = datetime.strptime(start_str, "%B %Y").strftime("%Y-%m-01")
+            endDate = datetime.strptime(end_str, "%B %Y").strftime("%Y-%m-01")
 
     result = f"""<grant>
     <grantId>{award_id}</grantId>

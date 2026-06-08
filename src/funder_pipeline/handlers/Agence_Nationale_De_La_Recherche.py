@@ -1,11 +1,9 @@
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 import time
 from datetime import date
 import re
@@ -15,6 +13,7 @@ from funder_pipeline.utils.helper import (
     get_grant_status_from_end_date,
     get_matched_funder_code
 )
+from funder_pipeline.utils.web_scrap import get_driver
 
 month_map = {
     "janvier": 1, "février": 2, "mars": 3, "avril": 4,
@@ -69,71 +68,71 @@ def extract_ANDLR_award(award_id: str, funder_name: str):
     
         # following the link, web scrape the amount, startDate, endDate
         if grant_url:
-            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-            driver.get(grant_url)
-            time.sleep(1)
+            with get_driver() as driver:
+                driver.get(grant_url)
+                time.sleep(1)
 
-            # the info is located within <strong> tags
-            # we get all the strong tags
-            try:
-                strongs = WebDriverWait(driver, 10).until(
-                    EC.presence_of_all_elements_located(
-                        (By.XPATH, "//section[contains(@class,'block-info')]//strong")
+                # the info is located within <strong> tags
+                # we get all the strong tags
+                try:
+                    strongs = WebDriverWait(driver, 10).until(
+                        EC.presence_of_all_elements_located(
+                            (By.XPATH, "//section[contains(@class,'block-info')]//strong")
+                        )
                     )
-                )
-            except TimeoutException:
-                strongs = []
-                pass
+                except TimeoutException:
+                    strongs = []
+                    pass
 
-            # filter the useful <strong> tags
-            for el in strongs:
-                text = el.text.strip().lower()
+                # filter the useful <strong> tags
+                for el in strongs:
+                    text = el.text.strip().lower()
 
-                # amount
-                if any(k in text for k in ["aide", "montant"]) and "anr" in text:
-                    m = re.search(r'\d[\d\s\xa0]*', text)
-                    if m:
-                        amount = int(
-                            m.group()
-                            .replace("\xa0", "")
-                            .replace(" ", "")
+                    # amount
+                    if any(k in text for k in ["aide", "montant"]) and "anr" in text:
+                        m = re.search(r'\d[\d\s\xa0]*', text)
+                        if m:
+                            amount = int(
+                                m.group()
+                                .replace("\xa0", "")
+                                .replace(" ", "")
+                            )
+
+                    # DATE + DURATION
+                    elif any(k in text for k in ["début", "duree", "durée"]):
+
+                        m = re.search(
+                            r'(?:'
+                                r'(?:(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+)?'
+                                r'(\d{4})'
+                            r')?'
+                            r'[^0-9]*'
+                            r'(\d+)\s*(?:mois|months?)',
+                            text,
+                            re.IGNORECASE
                         )
 
-                # DATE + DURATION
-                elif any(k in text for k in ["début", "duree", "durée"]):
+                        duration_months = None
 
-                    m = re.search(
-                        r'(?:'
-                            r'(?:(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+)?'
-                            r'(\d{4})'
-                        r')?'
-                        r'[^0-9]*'
-                        r'(\d+)\s*(?:mois|months?)',
-                        text,
-                        re.IGNORECASE
-                    )
+                        if m:
+                            month_str, year, duration = m.groups()
+                            # print(f"Extracted from text: month={month_str}, year={year}, duration={duration}")
 
-                    duration_months = None
+                            # handle missing month 
+                            month = month_map.get(month_str, None) if month_str else None
+                            year = int(year) if year else None
+                            duration_months = int(duration) if duration else None
 
-                    if m:
-                        month_str, year, duration = m.groups()
-                        print(f"Extracted from text: month={month_str}, year={year}, duration={duration}")
+                            if year and month:
+                                # build start date (always day = 01)
+                                startDate = date(year, month, 1)
 
-                        # handle missing month 
-                        month = month_map.get(month_str, None) if month_str else None
-                        year = int(year) if year else None
-                        duration_months = int(duration) if duration else None
+                        if startDate and duration_months:
+                            #  compute end date 
+                            endDate = add_months(startDate, duration_months)
 
-                        if year and month:
-                            # build start date (always day = 01)
-                            startDate = date(year, month, 1)
-
-                    if startDate and duration_months:
-                        #  compute end date 
-                        endDate = add_months(startDate, duration_months)
-
-                        if endDate < date.today():
-                            status = "HISTORY"    
+                            if endDate < date.today():
+                                status = "HISTORY"    
     result = f"""<grant>
     <grantId>{awardID}</grantId>
     <grantName>{title}</grantName>

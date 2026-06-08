@@ -75,10 +75,10 @@ def extract_US_Spending_award(award_id: str, funder_name: str) -> str:
             cleaned_award_id = award_id.replace(ch, "")
 
     normalize_award_ids = normalize_id(cleaned_award_id, funder_name)
-    print(f"Normalized award ID: {normalize_award_ids}")
+    # print(f"Normalized award ID: {normalize_award_ids}")
 
     award_type_codes = get_us_spending_grant_type(normalize_award_ids)
-    print(award_type_codes)
+    # print(award_type_codes)
 
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
 
@@ -150,7 +150,7 @@ def extract_US_Spending_award(award_id: str, funder_name: str) -> str:
 
                 # if too many results are returned, it is likely that the award_id is not specific enough, e.g. DEFG02 -> asummed it's not found.
                 if len(data["results"]) > 10:
-                    print(f"Too many results returned for award ID {award_id}, likely due to non-specific award ID. Skipping.")
+                    # print(f"Too many results returned for award ID {award_id}, likely due to non-specific award ID. Skipping.")
                     break
 
                 grant = next(

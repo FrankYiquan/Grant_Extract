@@ -3,19 +3,13 @@
 # from selenium import webdriver
 # from selenium.webdriver.common.by import By
 # from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.chrome.service import Service
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support import expected_conditions as EC
-# from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.webdriver.chrome.options import Options
 # import time
 # import random
-# from utils.helper import escape_xml
-# from funderAPI.helper.schema_extract import (
-#     get_grant_status_from_end_date,
-#     get_matched_funder_code,
-# )
-# import time
+# from funder_pipeline.utils.helper import escape_xml, get_grant_status_from_end_date, get_matched_funder_code
+# from funder_pipeline.utils.web_scrap import get_driver
 
 # def get_ARC_grant(projectId, funder_name):
 
@@ -66,121 +60,113 @@
 #             "Chrome/136.0.0.0 Safari/537.36"
 #         )
 
-#         driver = webdriver.Chrome(
-#             service=Service(ChromeDriverManager().install()),
-#             options=options
-#         )
+#         with get_driver() as driver:
+#             # Hide webdriver property
+#             driver.execute_script("""
+#             Object.defineProperty(navigator, 'webdriver', {
+#                 get: () => undefined
+#             })
+#             """)
 
-#         # Hide webdriver property
-#         driver.execute_script("""
-#         Object.defineProperty(navigator, 'webdriver', {
-#             get: () => undefined
-#         })
-#         """)
+#             wait = WebDriverWait(driver, 15)
 
-#         wait = WebDriverWait(driver, 15)
+#             projectId = "G-2024-12345"
 
-#         projectId = "G-2024-12345"
+#             driver.get("https://sloan.org/grants-database")
 
-#         driver.get("https://sloan.org/grants-database")
+#             # Random human-like pause
+#             time.sleep(random.uniform(2.5, 5))
 
-#         # Random human-like pause
-#         time.sleep(random.uniform(2.5, 5))
-
-#         # Wait for search input
-#         search_input = wait.until(
-#             EC.presence_of_element_located((
-#                 By.CSS_SELECTOR,
-#                 "div.database-search input[name='keywords']"
-#             ))
-#         )
-
-#         # Type slowly like human
-#         for ch in projectId:
-#             search_input.send_keys(ch)
-#             time.sleep(random.uniform(0.08, 0.18))
-
-#         time.sleep(random.uniform(0.5, 1.5))
-
-#         search_input.send_keys(Keys.ENTER)
-
-#         # Wait for results
-#         wait.until(
-#             EC.presence_of_element_located((
-#                 By.CSS_SELECTOR,
-#                 "ul.data-list > li"
-#             ))
-#         )
-
-#         time.sleep(random.uniform(2, 4))
-
-#         try:
-#             accept_btn = wait.until(
-#                 EC.element_to_be_clickable((
+#             # Wait for search input
+#             search_input = wait.until(
+#                 EC.presence_of_element_located((
 #                     By.CSS_SELECTOR,
-#                     "button.gdpr-banner__button--opt-in"
+#                     "div.database-search input[name='keywords']"
 #                 ))
 #             )
 
-#             time.sleep(random.uniform(1, 2))
+#             # Type slowly like human
+#             for ch in projectId:
+#                 search_input.send_keys(ch)
+#                 time.sleep(random.uniform(0.08, 0.18))
 
-#             accept_btn.click()
+#             time.sleep(random.uniform(0.5, 1.5))
 
-#             time.sleep(random.uniform(1, 2))
+#             search_input.send_keys(Keys.ENTER)
 
-#         except:
-#             print("Cookie banner not found")
-
-
-#         grants = driver.find_elements(
-#             By.CSS_SELECTOR,
-#             "ul.data-list > li"
-#         )
-
-#         if grants:
-#             grant = grants[0]
-
-#             amount_text = grant.find_element(
-#                 By.CSS_SELECTOR,
-#                 "div.amount"
-#             ).text
-
-#             amount = (
-#                 amount_text
-#                 .replace("amount:", "")
-#                 .replace("$", "")
-#                 .replace(",", "")
-#                 .strip()
+#             # Wait for results
+#             wait.until(
+#                 EC.presence_of_element_located((
+#                     By.CSS_SELECTOR,
+#                     "ul.data-list > li"
+#                 ))
 #             )
 
-#             startYear = grant.find_element(
-#                 By.CSS_SELECTOR,
-#                 "div.year"
-#             ).text.strip()
+#             time.sleep(random.uniform(2, 4))
 
-#             title = grant.find_element(
-#                 By.CSS_SELECTOR,
-#                 "div.summary p"
-#             ).text.strip()
-#             title = escape_xml(title)
+#             try:
+#                 accept_btn = wait.until(
+#                     EC.element_to_be_clickable((
+#                         By.CSS_SELECTOR,
+#                         "button.gdpr-banner__button--opt-in"
+#                     ))
+#                 )
 
-#             link = grant.find_element(
+#                 time.sleep(random.uniform(1, 2))
+
+#                 accept_btn.click()
+
+#                 time.sleep(random.uniform(1, 2))
+
+#             except:
+#                 print("Cookie banner not found")
+
+
+#             grants = driver.find_elements(
 #                 By.CSS_SELECTOR,
-#                 "div.summary a.permalink"
+#                 "ul.data-list > li"
 #             )
 
-#             grant_url = link.get_attribute("href")
+#             if grants:
+#                 grant = grants[0]
 
-#             print({
-#                 "amount": amount,
-#                 "startYear": startYear,
-#                 "title": title,
-#                 "grant_url": grant_url
-#             })
+#                 amount_text = grant.find_element(
+#                     By.CSS_SELECTOR,
+#                     "div.amount"
+#                 ).text
 
-#         driver.quit()
-      
+#                 amount = (
+#                     amount_text
+#                     .replace("amount:", "")
+#                     .replace("$", "")
+#                     .replace(",", "")
+#                     .strip()
+#                 )
 
+#                 startYear = grant.find_element(
+#                     By.CSS_SELECTOR,
+#                     "div.year"
+#                 ).text.strip()
+
+#                 title = grant.find_element(
+#                     By.CSS_SELECTOR,
+#                     "div.summary p"
+#                 ).text.strip()
+#                 title = escape_xml(title)
+
+#                 link = grant.find_element(
+#                     By.CSS_SELECTOR,
+#                     "div.summary a.permalink"
+#                 )
+
+#                 grant_url = link.get_attribute("href")
+
+#                 print({
+#                     "amount": amount,
+#                     "startYear": startYear,
+#                     "title": title,
+#                     "grant_url": grant_url
+#                 })
         
 #     result = f"""<grant>
 #     <grantId>{projectId}</grantId>

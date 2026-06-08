@@ -1,127 +1,125 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 import re
 import time
 from funder_pipeline.handlers.helper.schema_extract import (
     get_grant_status_from_end_date,
     get_matched_funder_code,
 )
+from funder_pipeline.utils.web_scrap import get_driver
 
 def extract_NCN_award(grantId, funder_name):
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    driver.get("https://projekty.ncn.gov.pl")
-    time.sleep(2)
+    with get_driver() as driver:
+        driver.get("https://projekty.ncn.gov.pl")
+        time.sleep(2)
 
-    amount = None
-    startDate = None
-    endDate = None
-    principal_investigator = None
-    grant_url = None
-    title = None
-    funderCode = get_matched_funder_code(funder_name)
-    status = "ACTIVE"
+        amount = None
+        startDate = None
+        endDate = None
+        principal_investigator = None
+        grant_url = None
+        title = None
+        funderCode = get_matched_funder_code(funder_name)
+        status = "ACTIVE"
 
-    # Locate input field and submit search
-    project_input = driver.find_element(By.ID, "idprojekt")
-    project_input.send_keys(grantId)
-    submit_button = driver.find_element(By.ID, "wyszukaj")
-    submit_button.click()
+        # Locate input field and submit search
+        project_input = driver.find_element(By.ID, "idprojekt")
+        project_input.send_keys(grantId)
+        submit_button = driver.find_element(By.ID, "wyszukaj")
+        submit_button.click()
 
-    # Try locating grant result(pick first one)
-    try:
-        results = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#wynikiwyszukiwarki ol li p.row1 a"))
-        )
-    except TimeoutException:
-        driver.quit()
-        pass
-
-    # If grant found, proceed
-    if results:
-        href = results[0].get_attribute("href")
-
-        driver.get(href)
-
-        grant_url = href
-
+        # Try locating grant result(pick first one)
         try:
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "div.important")
-                )
+            results = WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#wynikiwyszukiwarki ol li p.row1 a"))
             )
-
         except TimeoutException:
-            driver.quit()
-        
-        # ----------------------------
-        # grantId
-        # ----------------------------
-        grantId = (
-            driver.find_element(
-                By.CSS_SELECTOR,
-                "div.important p.row2"
-            )
-            .text.strip()
-        )
+            pass
 
-        # ----------------------------
-        # title
-        # ----------------------------
-        title = (
-            driver.find_element(
-                By.CSS_SELECTOR,
-                "div.important h2"
-            )
-            .text.strip()
-        )
+        # If grant found, proceed
+        if results:
+            href = results[0].get_attribute("href")
 
-        # ----------------------------
-        # find all info blocks
-        # ----------------------------
-        divs = driver.find_elements(By.CSS_SELECTOR, "div.strona")
+            driver.get(href)
 
-        for div in divs:
-            text = div.text
+            grant_url = href
+
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, "div.important")
+                    )
+                )
+
+            except TimeoutException:
+                pass
+            
             # ----------------------------
-            # amount
+            # grantId
             # ----------------------------
-            if "Przyznana kwota" in text:
-                match = re.search(
-                    r"Przyznana kwota.*?:\s*([\d\s]+)",
+            grantId = (
+                driver.find_element(
+                    By.CSS_SELECTOR,
+                    "div.important p.row2"
+                )
+                .text.strip()
+            )
+
+            # ----------------------------
+            # title
+            # ----------------------------
+            title = (
+                driver.find_element(
+                    By.CSS_SELECTOR,
+                    "div.important h2"
+                )
+                .text.strip()
+            )
+
+            # ----------------------------
+            # find all info blocks
+            # ----------------------------
+            divs = driver.find_elements(By.CSS_SELECTOR, "div.strona")
+
+            for div in divs:
+                text = div.text
+                # ----------------------------
+                # amount
+                # ----------------------------
+                if "Przyznana kwota" in text:
+                    match = re.search(
+                        r"Przyznana kwota.*?:\s*([\d\s]+)",
+                        text
+                    )
+
+                    if match:
+                        amount = re.sub(r"\D", "", match.group(1))
+
+                # ----------------------------
+                # start date
+                # ----------------------------
+                start_match = re.search(
+                    r"Rozpoczęcie projektu.*?:\s*([\d-]+)",
                     text
                 )
 
-                if match:
-                    amount = re.sub(r"\D", "", match.group(1))
+                if start_match:
+                    startDate = start_match.group(1)
 
-            # ----------------------------
-            # start date
-            # ----------------------------
-            start_match = re.search(
-                r"Rozpoczęcie projektu.*?:\s*([\d-]+)",
-                text
-            )
+                # ----------------------------
+                # end date
+                # ----------------------------
+                end_match = re.search(
+                    r"Zakończenie projektu.*?:\s*([\d-]+)",
+                    text
+                )
 
-            if start_match:
-                startDate = start_match.group(1)
-
-            # ----------------------------
-            # end date
-            # ----------------------------
-            end_match = re.search(
-                r"Zakończenie projektu.*?:\s*([\d-]+)",
-                text
-            )
-
-            if end_match:
-                endDate = end_match.group(1)
-                status = get_grant_status_from_end_date(endDate)
+                if end_match:
+                    endDate = end_match.group(1)
+                    status = get_grant_status_from_end_date(endDate)
 
     result = f"""<grant>
     <grantId>{grantId}</grantId>

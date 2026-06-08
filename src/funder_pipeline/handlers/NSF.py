@@ -35,7 +35,7 @@ def clean_award_id(award_id):
 
 def extract_NSF_award(award_id, funder_name):
     #normalize the award_id to ensure it is a string
-    normalized_award_id = clean_award_id(award_id)[0]
+    normalized_award_id = clean_award_id(award_id)[0] if clean_award_id(award_id) else str(award_id).strip()
    
     url = f"http://api.nsf.gov/services/v1/awards/{normalized_award_id}.json"
 
@@ -164,9 +164,9 @@ def filter_nih_from_unique_funders():
     with open("nsf_funders.json", "w") as f:
         json.dump(nsf_funders, f, indent=2)
     
-    print(f"Filtered {len(nsf_funders)} NSF funders from {len(unique_funders)} unique funders.")
+    # print(f"Filtered {len(nsf_funders)} NSF funders from {len(unique_funders)} unique funders.")
 
 
 
-# award_id = "AST20023"
+# award_id = "MRSEC"
 # print(extract_NSF_award(award_id, "National Science Foundation"))

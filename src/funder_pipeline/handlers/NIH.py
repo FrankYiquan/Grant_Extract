@@ -142,7 +142,7 @@ def extract_NIH_award(award_id: str, funder_name: str):
             serial_num = data.get('results')[0].get('project_serial_num')
             award_id = serial_num if serial_num else award_id
         else:
-            print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
+            # print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
             award_id = original_award_id
 
         result = f"""<grant>
@@ -206,7 +206,7 @@ def filter_nih_from_unique_funders():
     with open("nih_funders.json", "w") as f:
         json.dump(nih_funders, f, indent=2)
     
-    print(f"Filtered {len(nih_funders)} NIH funders from {len(unique_funders)} unique funders.")
+    # print(f"Filtered {len(nih_funders)} NIH funders from {len(unique_funders)} unique funders.")
 
 
 

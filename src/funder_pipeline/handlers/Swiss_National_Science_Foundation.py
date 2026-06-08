@@ -45,8 +45,8 @@ def get_Swiss_National_Science_Foundation_grant(projectId, funder_name):
         data = response.json()
         num = data["hits"]["total"]["value"]
         if num > 0:
-            if num > 1:
-                print(f"Warning: Expected 1 result for projectId {projectId}, but got {num}. Using the first result.")
+            # if num > 1:
+            #     print(f"Warning: Expected 1 result for projectId {projectId}, but got {num}. Using the first result.")
             grant = data["hits"]["hits"][0]["_source"]
             title = escape_xml(grant.get("title"))
             startDate = grant.get("effective_start_date")

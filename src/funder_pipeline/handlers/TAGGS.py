@@ -1,15 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from webdriver_manager.chrome import ChromeDriverManager
 import time
 from funder_pipeline.utils.helper import escape_xml
 from funder_pipeline.handlers.helper.schema_extract import get_grant_status_from_end_date, get_matched_funder_code
 import re
 from datetime import datetime
+from funder_pipeline.utils.web_scrap import get_driver
 
 #TAGGS is the data system for funder with parent organization HHS (Health and Human Services)
 def extract_TAGGS_award(projectId, funder_name):
@@ -18,92 +16,92 @@ def extract_TAGGS_award(projectId, funder_name):
     if match:
         projectId = match.group(1)
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    url = "https://taggs.hhs.gov/SearchAward"
-    driver.get(url)
-    time.sleep(2)
+    with get_driver() as driver:
+        url = "https://taggs.hhs.gov/SearchAward"
+        driver.get(url)
+        time.sleep(2)
 
-    amount = None
-    startDate = None
-    endDate = None
-    principal_investigator = None
-    grant_url = None
-    title = None
-    funderCode = get_matched_funder_code(funder_name)
-    status = "ACTIVE"
+        amount = None
+        startDate = None
+        endDate = None
+        principal_investigator = None
+        grant_url = None
+        title = None
+        funderCode = get_matched_funder_code(funder_name)
+        status = "ACTIVE"
 
-    # Locate input field 
-    wait = WebDriverWait(driver, 20)
+        # Locate input field 
+        wait = WebDriverWait(driver, 20)
 
-    project_input = wait.until(
-        EC.presence_of_element_located((By.ID, "tb_Keywords_I"))
-    )
-    project_input.send_keys(projectId)
-
-    time.sleep(2)
-    
-    # locate fiscal year dropdown and select "All"
-    fy_input = driver.find_element(By.ID, "checkComboBox_I")
-    fy_input.clear()
-    
-    time.sleep(2)
-    
-    # locate search button
-    search_button = driver.find_element(By.ID, "btn_Search_I")
-    driver.execute_script("arguments[0].click();", search_button)
-    time.sleep(2)
-
-    # traverse the results
-    table = driver.find_element(By.ID, "GridView_DXMainTable")
-    rows = table.find_elements(By.TAG_NAME, "tr")
-
-    hasData = True
-    if rows[4].text == "No data to display":
-        hasData = False
-
-    # title is the same acroos all years and data is sorted by start date with the most recent one first
-    if hasData:
-        data = rows[-3].find_elements(By.TAG_NAME, "td")
-        link = data[7].find_element(By.TAG_NAME, "a")
-
-        grant_url = link.get_attribute("href")
-        title = escape_xml(data[7].text)
-        driver.get(grant_url)
-
-        start_li = driver.find_element(
-            By.XPATH,
-            "//li[.//strong[contains(text(),'PERIOD OF PERFORMANCE START DATE')]]"
+        project_input = wait.until(
+            EC.presence_of_element_located((By.ID, "tb_Keywords_I"))
         )
+        project_input.send_keys(projectId)
 
-        start_date_str = start_li.text.split(":")[-1].strip()
+        time.sleep(2)
+        
+        # locate fiscal year dropdown and select "All"
+        fy_input = driver.find_element(By.ID, "checkComboBox_I")
+        fy_input.clear()
+        
+        time.sleep(2)
+        
+        # locate search button
+        search_button = driver.find_element(By.ID, "btn_Search_I")
+        driver.execute_script("arguments[0].click();", search_button)
+        time.sleep(2)
 
-        startDate = datetime.strptime(
-            start_date_str,
-            "%m/%d/%Y"
-        ).strftime("%Y-%m-%d")
-                
-        startDate = time.strftime("%Y-%m-%d", time.strptime(start_date_str, "%m/%d/%Y"))
+        # traverse the results
+        table = driver.find_element(By.ID, "GridView_DXMainTable")
+        rows = table.find_elements(By.TAG_NAME, "tr")
 
-        end_li = driver.find_element(
-            By.XPATH,
-            "//li[.//strong[contains(text(),'PERIOD OF PERFORMANCE END DATE')]]"
-        )
+        hasData = True
+        if rows[4].text == "No data to display":
+            hasData = False
 
-        end_date_str = end_li.text.split(":")[-1].strip()
+        # title is the same acroos all years and data is sorted by start date with the most recent one first
+        if hasData:
+            data = rows[-3].find_elements(By.TAG_NAME, "td")
+            link = data[7].find_element(By.TAG_NAME, "a")
 
-        endDate = datetime.strptime(
-            end_date_str,
-            "%m/%d/%Y"
-        ).strftime("%Y-%m-%d")
+            grant_url = link.get_attribute("href")
+            title = escape_xml(data[7].text)
+            driver.get(grant_url)
 
-        status = get_grant_status_from_end_date(endDate)
+            start_li = driver.find_element(
+                By.XPATH,
+                "//li[.//strong[contains(text(),'PERIOD OF PERFORMANCE START DATE')]]"
+            )
 
-        grand_total_text = driver.find_element(
-            By.XPATH,
-            "//*[contains(text(),'Grand Total All Awards')]"
-        ).text
-        amount_fig = re.search(r"\$[\d,]+", grand_total_text).group()
-        amount = float(amount_fig.replace("$", "").replace(",", ""))
+            start_date_str = start_li.text.split(":")[-1].strip()
+
+            startDate = datetime.strptime(
+                start_date_str,
+                "%m/%d/%Y"
+            ).strftime("%Y-%m-%d")
+                    
+            startDate = time.strftime("%Y-%m-%d", time.strptime(start_date_str, "%m/%d/%Y"))
+
+            end_li = driver.find_element(
+                By.XPATH,
+                "//li[.//strong[contains(text(),'PERIOD OF PERFORMANCE END DATE')]]"
+            )
+
+            end_date_str = end_li.text.split(":")[-1].strip()
+
+            endDate = datetime.strptime(
+                end_date_str,
+                "%m/%d/%Y"
+            ).strftime("%Y-%m-%d")
+
+            status = get_grant_status_from_end_date(endDate)
+
+            grand_total_text = driver.find_element(
+                By.XPATH,
+                "//*[contains(text(),'Grand Total All Awards')]"
+            ).text
+            amount_fig = re.search(r"\$[\d,]+", grand_total_text).group()
+            amount = float(amount_fig.replace("$", "").replace(",", ""))
             
 
     result = f"""<grant>
