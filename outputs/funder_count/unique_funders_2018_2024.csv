@@ -1,0 +1,609 @@
+funder_name,funder_openAlex_id,count,Is_Implemented
+Science and Technology Facilities Council,F4320334632,6035,True
+National Science Foundation,F4320306076,4962,True
+National Institutes of Health,F4320332161,1659,True
+U.S. Department of Energy,F4320306084,1340,True
+European Commission,F4320320300,1264,True
+Japan Society for the Promotion of Science,F4320334764,1072,True
+National Natural Science Foundation of China,F4320321001,1021,True
+Ministerio de Ciencia e Innovación,F4320322930,822,True
+European Regional Development Fund,F4320335322,662,True
+Vetenskapsrådet,F4320322581,656,True
+Deutsche Forschungsgemeinschaft,F4320320879,642,False
+Office of Science,F4320332359,560,True
+Knut och Alice Wallenbergs Stiftelse,F4320322327,555,False
+H2020 Marie Skłodowska-Curie Actions,F4320338337,511,True
+Agencia Nacional de Investigación y Desarrollo,F4320331146,507,True
+National Institute of General Medical Sciences,F4320337354,457,True
+Division of Materials Research,F4320337367,448,True
+H2020 European Research Council,F4320338335,426,True
+Agence Nationale de la Recherche,F4320320883,376,True
+Narodowa Agencja Wymiany Akademickiej,F4320328499,372,True
+Ministerio de Economía y Competitividad,F4320321837,367,True
+Schweizerischer Nationalfonds zur Förderung der Wissenschaftlichen Forschung,F4320320924,367,True
+National Aeronautics and Space Administration,F4320306101,324,True
+Generalitat Valenciana,F4320321864,298,False
+National Research Foundation of Korea,F4320322120,255,False
+Conselho Nacional de Desenvolvimento Científico e Tecnológico,F4320322025,245,False
+Chinese Academy of Sciences,F4320321133,235,False
+Consejo Nacional de Ciencia y Tecnología,F4320321739,233,False
+High Energy Physics,F4320337511,231,True
+Nederlandse Organisatie voor Wetenschappelijk Onderzoek,F4320321800,220,True
+National Institute on Aging,F4320337337,208,True
+Air Force Office of Scientific Research,F4320338279,201,True
+"Ministerio de Ciencia, Innovación y Universidades",F4320315062,197,True
+"Ministry of Education, Culture, Sports, Science and Technology",F4320320912,187,True
+Fundação de Amparo à Pesquisa do Estado de São Paulo,F4320320997,187,False
+Natural Sciences and Engineering Research Council of Canada,F4320334593,175,False
+Horizon 2020 Framework Programme,F4320332999,156,True
+"Materials Research Science and Engineering Center, Harvard University",F4320333422,145,False
+Agencia Estatal de Investigación,F4320335598,143,False
+National Institute of Mental Health,F4320337346,138,True
+Norges Forskningsråd,F4320323299,136,True
+Argonne National Laboratory,F4320338284,135,True
+Lawrence Berkeley National Laboratory,F4320338292,133,True
+National Institute on Drug Abuse,F4320337347,130,True
+National Key Research and Development Program of China,F4320335777,120,False
+National Institute of Neurological Disorders and Stroke,F4320337359,116,True
+Narodowe Centrum Nauki,F4320322511,110,True
+National Cancer Institute,F4320337351,108,True
+Grantová Agentura České Republiky,F4320321006,107,False
+Agencia Nacional de Promoción Científica y Tecnológica,F4320334832,102,False
+Fundação para a Ciência e a Tecnologia,F4320334779,101,False
+National Research Foundation,F4320320671,99,False
+Gordon and Betty Moore Foundation,F4320306202,95,False
+Alexander von Humboldt-Stiftung,F4320308269,95,False
+"Dirección General de Asuntos del Personal Académico, Universidad Nacional Autónoma de México",F4320335100,94,False
+Basic Energy Sciences,F4320337480,94,True
+Space Telescope Science Institute,F4320314503,93,False
+European Research Council,F4320334678,93,True
+Medical Research Council,F4320334626,89,False
+Universidad Nacional Autónoma de México,F4320323401,87,False
+Division of Chemistry,F4320337393,84,True
+Engineering and Physical Sciences Research Council,F4320334627,81,True
+China Postdoctoral Science Foundation,F4320321543,77,False
+John Templeton Foundation,F4320306193,77,True
+"Ministerstvo Školství, Mládeže a Tělovýchovy",F4320321005,73,False
+Los Alamos National Laboratory,F4320338304,72,True
+Leverhulme Trust,F4320319993,69,False
+SLAC National Accelerator Laboratory,F4320338381,68,True
+National Institute of Allergy and Infectious Diseases,F4320337355,68,True
+Javna Agencija za Raziskovalno Dejavnost RS,F4320322554,68,False
+Consejo Superior de Investigaciones Científicas,F4320334857,67,False
+Simons Foundation,F4320306164,67,False
+Junta de Andalucía,F4320326754,65,False
+Bundesministerium für Bildung und Forschung,F4320321114,64,False
+Academy of Finland,F4320321108,63,False
+Army Research Office,F4320338281,63,True
+Ministero dell'Università e della Ricerca,F4320331528,63,False
+European Social Fund,F4320338080,61,False
+"National Institute on Disability, Independent Living, and Rehabilitation Research",F4320337604,60,True
+HORIZON EUROPE Marie Sklodowska-Curie Actions,F4320338438,58,True
+Fondo Nacional de Desarrollo Científico y Tecnológico,F4320338073,56,True
+Univerzita Karlova v Praze,F4320309755,56,False
+National Nuclear Security Administration,F4320332369,53,True
+China Scholarship Council,F4320322725,52,False
+Oak Ridge National Laboratory,F4320338287,52,False
+National Energy Research Scientific Computing Center,F4320317220,51,True
+Max-Planck-Gesellschaft,F4320322434,49,False
+Centre National de la Recherche Scientifique,F4320322892,48,False
+Institut National de Physique Nucléaire et de Physique des Particules,F4320335860,48,False
+"Forskningsrådet om Hälsa, Arbetsliv och Välfärd",F4320324004,48,False
+Comisión Nacional de Investigación Científica y Tecnológica,F4320334812,46,False
+Australian Research Council,F4320334704,45,True
+Instituto de Astrofísica de Andalucía,F4320331115,42,False
+Fundación BBVA,F4320309764,40,False
+Ministry of Science and Technology of the People's Republic of China,F4320321540,40,False
+ARC Centre of Excellence for All-Sky Astrophysics,F4320330955,39,False
+"Kavli Institute for Theoretical Physics, University of California, Santa Barbara",F4320337427,38,False
+National Science Foundation of Sri Lanka,F4320335353,36,False
+National Institute on Deafness and Other Communication Disorders,F4320337352,35,True
+University of Chicago,F4320309626,34,False
+Universidad de Buenos Aires,F4320323257,34,False
+Wellcome Trust,F4320311904,33,False
+"Centro de Investigaciones Energéticas, Medioambientales y Tecnológicas",F4320335412,33,False
+Royal Society,F4320320006,33,False
+Eunice Kennedy Shriver National Institute of Child Health and Human Development,F4320337611,32,True
+Bill and Melinda Gates Foundation,F4320306137,32,True
+Brandeis University,F4320310134,32,False
+Centers for Disease Control and Prevention,F4320332162,32,True
+Office of International Science and Engineering,F4320337370,29,True
+Biological and Environmental Research,F4320337509,29,False
+"National Heart, Lung, and Blood Institute",F4320337338,28,True
+Fermilab,F4320338288,27,False
+Seventh Framework Programme,F4320333065,26,True
+"Ministero dell’Istruzione, dell’Università e della Ricerca",F4320321873,25,False
+National Institute of Child Health and Human Development,F4320337364,25,True
+Biotechnology and Biological Sciences Research Council,F4320334629,24,True
+Russian Science Foundation,F4320324099,24,False
+National Center for Complementary and Integrative Health,F4320337593,24,True
+Office of Naval Research,F4320337345,24,True
+Defense Advanced Research Projects Agency,F4320332180,23,True
+Foundation for the National Institutes of Health,F4320306080,23,True
+Harvard University,F4320309622,22,False
+Alfred P. Sloan Foundation,F4320306151,22,False
+Ministerstwo Edukacji i Nauki,F4320322733,22,False
+University of Arizona,F4320310160,21,False
+Division of Mathematical Sciences,F4320337380,21,True
+National Institute on Alcohol Abuse and Alcoholism,F4320337330,21,True
+Cancer Research UK,F4320319985,20,False
+Istituto Nazionale di Fisica Nucleare,F4320327843,20,False
+Multidisciplinary University Research Initiative,F4320333591,19,False
+Alzheimer's Association,F4320306219,19,False
+Israel Science Foundation,F4320322252,19,False
+"Nemzeti Kutatási, Fejlesztési és Innovaciós Alap",F4320335908,19,False
+"Ministry of Science and Technology, Taiwan",F4320322795,18,False
+U.S. Department of Defense,F4320306078,18,True
+Howard Hughes Medical Institute,F4320306082,18,False
+Economic and Social Research Council,F4320334630,18,False
+U.S. Department of Health and Human Services,F4320306085,18,True
+Joint Institute for Computational Fundamental Science,F4320318146,17,False
+Directorate for Mathematical and Physical Sciences,F4320332172,17,True
+Agency for Healthcare Research and Quality,F4320332177,17,False
+High Energy Accelerator Research Organization,F4320324045,17,False
+Government of Canada,F4320319880,16,False
+"Division of Chemical, Bioengineering, Environmental, and Transport Systems",F4320337390,16,True
+Fundación Bancaria Caixa d'Estalvis i Pensions de Barcelona,F4320330256,16,False
+Nemzeti Kutatási Fejlesztési és Innovációs Hivatal,F4320326762,16,False
+National Center for Advancing Translational Sciences,F4320337472,16,False
+National Eye Institute,F4320337350,15,True
+National Institute of Biomedical Imaging and Bioengineering,F4320337363,15,True
+Advanced Scientific Computing Research,F4320337506,15,False
+Welch Foundation,F4320306196,14,False
+U.S. Department of Veterans Affairs,F4320306127,14,False
+Horizon 2020,F4320335254,13,True
+Iowa State University,F4320311090,13,False
+Nuclear Physics,F4320337512,13,False
+Magyar Tudományos Akadémia,F4320322192,13,False
+Natural Science Foundation of Jiangsu Province,F4320322769,13,False
+Fonds Wetenschappelijk Onderzoek,F4320321730,12,False
+National Science and Technology Council,F4320331164,12,False
+Patient-Centered Outcomes Research Institute,F4320308927,12,False
+University of Toronto,F4320322015,12,False
+Federación Española de Enfermedades Raras,F4320321595,12,False
+Ministry of Education of the People's Republic of China,F4320321106,12,False
+Alzheimer's Disease Neuroimaging Initiative,F4320309697,11,False
+National Institute on Minority Health and Health Disparities,F4320337534,11,False
+Social Sciences and Humanities Research Council of Canada,F4320334617,11,False
+UT-Battelle,F4320316892,11,False
+“la Caixa” Foundation,F4320312058,11,False
+American Heart Association,F4320306230,10,False
+National Institute of Diabetes and Digestive and Kidney Diseases,F4320337357,10,True
+National Human Genome Research Institute,F4320337348,10,False
+John D. and Catherine T. MacArthur Foundation,F4320306142,10,False
+American Chemical Society Petroleum Research Fund,F4320332454,10,False
+Fundamental Research Funds for the Central Universities,F4320335787,10,False
+Aspen Center for Physics,F4320310042,9,False
+Science and Engineering Research Board,F4320334771,9,False
+Camille and Henry Dreyfus Foundation,F4320306315,9,False
+Austrian Science Fund,F4320321181,9,False
+Uniformed Services University of the Health Sciences,F4320332504,9,False
+Zhongnan University of Economics and Law,F4320310114,9,False
+"Ministry of Science and ICT, South Korea",F4320328359,8,False
+National Health and Medical Research Council,F4320334705,8,False
+American Cancer Society,F4320306095,8,False
+National Institute of Justice,F4320337430,8,False
+"Koch Institute for Integrative Cancer Research, Massachusetts Institute of Technology",F4320316943,8,False
+Institute for Basic Science,F4320326441,7,False
+Astrophysics Division,F4320338036,7,False
+Xunta de Galicia,F4320326655,7,False
+Human Frontier Science Program,F4320320338,7,False
+Cancer Prevention and Research Institute of Texas,F4320308129,7,False
+Qatar National Research Fund,F4320332753,7,False
+Canadian Institutes of Health Research,F4320334506,7,False
+National Center for Research Resources,F4320337375,7,False
+W.K. Kellogg Foundation,F4320310049,7,False
+CERN,F4320313559,7,False
+Harvard Catalyst,F4320309673,7,False
+NIH Office of the Director,F4320337349,7,False
+Institute of Education Sciences,F4320332210,7,False
+Carl Tryggers Stiftelse för Vetenskaplig Forskning,F4320321501,7,False
+Center for Substance Abuse Prevention,F4320337429,7,False
+University of Illinois at Urbana-Champaign,F4320332222,6,False
+Smithsonian Astrophysical Observatory,F4320332812,6,False
+Lundbeckfonden,F4320321999,6,False
+Damon Runyon Cancer Research Foundation,F4320306271,6,False
+Coordenação de Aperfeiçoamento de Pessoal de Nível Superior,F4320321091,6,False
+European Molecular Biology Organization,F4320307844,6,False
+Division of Molecular and Cellular Biosciences,F4320337397,6,True
+California Institute of Technology,F4320309398,6,False
+Quality Enhancement Research Initiative,F4320332498,6,False
+National Institute of Food and Agriculture,F4320332299,6,False
+Common Fund,F4320338403,6,False
+Battelle,F4320306250,6,False
+Associazione Italiana per la Ricerca sul Cancro,F4320323054,5,False
+Lawrence Livermore National Laboratory,F4320338286,5,False
+"Fondo Nacional de Desarrollo Científico, Tecnológico y de Innovación Tecnológica",F4320335542,5,False
+Tsinghua University,F4320322392,5,False
+Substance Abuse and Mental Health Services Administration,F4320332164,5,False
+National Institute of Arthritis and Musculoskeletal and Skin Diseases,F4320337362,5,True
+Sichuan Province Science and Technology Support Program,F4320333335,5,False
+National Institute for Health and Care Research,F4320319990,5,False
+United States-Israel Binational Science Foundation,F4320320950,5,False
+Division of Graduate Education,F4320337368,5,True
+Consejo Nacional de Investigaciones Científicas y Técnicas,F4320321594,5,False
+Health Services Research and Development,F4320309610,5,False
+U.S. Department of Agriculture,F4320306114,5,False
+European Southern Observatory,F4320322765,5,False
+Dipartimenti di Eccellenza,F4320317295,5,False
+"Centro de Estudos Ambientais e Marinhos, Universidade de Aveiro",F4320333469,5,False
+National High Magnetic Field Laboratory,F4320313883,5,False
+Maternal and Child Health Bureau,F4320337558,5,False
+Hrvatska Zaklada za Znanost,F4320322674,4,False
+University of Portsmouth,F4320311064,4,False
+Michael J. Fox Foundation for Parkinson's Research,F4320306136,4,False
+National Institute of Environmental Health Sciences,F4320337361,4,True
+"Division of Civil, Mechanical and Manufacturing Innovation",F4320337391,4,False
+National Sleep Foundation,F4320307381,4,False
+Wellcome,F4320307874,4,False
+"Division of Microbiology and Infectious Diseases, National Institute of Allergy and Infectious Diseases",F4320338412,4,True
+World Bank Group,F4320307855,4,False
+Administration for Community Living,F4320332398,4,False
+National Social Science Fund of China,F4320335869,4,False
+Robert Wood Johnson Foundation,F4320306139,4,False
+"Unitatea Executiva pentru Finantarea Invatamantului Superior, a Cercetarii, Dezvoltarii si Inovarii",F4320323983,4,False
+"University of California, Los Angeles",F4320332502,4,False
+Comunidad de Madrid,F4320313831,4,False
+National Center for Injury Prevention and Control,F4320337417,4,False
+"Ministry of Education, Youth and Science",F4320321842,4,False
+National Geographic Society,F4320309024,4,False
+Division of Biological Infrastructure,F4320337398,4,True
+Fonds De La Recherche Scientifique - FNRS,F4320321390,4,False
+Carlsbergfondet,F4320321504,4,False
+Basic and Applied Basic Research Foundation of Guangdong Province,F4320337111,4,False
+"Department of Biotechnology, Ministry of Science and Technology, India",F4320320717,4,False
+"Global Fund to Fight AIDS, Tuberculosis and Malaria",F4320307851,4,False
+Joint Genome Institute,F4320316170,4,False
+Division of Advanced Cyberinfrastructure,F4320337563,4,False
+Canada Research Chairs,F4320320994,4,False
+Beijing Normal University,F4320321432,4,False
+Directorate for Computer and Information Science and Engineering,F4320332169,4,True
+Division of Ocean Sciences,F4320337386,4,True
+Hjärnfonden,F4320322168,4,False
+National Medical Research Council,F4320334737,3,False
+University of Edinburgh,F4320320332,3,False
+"Key Research Program of Frontier Science, Chinese Academy of Sciences",F4320338202,3,False
+Smithsonian Institution,F4320306083,3,False
+United States - Israel Binational Science Foundation,F4320308960,3,False
+"Office of Research Infrastructure Programs, National Institutes of Health",F4320337901,3,False
+U.S. Department of Education,F4320306106,3,False
+Office of the Director,F4320332179,3,False
+"Department of Atomic Energy, Government of India",F4320320768,3,False
+Bureau of Justice Assistance,F4320337414,3,False
+Seventh Framework Programme,F4320334960,3,False
+National Research Council,F4320314062,3,False
+Arts and Humanities Research Council,F4320334609,3,False
+Frederick National Laboratory for Cancer Research,F4320313762,3,False
+F. Hoffmann-La Roche,F4320309432,3,False
+H. Lundbeck A/S,F4320327918,3,False
+Eisai,F4320322148,3,False
+Meso Scale Diagnostics,F4320309470,3,False
+Biogen,F4320308604,3,False
+Novartis Pharmaceuticals Corporation,F4320310388,3,False
+BioClinica,F4320310045,3,False
+Genentech,F4320332193,3,False
+Bristol-Myers Squibb,F4320307115,3,False
+Eli Lilly and Company,F4320307758,3,False
+Servier,F4320327235,3,False
+IXICO,F4320329118,3,False
+Pfizer,F4320307765,3,False
+Air Force Research Laboratory,F4320338294,3,False
+UK Research and Innovation,F4320314731,3,False
+"West China Hospital, Sichuan University",F4320336042,3,False
+Akademie Věd České Republiky,F4320322482,3,False
+Financiadora de Estudos e Projetos,F4320322904,3,False
+Ohio State University,F4320309374,3,False
+Michigan Technology Tri-Corridor,F4320334038,3,False
+Brookhaven National Laboratory,F4320338289,3,False
+Fondation ARC pour la Recherche sur le Cancer,F4320322361,3,False
+Brain and Behavior Research Foundation,F4320306147,3,False
+Laboratory Directed Research and Development,F4320337547,3,False
+Simons Foundation Autism Research Initiative,F4320315019,3,False
+Grand Challenges Canada,F4320322921,3,False
+Sanming Project of Medicine in Shenzhen,F4320335767,3,False
+Massachusetts General Hospital,F4320308349,3,False
+"Ministerio de Asuntos Económicos y Transformación Digital, Gobierno de España",F4320326262,3,False
+Natural Science Foundation of Hunan Province,F4320322843,3,False
+Centers for Medicare and Medicaid Services,F4320332205,3,False
+McLean Hospital,F4320309257,3,False
+"University of California, San Francisco",F4320332622,3,False
+Natural Science Foundation of Shandong Province,F4320324174,3,False
+"Consumers, Health, Agriculture and Food Executive Agency",F4320335253,3,False
+National Research Council of Thailand,F4320322817,3,False
+Russian Foundation for Basic Research,F4320321079,3,False
+Hungarian Scientific Research Fund,F4320321994,3,False
+National Security Agency,F4320311089,3,False
+Templeton Religion Trust,F4320327997,3,False
+Gatsby Charitable Foundation,F4320320033,3,False
+Francis Crick Institute,F4320312060,2,False
+National Centre for Supercomputing Applications,F4320312143,2,False
+Israel National Road Safety Authority,F4320311255,2,False
+Villum Fonden,F4320310490,2,False
+Cancer Research Society,F4320311169,2,False
+KU Leuven,F4320322308,2,False
+Science Mission Directorate,F4320333962,2,False
+Planetary Science Division,F4320338039,2,False
+"Ministry of Science, Technology and Space",F4320320948,2,False
+Japan Science and Technology Agency,F4320334789,2,False
+Prostate Cancer Canada,F4320319921,2,False
+Movember Foundation,F4320310747,2,False
+David and Lucile Packard Foundation,F4320306079,2,False
+Searle Scholars Program,F4320314849,2,False
+Moorfields Eye Charity,F4320329812,2,False
+"University of California, Santa Barbara",F4320332500,2,False
+Novo Nordisk,F4320322436,2,False
+Centro Singular de Investigación de Galicia,F4320330134,2,False
+Center for Information Technology,F4320337373,2,False
+Kavli Foundation,F4320306399,2,False
+Northern California Institute for Research and Education,F4320311551,2,False
+University of Southern California,F4320308668,2,False
+Berlin Mathematics Research Center MATH+,F4320330291,2,False
+Human Frontier Science Program,F4320307846,2,False
+"Institute for Quantum Information and Matter, California Institute of Technology",F4320334224,2,False
+"Ministry of Education and Research, Romania",F4320324070,2,False
+Energy Frontier Research Centers,F4320338420,2,False
+European Space Agency,F4320318240,2,False
+HORIZON EUROPE European Research Council,F4320338453,2,True
+"Ministry of Science, ICT and Future Planning",F4320322030,2,False
+Fiducie de Recherche sur la Foret des Cantons-de-l'Est,F4320323189,2,False
+Agència de Gestió d'Ajuts Universitaris i de Recerca,F4320334830,2,False
+Solar Energy Technologies Office,F4320337712,2,False
+HORIZON EUROPE Framework Programme,F4320334322,2,False
+Florida Department of Health,F4320309360,2,False
+Defense Threat Reduction Agency,F4320332186,2,False
+Generalitat de Catalunya,F4320321505,2,False
+"Ministerio de Ciencia, Tecnología e Innovación Productiva",F4320321664,2,False
+"Bureau of International Cooperation, Chinese Academy of Sciences",F4320323160,2,False
+Council on grants of the President of the Russian Federation,F4320335603,2,False
+Samuel Waxman Cancer Research Foundation,F4320306548,2,False
+Grand Équipement National De Calcul Intensif,F4320326256,2,False
+Natural Science Foundation of Zhejiang Province,F4320338464,2,False
+Center of Excellence in Regulatory Science and Innovation,F4320332744,2,False
+"Ministério da Ciência, Tecnologia e Ensino Superior",F4320323642,2,False
+The Wellcome Trust DBT India Alliance,F4320325580,2,False
+China Medical Board,F4320306650,2,False
+William T. Grant Foundation,F4320306360,2,False
+"Department of Science and Technology, Ministry of Science and Technology, India",F4320320719,2,False
+Army Research Laboratory,F4320338295,2,False
+Belgian Federal Science Policy Office,F4320321454,2,False
+Institut sur la Nutrition et les Aliments Fonctionnels,F4320332623,2,False
+AFM-Téléthon,F4320323001,2,False
+Health Resources and Services Administration,F4320332175,2,False
+Office of Advanced Cyberinfrastructure,F4320337377,2,True
+Beijing Municipal Science and Technology Commission,F4320325902,2,False
+Corporation for National and Community Service,F4320308292,2,False
+U.S. Food and Drug Administration,F4320332163,2,False
+Center for Bioenergy Innovation,F4320337801,2,False
+Beijing Institute of Technology,F4320323110,2,False
+Florida State University,F4320309170,2,False
+University of Texas at Austin,F4320310620,2,False
+Narodowym Centrum Nauki,F4320322650,2,False
+"Center for Ultracold Atoms, Massachusetts Institute of Technology",F4320334437,2,False
+National Alliance for Research on Schizophrenia and Depression,F4320311440,2,False
+Intelligence Advanced Research Projects Activity,F4320333051,2,False
+King Abdullah University of Science and Technology,F4320322320,2,False
+Jet Propulsion Laboratory,F4320332375,2,False
+Honeywell Hometown Solutions,F4320307982,2,False
+National Institute of Standards and Technology,F4320332178,2,True
+Yorkshire Forward,F4320313919,2,False
+Division of Industrial Innovation and Partnerships,F4320337396,2,True
+Carnegie Corporation of New York,F4320306125,2,False
+Chinese Academy of Medical Sciences,F4320323137,2,False
+Edge Hill University,F4320311694,2,False
+"Division of Intramural Research, National Institute of Allergy and Infectious Diseases",F4320309123,2,True
+United States Agency for International Development,F4320306115,2,False
+Swedish Cancer Foundation,F4320313607,2,False
+National Stroke Foundation,F4320320373,2,False
+Technische Universität Dresden,F4320321613,2,False
+University of South China,F4320325572,2,False
+Intramural Research Program,F8394932145,2,False
+Dana-Farber Cancer Institute,F4320310151,1,False
+Korea Health Industry Development Institute,F4320322107,1,False
+Centres de Recerca de Catalunya,F4320315803,1,False
+European Food Safety Authority,F4320315318,1,False
+Natural Environment Research Council,F4320334631,1,False
+Medicinska Forskningsrådet,F4320323764,1,False
+Laboratoire d'Excellence Ecofect,F4320330080,1,False
+Université de Lyon,F4320326804,1,False
+"Consejería de Economía, Conocimiento, Empresas y Universidad, Junta de Andalucía",F4320317018,1,False
+"Consejería de Economía, Innovación, Ciencia y Empleo, Junta de Andalucía",F4320321562,1,False
+University of Colorado Boulder,F4320332538,1,False
+Research Corporation for Science Advancement,F4320306487,1,False
+Ontario Genomics Institute,F4320319905,1,False
+Canadian Cancer Society Research Institute,F4320334576,1,False
+James S. McDonnell Foundation,F4320306183,1,False
+Gazi Üniversitesi,F4320321861,1,False
+Ministry of Culture and Sport,F4320326423,1,False
+CIHR Skin Research Training Centre,F4320338101,1,False
+Emory University,F4320309381,1,False
+Texas Christian University,F4320310522,1,False
+Mississippi State University,F4320309637,1,False
+Temple University,F4320312387,1,False
+Hellman Foundation,F4320311968,1,False
+"Ministerio de Economía, Fomento y Turismo, Chile",F4320323481,1,False
+Innovationsfonden,F4320313796,1,False
+Novo Nordisk Fonden,F4320325957,1,False
+Università degli Studi di Milano,F4320313475,1,False
+University of Pittsburgh,F4320310174,1,False
+"Department of Science and Technology, Republic of South Africa",F4320320691,1,False
+National Postdoctoral Program for Innovative Talents,F4320335768,1,False
+Scottish Universities Physics Alliance,F4320320254,1,False
+Royal Society Te Apārangi,F4320320774,1,False
+Precursory Research for Embryonic Science and Technology,F4320338111,1,False
+"Division of Cancer Epidemiology and Genetics, National Cancer Institute",F4320338333,1,False
+Institute of Food Technologists,F4320312800,1,False
+Hjartavernd,F4320327881,1,False
+European Federation of Pharmaceutical Industries and Associations,F4320314178,1,False
+EPSRC Centre for Doctoral Training in Medical Imaging,F4320337926,1,False
+University of California Merced,F4320333031,1,False
+Danmarks Grundforskningsfond,F4320320943,1,False
+University of Oxford,F4320320290,1,False
+DeGregorio Family Foundation,F4320311125,1,False
+Pershing Square Sohn Cancer Research Alliance,F4320314931,1,False
+American Chemical Society,F4320308355,1,False
+"Directorate for Social, Behavioral and Economic Sciences",F4320332173,1,True
+European Cooperation in Science and Technology,F4320320366,1,False
+Chinese Academy of Agricultural Sciences,F4320323155,1,False
+Ford Foundation,F4320306081,1,False
+Georgetown University,F4320310223,1,False
+UK Space Agency,F4320312931,1,False
+CRC Health Group,F4320309580,1,False
+Academia Sinica,F4320321041,1,False
+Open Philanthropy Project,F4320315389,1,False
+National Science Fund for Distinguished Young Scholars,F4320336125,1,False
+INFRAFRONTIER,F4320318810,1,False
+Institut de Ciències del Cosmos,F4320335897,1,False
+Svenska Forskningsrådet Formas,F4320321033,1,False
+William and Flora Hewlett Foundation,F4320307873,1,False
+China Medical University Hospital,F4320322609,1,False
+"China Medical University, Taiwan",F4320327652,1,False
+Science and Technology Department of Zhejiang Province,F4320338110,1,False
+"Division of Electrical, Communications and Cyber Systems",F4320337392,1,False
+Division of Computing and Communication Foundations,F4320337387,1,True
+Center for Advancing Research Impact in Society,F4167512298,1,False
+NextGenerationEU,F7311471023,1,False
+U.S. National Library of Medicine,F4320337372,1,True
+University of North Carolina at Chapel Hill,F4320332600,1,False
+Universidad Nacional de Cuyo,F4320323547,1,False
+Fondo para la Investigación Científica y Tecnológica,F4320337954,1,False
+Harbin Medical University Cancer Hospital,F4320315049,1,False
+Burroughs Wellcome Fund,F4320306133,1,False
+Retirement Research Foundation,F4320306488,1,False
+Fundação Carlos Chagas Filho de Amparo à Pesquisa do Estado do Rio de Janeiro,F4320322749,1,False
+"Bundesministerium für Bildung, Wissenschaft, Forschung und Technologie",F4320326494,1,False
+State Key Laboratory of Organic Geochemistry,F4320326866,1,False
+Natural Science Foundation of Guangdong Province,F4320321921,1,False
+Universiteit Antwerpen,F4320324595,1,False
+Universities Space Research Association,F4320318328,1,False
+"Secretaría de Estado de Investigación, Desarrollo e Innovación",F4320335204,1,False
+Fondazione Cariplo,F4320321499,1,False
+Ministero degli Affari Esteri e della Cooperazione Internazionale,F4320323988,1,False
+State Key Laboratory of Software Development Environment,F4320326978,1,False
+National Key Research and Development Program of China Stem Cell and Translational Research,F4320336026,1,False
+Natural Science Foundation of Jiangxi Province,F4320322665,1,False
+"Center for Mendelian Genomics, University of Washington",F4320334351,1,False
+American Society of Nephrology,F4320306605,1,False
+Research and Development,F4320337504,1,False
+Natural Science Foundation of Hebei Province,F4320322163,1,False
+Directorate for Biological Sciences,F4320332167,1,True
+"Office of Extramural Research, National Institutes of Health",F4320337544,1,True
+Compagnia di San Paolo,F4320309746,1,False
+Università degli Studi di Torino,F4320324041,1,False
+Georgia State University,F4320310607,1,False
+U.S. Geological Survey,F4320332183,1,False
+Center for Substance Abuse Treatment,F4320337426,1,False
+Columbia University,F4320309111,1,False
+National Science Board,F4320332265,1,False
+Istituto Nazionale di Astrofisica,F4320323147,1,False
+American Sheep Industry Association,F4320317394,1,False
+California Department of Fish and Game,F4320308022,1,False
+Yale University,F4320308380,1,False
+"Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-Westfalen",F4320325901,1,False
+Bulgarian National Science Fund,F4320321843,1,False
+French Muscular Dystrophy Association,F4320314289,1,False
+Northeastern University,F4320322429,1,False
+Major Science and Technology Projects in Anhui Province,F4320336601,1,False
+Physicians Foundation,F4320319523,1,False
+Postdoctoral Research Foundation of China,F4320335443,1,False
+University of Pennsylvania,F4320309370,1,False
+Saudi Aramco,F4320324706,1,False
+Comprehensive Cancer Center at Wake Forest Baptist Medical Center,F4320313862,1,False
+Ministry of Sports and Education,F4320327559,1,False
+Eusko Jaurlaritza,F4320321705,1,False
+Children's National Hospital,F4320317457,1,False
+National Drug Abuse Treatment Clinical Trials Network,F4320338410,1,False
+Oklahoma State University,F4320309482,1,False
+Michigan State University,F4320310016,1,False
+Universität Innsbruck,F4320327491,1,False
+Tempus Közalapítvány,F4320328228,1,False
+Henry Luce Foundation,F4320308771,1,False
+Facebook,F4320308737,1,False
+Sapienza Università di Roma,F4320322510,1,False
+United States - India Educational Foundation,F4320308961,1,False
+Division of Astronomical Sciences,F4320337404,1,False
+New Energy and Industrial Technology Development Organization,F4320321680,1,False
+National Foundation for Science and Technology Development,F4320309617,1,False
+Materials Sciences and Engineering Division,F17521132,1,False
+Division of Emerging Frontiers,F4320337401,1,False
+Pan African Materials Institute,F4320329948,1,False
+Universitas Brawijaya,F4320323817,1,False
+State of Florida,F5617725241,1,False
+Bioenergy Technologies Office,F4320337708,1,False
+Stephenson Cancer Center,F4320333795,1,False
+"Albert Einstein College of Medicine, Yeshiva University",F4320332522,1,False
+Life Sciences Research Foundation,F4320311350,1,False
+Division of Undergraduate Education,F4320337408,1,True
+Norges Idrettshøgskole,F4320327529,1,False
+Defense Health Agency,F4320332925,1,False
+Instituto Nacional de Ciência e Tecnologia do Café,F4320327190,1,False
+Institute for New Economic Thinking,F4320310006,1,False
+Commonwealth Fund,F4320306176,1,False
+NTT Research,F5876947149,1,False
+Government of Jiangsu Province,F4320321605,1,False
+Korea Basic Science Institute,F4320322111,1,False
+U.S. Social Security Administration,F4320308309,1,False
+ALS Association,F4320306232,1,False
+Merck Family Fund,F6748182880,1,False
+Fetzer Institute,F4320306689,1,False
+Heising-Simons Foundation,F4320314817,1,False
+Natural Science Foundation of Beijing Municipality,F4320322919,1,False
+"Bundesministerium für Bildung, Wissenschaft und Forschung",F4320328086,1,False
+Hanyang University,F4320321142,1,False
+Ministry of Education,F4320321408,1,False
+Iran University of Medical Sciences,F4320313199,1,False
+U.S. Naval Research Laboratory,F4320337628,1,False
+Asia-Pacific Network for Global Change Research,F4320308564,1,False
+Kyoto University,F4320323365,1,False
+"Center for AIDS Research, Johns Hopkins University",F4320334051,1,False
+Conrad N. Hilton Foundation,F4320306180,1,False
+University of Washington,F4320310094,1,False
+Fred Hutchinson Cancer Research Center,F4320308793,1,False
+Istituto Nazionale di Fisica Nucleare Sezione di Padova,F4320316224,1,False
+Versus Arthritis,F4320327444,1,False
+"National Center for HIV/AIDS, Viral Hepatitis, STD, and TB Prevention",F4320337422,1,False
+"Ministry of Higher Education, Science, Research and Innovation, Thailand",F4320329432,1,False
+High Level Innovation and Entrepreneurial Research Team Program in Jiangsu,F5515530138,1,False
+Riksbankens Jubileumsfond,F4320322659,1,False
+Division of Social and Economic Sciences,F4320337366,1,True
+Guangxi Key Laboratory of Automatic Detection Technology and Instrument Foundation,F4320326293,1,False
+State Key Laboratory of Chemo/Biosensing and Chemometrics,F4320326871,1,False
+Boston College,F4320308357,1,False
+American Economic Association,F4320315031,1,False
+University of Ottawa,F4320310630,1,False
+Global Challenges Research Fund,F4320316481,1,False
+Recruitment Program of Global Experts,F4320326701,1,False
+Shanghai Hospital Development Center,F4320325338,1,False
+Science and Technology Commission of Shanghai Municipality,F4320321885,1,False
+Fondation pour la Recherche Médicale,F4320321589,1,False
+Cancéropôle Ile de France,F4320323866,1,False
+Université de Paris,F4320331438,1,False
+Institut National de la Santé et de la Recherche Médicale,F4320320893,1,False
+National Endowment for the Humanities,F4320306100,1,False
+Institut National Du Cancer,F4320323807,1,False
+Instituto Nazionale di Fisica Nucleare,F4320334899,1,False
+Indo-US Science and Technology Forum,F4320320738,1,False
+"Materials Research Institute, Pennsylvania State University",F4320333199,1,False
+National Natural Science Foundation of China-Yunnan Joint Fund,F4320335595,1,False
+Innovative Research Group Project of the National Natural Science Foundation of China,F4320315254,1,False
+Division of Emerging Frontiers in Research and Innovation,F4320337395,1,False
+Central University Basic Research Fund of China,F4320329878,1,False
+Slovenská Akadémia Vied,F4320312330,1,False
+U.S. Air Force,F4320332467,1,False
+Deutscher Akademischer Austauschdienst,F4320320875,1,False
+National Youth Science Foundation,F4320309856,1,False
+Calouste Gulbenkian Foundation,F4320320052,1,False
+Patrick and Catherine Weldon Donaghue Medical Research Foundation,F4320306313,1,False
+Companhia Brasileira de Metalurgia e Mineração,F4320324608,1,False
+Universidad Austral de Chile,F4320326059,1,False
+Vienna Science and Technology Fund,F4320321003,1,False
+Laura and John Arnold Foundation,F4320311571,1,False
+National Research University Higher School of Economics,F4320324261,1,False
+Memorial Sloan-Kettering Cancer Center,F4320309468,1,False
+Bonfils-Stanton Foundation,F4320306259,1,False
+Iowa Science Foundation,F4320313643,1,False
+Fonds National de la Recherche Luxembourg,F4320321038,1,False
+Universiteit Gent,F4320322603,1,False
+Universidade de Brasília,F4320310929,1,False
+Health Commission of Hunan Province,F4320317581,1,False
+Scientific Research Fund for Young and Middle-Aged Scholars of Gansu University of Traditional Chinese Medicine,F4320335929,1,False
+National Institute of Mental Health and Neurosciences,F4320318855,1,True

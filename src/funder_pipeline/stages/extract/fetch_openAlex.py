@@ -5,6 +5,8 @@ import requests
 from funder_pipeline.utils.current_funder import funders
 from pathlib import Path
 
+from funder_pipeline.utils.logging import log_stage
+
 logger = logging.getLogger(__name__)
 
 skipped_redflag = [
@@ -125,18 +127,36 @@ def export_awards_per_funder(
     return funder_name, output_dir, output
 
 def run_award_per_funder(args):
-    funder_name, output_dir, _ = export_awards_per_funder(
+    funder_name, output_dir, output = export_awards_per_funder(
         args.funder_id,
         args.institutions_id,
         args.start_year,
         args.end_year,
     )
 
+     # logging
+    logger.info("")
+    logger.info("=" * 80)
     logger.info(
-        "Assets and Awards info for %s exported to %s",
-        funder_name,
-        output_dir
+        "JOB RUN: institutions_id=%s, funder_id=%s (%s-%s)",
+        args.institutions_id,
+        args.funder_id,
+        args.start_year,
+        args.end_year
     )
+    logger.info("=" * 80)
+
+    log_stage(
+        "[1/1] Awards Per Funder",
+        {
+            "Funder": funder_name,
+            "Awards Count": len(output),
+            "Asset Count": len(set([item["openAlex_id"] for item in output])),
+            "Output File": output_dir,
+        }
+    )
+
+
 
 def run_unique_funder(args):
     """
@@ -180,9 +200,23 @@ def run_unique_funder(args):
     )
     df.to_csv(output_dir, index=False)
 
+    # logging
+    logger.info("")
+    logger.info("=" * 80)
     logger.info(
-        "Unique funder count exported to %s",
-        output_dir  
+        "JOB RUN: institutions_id=%s (%s-%s)",
+        args.institutions_id,
+        args.start_year,
+        args.end_year
+    )
+    logger.info("=" * 80)
+
+    log_stage(
+        "[1/1] Unique Funder",
+        {
+            "Unique Funders": len(result),
+            "output_dir": output_dir,
+        }
     )
 
     return df
