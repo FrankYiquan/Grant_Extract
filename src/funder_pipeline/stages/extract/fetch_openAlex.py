@@ -156,6 +156,11 @@ def run_award_per_funder(args):
         }
     )
 
+    logger.info("")
+    logger.info("=" * 80)
+    logger.info("JOB COMPLETE")
+    logger.info("=" * 80)
+
 
 
 def run_unique_funder(args):
@@ -218,6 +223,12 @@ def run_unique_funder(args):
             "output_dir": output_dir,
         }
     )
+
+    logger.info("")
+    logger.info("=" * 80)
+    logger.info("JOB COMPLETE")
+    logger.info("=" * 80)
+
 
     return df
 

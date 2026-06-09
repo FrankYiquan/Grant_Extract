@@ -86,6 +86,23 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
         "link_file": award_asset_links_output_dir
     }
 
+def output_import_awards_xml(successful_awards, output_dir):
+    """Output the successfully extracted awards to an XML file in the required format for Espero import."""
+
+    xml_header = '''<?xml version="1.0" encoding="UTF-8"?>
+<grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
+'''
+    xml_footer = '</grants>'    
+
+    with open(output_dir, 'w', encoding='utf-8') as f:
+        f.write(xml_header)
+
+        for award in successful_awards:
+            f.write(f"{award}\n")
+        f.write(xml_footer)
+
+    return output_dir
+
 def output_extraction_logs(funder_name, start_year, end_year, successful_awards, failed_awards, error_awards, award_asset_links):
     """Output the extraction logs including successful awards, failed awards, error awards and award-asset linking info to separate CSV files for record keeping and later use."""
     
@@ -97,18 +114,7 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
         / f"{funder_name}_{start_year}_{end_year}_imported_awards.csv"
     )
 
-    # required XML format for Espero import
-    xml_header = '''<?xml version="1.0" encoding="UTF-8"?>
-<grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
-'''
-    xml_footer = '</grants>'
-
-    with open(import_awards_output_dir, 'w', encoding='utf-8') as f:
-        f.write(xml_header)
-
-        for award in successful_awards:
-            f.write(f"{award}\n")
-        f.write(xml_footer)
+    output_import_awards_xml(successful_awards, import_awards_output_dir)
     
     # 2. output valid, extracted awards and thier doi to csv
     # this will be latered used to link the awards with their assets in Espero

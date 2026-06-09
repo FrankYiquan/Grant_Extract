@@ -1,7 +1,7 @@
 import boto3, json, csv, logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from funder_pipeline.cli.preprocess import register_funder_awards_command, register_unique_funder_command
-from funder_pipeline.cli.process import register_extract_awards_command
+from funder_pipeline.cli.process import register_extract_awards_command, register_extract_one_award_command
 from funder_pipeline.handlers.NIH import check_nih_funder
 from funder_pipeline.handlers.NSF import check_nsf_funder
 from funder_pipeline.handlers.European_Commision import check_eu_commision_funder
@@ -126,6 +126,7 @@ def main():
     register_unique_funder_command(subparsers)
     register_funder_awards_command(subparsers)
     register_extract_awards_command(subparsers)
+    register_extract_one_award_command(subparsers)
 
     args = parser.parse_args()
 

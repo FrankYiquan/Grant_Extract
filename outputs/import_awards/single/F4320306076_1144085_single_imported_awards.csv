@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
+<grant>
+    <grantId>1144085</grantId>
+    <grantName>Graduate Research Fellowship Program (GRFP)</grantName>
+    <funderCode>41___NATIONAL_SCIENCE_FOUNDATION_(ALEXANDRIA)</funderCode>
+    <currencyOfAmount>researchgrant.currency.usd</currencyOfAmount>
+    <amount>16780596</amount>
+    <startDate>2011-08-15</startDate>
+    <endDate>2019-07-31</endDate>
+    <grantURL>https://www.nsf.gov/awardsearch/show-award?AWD_ID=1144085</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>HISTORY</status>
+</grant>
+</grants>
