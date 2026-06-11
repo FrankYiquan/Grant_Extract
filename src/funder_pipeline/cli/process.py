@@ -1,5 +1,8 @@
 from funder_pipeline.cli.common import add_common_grant_args, parse_funder_id, validate_year_range
-from funder_pipeline.stages.pipeline import run_extract_awards, run_extract_one_award
+from funder_pipeline.stages.pipeline import (
+    run_extract_awards,
+    run_extract_one_award,
+)
 
 def register_extract_awards_command(subparsers):
     parser = subparsers.add_parser(

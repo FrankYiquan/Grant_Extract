@@ -1,6 +1,7 @@
 from pathlib import Path
 from funder_pipeline.stages.extract.fetch_openAlex import export_awards_per_funder
 from funder_pipeline.stages.extract.remove_invalid import filter_invalid_assets
+from funder_pipeline.stages.load.import_linking import link_asset_awards, link_asset_awards_from_dir
 from funder_pipeline.stages.transform.extract_awards import extract_all_awards, extract_tag, output_import_awards_xml
 from funder_pipeline.stages.transform.routing import route_all_awards_to_handlers, route_single_award_to_handler
 import logging
@@ -126,6 +127,8 @@ def run_extract_awards(args):
     )
 
 def get_one_award_data(award_id, funder_id, skip_routing=False):
+    """A function to run the pipeline for a single award. This is useful for testing, debugging, and backfilling purposes."""
+    
     logger.info("")
     logger.info("=" * 80)
     logger.info(
@@ -202,5 +205,3 @@ def run_extract_one_award(args):
         funder_id=args.funder_id,
         skip_routing=args.skip_routing,
     )
-
-
