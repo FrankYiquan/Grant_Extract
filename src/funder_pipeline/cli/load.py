@@ -52,14 +52,14 @@ def existing_award_asset_csv(value):
 
 def register_link_asset_awards_from_dir_command(subparsers):
     parser = subparsers.add_parser(
-        "link_asset_awards_from_dir",
+        "link_asset_awards_from_csv",
         description=(
             "Link award/assets from outputs/award_asset_links/<name>.csv."
         )
     )
 
     parser.add_argument(
-        "--asset_award_linking_dir",
+        "--dir",
         type=existing_award_asset_csv,
         required=True,
         help="CSV filename stem under outputs/award_asset_links, without .csv."

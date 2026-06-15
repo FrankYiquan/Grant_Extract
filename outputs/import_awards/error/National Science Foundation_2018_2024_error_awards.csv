@@ -1,1 +1,2 @@
-award,doi,funder_name,error_type,error_message
+award,doi,asset_id,funder_name,error_type,error_message
+MDM-2015-0509,https://doi.org/10.1093/mnras/stab978,9924552855501921,Ministerio de Ciencia e Innovación,ReadTimeoutError,"HTTPConnectionPool(host='localhost', port=55730): Read timed out. (read timeout=120)"

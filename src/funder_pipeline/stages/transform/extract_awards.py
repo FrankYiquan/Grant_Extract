@@ -15,10 +15,10 @@ def extract_tag(xml, tag):
 def extract_all_awards(awards, start_year, end_year, funder_name):
     """Extract information for all awards by routing them to their appropriate handlers and return the extraction results."""
 
-    successful_awards = []
-    failed_awards = []
-    error_awards = []
-    award_asset_links = []
+    successful_awards = [] # awards that are successfully extracted from funder API
+    failed_awards = [] # awards where its info can not be found through successfully calling the funder API
+    error_awards = [] # awards that when calling the funder API, return an error - for debugging purpose
+    award_asset_links = [] # used to link award - asset after importing the successful awards into Espero 
 
     with ThreadPoolExecutor(max_workers=20) as executor:
         # submit all awards to their respective handlers and collect the futures
@@ -44,6 +44,7 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
                     failed_awards.append({
                         "award": award["award"],
                         "doi": award["doi"],   
+                        "asset_id": award["asset_id"]
                     })
                 else:
                     # the award is valid and successfully extracted
@@ -54,14 +55,16 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
                     award_asset_links.append({
                         "award": final_award_id,
                         "doi": award["doi"],
+                        "asset_id": award["asset_id"]
                     })
 
             # record error logs
             except Exception as e:
                 error_awards.append({
                     "award": award["award"],
+                    "doi": award["doi"],
+                    "asset_id": award["asset_id"],
                     "funder_name": award["final_funder_name"],
-                    "doi": award["doi"],   
                     "error_type": type(e).__name__,
                     "error_message": str(e)
                 })
@@ -128,6 +131,7 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
         fieldnames = [
             "award",
             "doi",
+            "asset_id"
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -145,6 +149,7 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
         fieldnames = [
             "award",
             "doi",
+            "asset_id"
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -162,6 +167,7 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
         fieldnames = [
             "award",
             "doi",
+            "asset_id",
             "funder_name",
             "error_type",
             "error_message"

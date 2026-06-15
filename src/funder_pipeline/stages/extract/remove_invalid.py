@@ -5,7 +5,39 @@ from funder_pipeline.utils.sqs_config import PRODUCTION_EXLIBRIS_API
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import csv
 
-def is_valid_asset(doi: str) -> bool:
+def get_assetID(doi, api_key=PRODUCTION_EXLIBRIS_API):
+    """
+    Given a DOI, fetch the corresponding asset ID using the provided API key.
+    """
+
+    base_url = "https://api-na.hosted.exlibrisgroup.com/esploro/v1/assets"
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"apikey {api_key}"
+    }
+    params = {"doi": doi}
+    
+    try:
+        response = requests.get(base_url, headers=headers, params=params)
+        response.raise_for_status()  # Raise exception for HTTP errors
+        data = response.json()
+
+        asset_id = None
+        
+        # Check if there’s at least one record and extract assetId
+        if data.get("totalRecordCount", 0) > 0:
+            record = data["records"][0]
+            asset_id = record.get("originalRepository", {}).get("assetId")
+            return asset_id
+        else:
+            return None
+
+    except requests.exceptions.RequestException as e:
+        # print(f"Error fetching asset: {e}")
+        return None
+    
+
+def is_valid_asset(doi: str):
     """
     Check if the given doi is valid by making a request to the ExLibris API.
     Parameters:
@@ -15,22 +47,12 @@ def is_valid_asset(doi: str) -> bool:
 
     Valid means the doi exits in the system and is an asset associated with a faculty not temproary staff or student.
     """
-    url = f"https://api-na.hosted.exlibrisgroup.com/esploro/v1/assets?doi={doi}"
-    headers = {
-        "Authorization": f"apikey {PRODUCTION_EXLIBRIS_API}",
-        "Accept": "application/json"
-    }
-    
-    try:
-        response = requests.get(url, headers=headers)
-        if response.status_code != 200:
-            # print(f"Error checking asset ID {doi}: Received status code {response.status_code}")
-            return False
-        
-        return response.status_code == 200 and response.json().get("totalRecordCount", 0) > 0
-    except Exception as e:
-        # print(f"Error checking asset ID {doi}: {e}")
-        return False
+    asset_id = get_assetID(doi)
+
+    if asset_id:
+        return True, asset_id
+
+    return False, None
 
 
 def filter_invalid_assets(awards, funder_name, start_year, end_year):
@@ -41,7 +63,7 @@ def filter_invalid_assets(awards, funder_name, start_year, end_year):
     
     # filtering
     valid_awards = []
-    invalid_dois = []
+    invalid_dois = {}
 
     with ThreadPoolExecutor(max_workers=20) as executor:
         future_to_doi = {
@@ -52,7 +74,10 @@ def filter_invalid_assets(awards, funder_name, start_year, end_year):
         for future in as_completed(future_to_doi):
             doi = future_to_doi[future]
             try:
-                if future.result():
+                is_valid, asset_id = future.result()
+                if is_valid:
+                    for award in awards_sort_by_doi[doi]:
+                      award["asset_id"] = asset_id
                     valid_awards.extend(awards_sort_by_doi[doi])
                 else:
                     invalid_dois.append(doi)

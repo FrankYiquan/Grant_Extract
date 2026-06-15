@@ -5,6 +5,7 @@ import requests
 import json
 import csv
 
+from funder_pipeline.stages.extract.remove_invalid import get_assetID
 from funder_pipeline.utils.sqs_config import PRODUCTION_EXLIBRIS_API
 
 def export_grant_from_s3(bucket_name, folder_name, output_file=None):
@@ -68,37 +69,6 @@ def export_grant_from_s3(bucket_name, folder_name, output_file=None):
     print(f"Total files processed: {total}")
 
 
-def get_assetID(doi, api_key=PRODUCTION_EXLIBRIS_API):
-    """
-    Given a DOI, fetch the corresponding asset ID using the provided API key.
-    """
-
-    base_url = "https://api-na.hosted.exlibrisgroup.com/esploro/v1/assets"
-    headers = {
-        "Accept": "application/json",
-        "Authorization": f"apikey {api_key}"
-    }
-    params = {"doi": doi}
-    
-    try:
-        response = requests.get(base_url, headers=headers, params=params)
-        response.raise_for_status()  # Raise exception for HTTP errors
-        data = response.json()
-
-        asset_id = None
-        
-        # Check if there’s at least one record and extract assetId
-        if data.get("totalRecordCount", 0) > 0:
-            record = data["records"][0]
-            asset_id = record.get("originalRepository", {}).get("assetId")
-            return asset_id
-        else:
-            return None
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching asset: {e}")
-        return None
-    
 def process_folder(s3, bucket_name, folder_name, api_key = PRODUCTION_EXLIBRIS_API):
     """Process one folder (asset)"""
     inner_response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)

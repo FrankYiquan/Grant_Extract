@@ -55,7 +55,6 @@ def import_asset_grant_linking(asset_id, award_id, production=False):
             url,
             headers=headers,
             json=payload,
-            timeout=30,
         )
 
         response.raise_for_status()
@@ -63,6 +62,7 @@ def import_asset_grant_linking(asset_id, award_id, production=False):
         return True
 
     except requests.exceptions.RequestException as e:
+        print(e)
         return False
 
 
@@ -80,7 +80,7 @@ def batch_import(asset_award_list, production=False):
     successful_awards = []
     failed_awards = []
 
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
 
         future_to_award = {
             executor.submit(
@@ -178,9 +178,7 @@ def link_asset_award_by_csv(
         for row in reader:
 
             asset_id = (
-                row["doi"]
-                .split("https://doi.org/")[-1]
-                .strip()
+                row["asset_id"]
             )
 
             award_id = row["award"].strip()
@@ -290,7 +288,7 @@ def run_link_asset_awards_from_dir(args):
 
     logger.info(
         "JOB RUN: asset_award_linking_dir=%s, environment=%s",
-        args.asset_award_linking_dir,
+        args.dir,
         "production" if args.production else "sandbox"
     )
 
@@ -298,7 +296,7 @@ def run_link_asset_awards_from_dir(args):
 
     success, failure, error_path = (
         link_asset_award_by_csv(
-            asset_award_linking_dir=args.asset_award_linking_dir,
+            asset_award_linking_dir=args.dir,
             production=args.production,
         )
     )

@@ -58,6 +58,7 @@ def process_award(award, funder_id, funder_name):
 
     return {
         "award": award["award_id"],
+        "asset_id": award["asset_id"],
         "doi": award["doi"],
         "initial_funder_id": funder_id,
         "initial_funder_name": funder_name,
@@ -84,6 +85,7 @@ def route_all_awards_to_handlers(awards: list, funder_id: str, funder_name: str,
     with open(routing_outcome_output_dir, "w", newline="") as csvfile:
         fieldnames = [
             "award",
+            "asset_id",
             "doi",
             "initial_funder_id",
             "initial_funder_name",
