@@ -3,7 +3,10 @@ from pathlib import Path
 import requests
 from funder_pipeline.utils.sqs_config import PRODUCTION_EXLIBRIS_API
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import csv
+import csv, logging
+from funder_pipeline.utils.logging import log_stage
+
+logger = logging.getLogger(__name__)
 
 def get_assetID(doi, api_key=PRODUCTION_EXLIBRIS_API):
     """
@@ -36,6 +39,28 @@ def get_assetID(doi, api_key=PRODUCTION_EXLIBRIS_API):
         # print(f"Error fetching asset: {e}")
         return None
     
+def run_get_assetID_by_doi(args):
+    logger.info("")
+    logger.info("=" * 80)
+
+    logger.info(
+        "JOB RUN: DOI=%s",
+        args.doi,
+    )
+
+    success, assetID = is_valid_asset(args.doi)
+
+    log_stage(
+        "[1/1] Get Asset ID from Espero",
+        {
+            "Asset ID": assetID if success else "DOI cannot be found in Espero"
+        },
+    )
+
+    logger.info("")
+    logger.info("=" * 80)
+    logger.info("JOB COMPLETE")
+    logger.info("=" * 80)
 
 def is_valid_asset(doi: str):
     """

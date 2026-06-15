@@ -29,6 +29,11 @@ def validate_year_range(args, parser):
             "--start_year must be less than or equal to --end_year"
         )
 
+def validate_doi_format(doi):
+    if doi.startswith("https://doi.org/"):
+        return doi[len("https://doi.org/"):]
+    return doi
+    
 def add_common_grant_args(parser):
     parser.add_argument(
         "--start_year",

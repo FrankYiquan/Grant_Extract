@@ -1,3 +1,5 @@
+from funder_pipeline.cli.common import validate_doi_format
+from funder_pipeline.stages.extract.remove_invalid import run_get_assetID_by_doi
 from funder_pipeline.stages.load.import_linking import run_link_asset_awards_by_arg, run_link_asset_awards_from_dir
 from pathlib import Path
 import argparse
@@ -74,5 +76,24 @@ def register_link_asset_awards_from_dir_command(subparsers):
 
     parser.set_defaults(
         func=run_link_asset_awards_from_dir,
+        parser=parser
+    )
+
+def register_get_assetID_by_doi(subparsers):
+    parser = subparsers.add_parser(
+        "get_asset_id",
+        description=(
+            "Get Asset ID of Espero through asset's doi"
+        )
+    )
+
+    parser.add_argument(
+        "--doi",
+        type=validate_doi_format,
+        help="Input either the pure doi or doi starts with https://doi.org/"
+    )
+
+    parser.set_defaults(
+        func=run_get_assetID_by_doi,
         parser=parser
     )

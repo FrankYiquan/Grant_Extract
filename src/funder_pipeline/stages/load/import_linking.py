@@ -1,7 +1,6 @@
 from pathlib import Path
 from funder_pipeline.utils.logging import log_stage
 import logging, requests, csv
-from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from funder_pipeline.utils.sqs_config import PRODUCTION_EXLIBRIS_API, SANDBOX_EXLIBRIS_API
 
