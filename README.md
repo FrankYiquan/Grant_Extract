@@ -1,14 +1,16 @@
 # Funder API Pipeline
 
-## Purpose
+## Problem Statement 
+Many colleges and universities across the United States use Ex Libris's research information management platform, **Esploro**, to manage research outputs (assets) and sponsored funding records (awards/grants). However, detailed award information—such as funding amounts, project dates, and sponsor details—associated with research assets is often difficult to obtain and maintain. In many institutions, this information relies on manual entry by faculty members or scholarly librarians, leading to data inconsistencies, incomplete records, and limited transparency.
 
-This tool streamlines the scholarly librarian effort and time required to import awards or grants associated with academic articles, called assets in Esploro. It is a data pipeline that starts from scholarly article metadata, identifies funder award IDs, extracts structured award information, and prepares the files needed to import awards and link them back to assets in Esploro.
+To address these challenges, we developed an automated ETL (Extract, Transform, Load) data pipeline operated through command-line interface (CLI) commands. The pipeline automatically extracts award information from funder APIs or retrieves data directly from funder websites through web scraping. The extracted data is then transformed into a standardized, structured format, imported into Esploro and linked with associated assets, enabling seamless integration with existing research records.
 
-The pipeline currently supports 97 funders. For each supported funder, award information is extracted either through a direct funder API call or, when an API is not available, through web scraping. The supported funder API tracking sheet is here:
 
-https://docs.google.com/spreadsheets/d/10ehJgOiP2DjTQb045rAi50PwteY5Zq8tbDYAxT37Ik4/edit?gid=0#gid=0
+## Overview of the Pipeline
 
-The default institution is Brandeis University, using OpenAlex institution ID `I6902469`.
+The pipeline currently supports **97** of the most commonly used funding agencies. It is designed with extensibility in mind, allowing additional funders to be integrated with minimal effort as needed. A complete list of the currently supported funders can be found in the [`current_funder.py`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/utils/current_funder.py) file.
+
+![Workflow](./resources/fp_5.drawio.png)
 
 ## CLI Commands
 
