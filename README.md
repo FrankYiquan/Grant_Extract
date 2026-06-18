@@ -24,6 +24,8 @@ The project installs a console command named `fp`.
 | `fp get_asset_id` | Look up an Esploro asset ID by DOI. Accepts either a plain DOI or a `https://doi.org/` URL. | `fp get_asset_id --doi 10.1038/s41467-020-17432-w` |
 | `fp link_assets_by_arg` | Link one Esploro asset to one or more award IDs through the Ex Libris API. Uses sandbox unless `--production` is supplied. | `fp link_assets_by_arg --asset_id 9924303240601921 --award_ids 1144085 AST-1337663` |
 | `fp link_asset_awards_from_csv` | Link asset-award pairs from `outputs/award_asset_links/<name>.csv`. Uses sandbox unless `--production` is supplied. | `fp link_asset_awards_from_csv --dir "National Science Foundation_2018_2024_award_asset_links"` |
+| `fp clean_outputs` | Delete files inside `outputs/` and all subfolders while preserving the folder structure. | `fp clean_outputs` |
+| `fp clean_outputs --dry_run` | Preview which files would be deleted without removing anything. | `fp clean_outputs --dry_run` |
 
 Common arguments:
 
@@ -131,6 +133,18 @@ Main runtime outputs are written under `outputs/`:
 | `outputs/import_awards/single/` | Output from `extract_one_award`. |
 | `outputs/award_asset_links/` | Award-to-asset links used after awards are imported. |
 | `outputs/award_asset_links/error/` | Failed award-to-asset link attempts. |
+
+To clear generated output files without deleting the folders, run:
+
+```bash
+fp clean_outputs
+```
+
+To preview the cleanup first, run:
+
+```bash
+fp clean_outputs --dry_run
+```
 
 ## Project Structure
 

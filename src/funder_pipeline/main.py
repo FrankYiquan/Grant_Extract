@@ -1,6 +1,7 @@
 import boto3, json, csv, logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from funder_pipeline.cli.load import register_get_assetID_by_doi, register_link_asset_awards_command, register_link_asset_awards_from_dir_command
+from funder_pipeline.cli.maintenance import register_clean_outputs_command
 from funder_pipeline.cli.preprocess import register_funder_awards_command, register_unique_funder_command
 from funder_pipeline.cli.process import (register_extract_awards_command, register_extract_one_award_command)
 from funder_pipeline.handlers.NIH import check_nih_funder
@@ -131,6 +132,7 @@ def main():
     register_link_asset_awards_command(subparsers)
     register_link_asset_awards_from_dir_command(subparsers)
     register_get_assetID_by_doi(subparsers)
+    register_clean_outputs_command(subparsers)
 
     args = parser.parse_args()
 
