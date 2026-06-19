@@ -1,20 +1,21 @@
 # Funder API Pipeline
 
 ## Problem Statement 
-Many colleges and universities across the United States use Ex Libris's research information management platform, **Esploro**, to manage research outputs (assets) and sponsored funding records (awards/grants). However, detailed award information—such as funding amounts, project dates, and sponsor details—associated with research assets is often difficult to obtain and maintain. In many institutions, this information relies on manual entry by faculty members or scholarly librarians, leading to data inconsistencies, incomplete records, and limited transparency.
+Many colleges and universities across the United States use Ex Libris's research information management platform, **Esploro**, to manage research outputs (assets) and sponsored funding records (awards/grants). 
+
+However, detailed award information—such as funding amounts, project dates, and sponsor details—associated with research assets is often difficult to obtain and maintain. In many institutions, this information relies on manual entry by faculty members or scholarly librarians, leading to data inconsistencies, incomplete records, and limited transparency.
 
 To address these challenges, we developed an automated ETL (Extract, Transform, Load) data pipeline operated through command-line interface (CLI) commands. The pipeline automatically extracts award information from funder APIs or retrieves data directly from funder websites through web scraping. The extracted data is then transformed into a standardized, structured format, imported into Esploro and linked with associated assets, enabling seamless integration with existing research records.
 
-
 ## Overview of the Pipeline
 
-The pipeline currently supports **97** of the most commonly used funding agencies. It is designed with extensibility in mind, allowing additional funders to be integrated with minimal effort as needed. A complete list of the currently supported funders can be found in the [`current_funder.py`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/utils/current_funder.py) file.
+The pipeline currently supports **97** of the most commonly used funding agencies. 
 
-![Workflow](./resources/fp_5.drawio.png)
+It is designed with extensibility in mind, allowing additional funders to be integrated with minimal effort as needed. A complete list of the currently supported funders can be found in the [`current_funder.py`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/utils/current_funder.py) file.
 
 ## CLI Commands
 
-The project installs a console command named `fp`.
+The project installs a console command named `fp` (short for "funder pipeline")
 
 | Command | Meaning | Example |
 | --- | --- | --- |
@@ -32,9 +33,276 @@ The project installs a console command named `fp`.
 Common arguments:
 
 - `--start_year` and `--end_year` are required for funder discovery and extraction commands.
-- `--institutions_id` is optional and defaults to `I6902469`.
-- `--funder_id` must be one of the supported OpenAlex funder IDs configured in `src/funder_pipeline/utils/current_funder.py`.
+- `--institutions_id` is the institutions id in OpenAlex. It's optional and defaults to `I6902469` (Brandeis University).
+- `--funder_id` must be one of the supported OpenAlex funder IDs configured in [`current_funder.py`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/utils/current_funder.py).
 - Add `--production` only when you intend to write to the production Ex Libris/Esploro environment.
+
+# Pipeline Workflow
+
+![Workflow](./resources/fp_5.drawio.png)
+
+# Stage 1: Identify and Rank Funders
+
+### Context
+
+OpenAlex is an open scholarly metadata database that aggregates information from sources such as Crossref and ORCID. Its API enables users to retrieve and filter research outputs and their associated awards based on institutions, publication years, and other metadata fields.
+
+This stage queries OpenAlex to identify all funders associated with a given institution during a specified time period. The pipeline counts the number of awards linked to each funder, ranks funders by award count, and generates key metadata required for Stage 2, including OpenAlex institution IDs and funder IDs.
+
+### Command
+
+Run:
+
+```bash
+fp unique_funder --start_year <start_year> --end_year <end_year> --institutions_id <institution_id>
+```
+
+For Brandeis University, the `--institutions_id` argument can be omitted because Brandeis University is used as the default institution:
+
+```bash
+fp unique_funder --start_year <start_year> --end_year <end_year>
+```
+
+### Output
+
+```csv
+# CSV file in outputs/funder_count
+
+funder_name,funder_openalex_id,count,is_implemented
+
+Science and Technology Facilities Council,F4320334632,6045,True
+...
+```
+
+### Output Columns
+
+| Column               | Description                                                                                                                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `funder_name`        | Name of the funding organization.                                                                                                                              |
+| `funder_openalex_id` | OpenAlex identifier for the funder.                                                                                                                            |
+| `count`              | Number of awards associated with the funder during the specified time period.                                                                                  |
+| `is_implemented`     | Indicates whether funder-specific extraction logic has been implemented in the pipeline. A value of `True` means the funder is currently supported in Stage 2. |
+
+---
+
+# Stage 2: Fetch, Validate, Filter, and Extract Awards
+
+### Context
+
+After identifying funders in Stage 1, run Stage 2 separately for each funder. Processing funders individually makes it easier to monitor progress, inspect logs, identify extraction issues, and perform targeted backfills when necessary.
+
+For each funder, the pipeline:
+
+1. Retrieves associated awards from OpenAlex.
+2. Validates whether linked assets exist in Esploro.
+3. Routes awards to the appropriate funder-specific handler.
+4. Extracts award metadata from funder APIs or websites.
+5. Generates XML files ready for Esploro import.
+6. Produces award-to-asset linking files used in Stage 4.
+
+### Command
+
+Run:
+
+```bash
+fp extract_awards --funder_id <funder_id> --start_year <start_year> --end_year <end_year> --institutions_id <institution_id>
+```
+
+If you are running for Brandeis University, you can omit `--institutions_id`:
+
+```bash
+fp extract_awards --funder_id <funder_id> --start_year <start_year> --end_year <end_year>
+```
+
+### Output
+
+Each time this command is executed, log files are generated for every processing stage. These logs make it easier to investigate unexpected results, diagnose failures, and perform targeted fixes.
+
+---
+
+## Sub-Stage 2.1: Retrieve Awards
+
+The pipeline queries OpenAlex and retrieves all awards that match the provided institution, funder, and year filters.
+
+```csv
+# CSV file in outputs/award_ids
+
+openAlex_id,doi,title,publication_year,funder_name,funder_openAlex_id,award_id
+
+https://openalex.org/W4280589633,https://doi.org/10.3847/2041-8213/ac6674,First Sagittarius A* Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole in the Center of the Milky Way,2022,Space Telescope Science Institute,F4320314503,NAS5-26555
+
+...
+```
+
+---
+
+## Sub-Stage 2.2: Validate Assets
+
+OpenAlex contains a broader set of research outputs than institutions typically wish to import into Esploro. For example, student-owned publications and their associated awards may not be eligible for inclusion.
+
+To determine whether an asset is valid, the pipeline queries Esploro using the asset DOI. If a matching record exists, the asset is considered valid and its internal Esploro asset ID is retrieved.
+
+The Esploro asset ID serves as the primary identifier in subsequent stages and is later used to create award-to-asset relationships.
+
+Assets that do not exist in Esploro are excluded from further processing, and their associated awards are filtered out.
+
+```csv
+# CSV file in outputs/invalid_assets
+
+doi
+
+10.17863/cam.37745
+10.3847/2041-8213/ac6672
+...
+```
+
+---
+
+## Sub-Stage 2.3: Route Awards to the Appropriate Handler
+
+OpenAlex occasionally associates awards with incorrect funders. For example, an NSF award may be incorrectly attributed to the European Commission.
+
+To improve extraction accuracy, the pipeline analyzes award number patterns and other metadata to determine the most likely funder. The award is then routed to the corresponding funder-specific extraction handler.
+
+This routing layer reduces extraction failures caused by incorrect OpenAlex funder assignments.
+
+```csv
+# CSV file in outputs/routing_outcomes
+
+award,asset_id,doi,initial_funder_id,initial_funder_name,final_funder_name,final_funder_id,handler,change_handler
+
+AST-1312651,9924117851801921,https://doi.org/10.3847/2041-8213/ab1141,F4320306076,National Science Foundation,National Science Foundation,F4320306076,<function extract_NSF_award at 0x12f3c0720>,False
+```
+
+---
+
+## Sub-Stage 2.4: Extract Award Metadata
+
+After routing, each award is processed by a funder-specific handler.
+
+Depending on the funder, the handler may:
+
+* Query a public funder API.
+* Scrape the funder's award database.
+* Parse award metadata from publicly available records.
+
+The extracted information is standardized into Esploro-compatible XML format for batch import.
+
+The pipeline classifies extraction outcomes into three categories:
+
+* **Success** – Award metadata was successfully extracted.
+* **Failure** – Extraction completed but no award metadata could be retrieved.
+* **Error** – An exception occurred during extraction.
+
+### Success
+
+```xml
+# XML file in outputs/import_awards/success
+
+<?xml version="1.0" encoding="UTF-8"?>
+<grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
+<grant>
+    <grantId>1207704</grantId>
+    <grantName>Collaborative Research: Building an Event Horizon Telescope: (Sub)millimeter VLBI from the South Pole Telescope</grantName>
+    <funderCode>41___NATIONAL_SCIENCE_FOUNDATION_(ALEXANDRIA)</funderCode>
+    <currencyOfAmount>researchgrant.currency.usd</currencyOfAmount>
+    <amount>191204</amount>
+    <startDate>2012-08-01</startDate>
+    <endDate>2015-07-31</endDate>
+    <grantURL>https://www.nsf.gov/awardsearch/show-award?AWD_ID=1207704</grantURL>
+    <profileVisibility>true</profileVisibility>
+    <status>HISTORY</status>
+</grant>
+
+...
+
+</grants>
+```
+
+### Failure
+
+```csv
+# CSV file in outputs/import_awards/failure
+
+award,doi,asset_id
+
+11633006,https://doi.org/10.3847/2041-8213/ab1141,9924117851801921
+...
+```
+
+### Error
+
+```csv
+# CSV file in outputs/import_awards/error
+
+award,doi,asset_id,funder_name,error_type,error_message
+
+MDM-2015-0509,https://doi.org/10.1093/mnras/stab978,9924552855501921,Ministerio de Ciencia e Innovación,ReadTimeoutError,HTTPConnectionPool(host='localhost', port=55730): Read timed out. (read timeout=120)
+
+...
+```
+
+The pipeline also generates an award-to-asset mapping file that will be used in Stage 4.
+
+```csv
+# CSV file in outputs/award_asset_links
+
+award,doi,asset_id
+
+1207704,https://doi.org/10.3847/2041-8213/ab1141,9924117851801921
+0705062,...
+```
+
+---
+
+# Stage 3: Import Awards into Esploro
+
+As of May 2026, Esploro does not provide a fully functional public API for award imports.
+
+Instead, awards must be imported through the Esploro administrative interface. The recommended import settings are shown below and should be configured identically in both sandbox and production environments.
+
+![Import Settings](./resources/import_1.png)
+
+![Import Settings](./resources/import_2.png)
+
+---
+
+# Stage 4: Link Awards with Assets
+
+### Context
+
+After awards have been imported into Esploro, they must be linked to the assets they funded.
+
+A single award may be associated with multiple assets, and a single asset may be linked to multiple awards.
+
+Stage 2 generates award-to-asset mapping files that are used by this command to automatically create these relationships within Esploro.
+
+For the `file_dir` argument below, use the filename generated in Stage 2 without the `.csv` extension.
+
+For example, if the file is:
+
+```text
+National_Science_Foundation_2018_2024_award_asset_links.csv
+```
+
+then the argument should be:
+
+```text
+National_Science_Foundation_2018_2024_award_asset_links
+```
+
+### Command
+
+```bash
+fp link_asset_awards_from_csv --dir <file_dir>
+```
+
+Use production only when ready:
+
+```bash
+fp link_asset_awards_from_csv --dir <file_dir> --production
+```
+
 
 ## Setup
 
@@ -50,74 +318,14 @@ Activate the environment:
 conda activate Funder_API
 ```
 
-Install the package locally so the `fp` command is available:
-
-```bash
-pip install -e .
-```
-
 Deactivate the environment when finished:
 
 ```bash
 conda deactivate
 ```
 
-## Running the Pipeline
+Enter Both the `PRODUCTION_EXLIBRIS_API` and `SANDBOX_EXLIBRIS_API` on [`sqs.config.py`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/utils/sqs_config.py)
 
-1. Find funders and award counts for a year range:
-
-```bash
-fp unique_funder --start_year 2018 --end_year 2024
-```
-
-This writes:
-
-```text
-outputs/funder_count/unique_funders_2018_2024.csv
-```
-
-2. Inspect awards for a specific funder:
-
-```bash
-fp award_per_funder --funder_id F4320306076 --start_year 2018 --end_year 2024
-```
-
-This writes:
-
-```text
-outputs/award_ids/<funder_name>_2018_2024_funded_awards.csv
-```
-
-3. Run the full extraction pipeline for a funder:
-
-```bash
-fp extract_awards --funder_id F4320306076 --start_year 2018 --end_year 2024
-```
-
-The full pipeline performs four stages:
-
-1. Collect assets and award IDs from OpenAlex.
-2. Validate that each DOI maps to an Esploro asset.
-3. Route each award to the correct funder handler.
-4. Extract award metadata and write Esploro import/linking outputs.
-
-4. Import successful awards into Esploro using the generated XML-formatted file in:
-
-```text
-outputs/import_awards/success/
-```
-
-5. Link imported awards back to assets:
-
-```bash
-fp link_asset_awards_from_csv --dir "<funder_name>_2018_2024_award_asset_links"
-```
-
-Use production only when ready:
-
-```bash
-fp link_asset_awards_from_csv --dir "<funder_name>_2018_2024_award_asset_links" --production
-```
 
 ## Output Files
 
@@ -189,14 +397,3 @@ Important modules:
 - `src/funder_pipeline/utils/current_funder.py` maps supported OpenAlex funder IDs to funder names, routing rules, and handlers.
 - `src/funder_pipeline/resources/` contains supporting lookup data, including funder code mappings.
 - `airflow/dags/` contains Airflow DAGs for orchestrated ETL runs.
-
-## External Services
-
-The pipeline depends on several external systems:
-
-- OpenAlex API for scholarly article, DOI, funder, and award metadata.
-- Funder APIs or web pages for detailed award metadata.
-- Ex Libris Esploro API for asset validation and award-to-asset linking.
-- AWS SQS for queue-based processing paths used by some pipeline code.
-
-API keys and queue URLs are configured in `src/funder_pipeline/utils/sqs_config.py`. Review this file before running against sandbox or production environments, and manage credentials securely for shared deployments.
