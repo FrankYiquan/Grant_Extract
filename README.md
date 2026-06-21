@@ -397,3 +397,22 @@ Important modules:
 - `src/funder_pipeline/utils/current_funder.py` maps supported OpenAlex funder IDs to funder names, routing rules, and handlers.
 - `src/funder_pipeline/resources/` contains supporting lookup data, including funder code mappings.
 - `airflow/dags/` contains Airflow DAGs for orchestrated ETL runs.
+
+## Adding a Funder Handler
+
+To integrate a new funder-specific handler:
+
+1. Add the handler method in `src/funder_pipeline/handlers/`. The handler should follow the existing handler pattern and return the extracted award metadata for a given award ID.
+2. Import the handler function in `src/funder_pipeline/utils/current_funder.py`.
+3. Add an entry for the funder in the `current_funder` mapping with:
+   - the OpenAlex funder ID
+   - the funder name
+   - the handler function
+   - an award ID regex when the funder has a recognizable award ID pattern
+4. Add Funder 41 Code in [`funder_41Code.csv`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/resources/funder_41Code.csv) if the new funder is not part of the list.
+
+## Esploro 41 Code
+
+Esploro assigns a unique 41 code to each funder for internal identification. We maintain a mapping of funders and their corresponding 41 codes in [`funder_41Code.csv`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/resources/funder_41Code.csv). These codes are required when importing awards into Esploro.
+
+The process of matching funders to Esploro 41 codes is maintained in a separate repository. For details on how 41 codes are assigned and managed, please refer to the [`Funder_41_Code_Matching`](https://github.com/FrankYiquan/Funder_41_Code_Matching) repository.
