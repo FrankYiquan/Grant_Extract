@@ -362,11 +362,6 @@ fp clean_outputs --dry_run
 .
 |-- environment.yml
 |-- pyproject.toml
-|-- docker-compose.yaml
-|-- airflow/
-|   |-- dags/
-|   |-- Dockerfile
-|   `-- requirements.txt
 |-- outputs/
 |   |-- award_asset_links/
 |   |-- award_ids/
