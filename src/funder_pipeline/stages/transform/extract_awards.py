@@ -92,6 +92,8 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
 def output_import_awards_xml(successful_awards, output_dir):
     """Output the successfully extracted awards to an XML file in the required format for Espero import."""
 
+    output_dir = Path(output_dir)
+
     xml_header = '''<?xml version="1.0" encoding="UTF-8"?>
 <grants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema1.xsd">
 '''
@@ -178,5 +180,4 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
 
     return import_awards_output_dir, failed_awards_output_dir, error_awards_output_dir, award_asset_links_output_dir
     
-
 

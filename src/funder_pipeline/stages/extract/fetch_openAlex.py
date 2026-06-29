@@ -167,6 +167,17 @@ def run_unique_funder(args):
     """
     This function counts the unique funders for an university within a specified time range and exports the results to a CSV file.
     """
+
+     # logging
+    logger.info("")
+    logger.info("=" * 80)
+    logger.info(
+        "JOB RUN: institutions_id=%s (%s-%s)",
+        args.institutions_id,
+        args.start_year,
+        args.end_year
+    )
+    logger.info("=" * 80)
     
     grants = get_brandeis_grant("all", args.institutions_id, args.start_year, args.end_year)
 
@@ -205,16 +216,6 @@ def run_unique_funder(args):
     )
     df.to_csv(output_dir, index=False)
 
-    # logging
-    logger.info("")
-    logger.info("=" * 80)
-    logger.info(
-        "JOB RUN: institutions_id=%s (%s-%s)",
-        args.institutions_id,
-        args.start_year,
-        args.end_year
-    )
-    logger.info("=" * 80)
 
     log_stage(
         "[1/1] Unique Funder",

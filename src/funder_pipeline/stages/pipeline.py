@@ -4,10 +4,16 @@ from funder_pipeline.stages.extract.remove_invalid import filter_invalid_assets
 from funder_pipeline.stages.transform.extract_awards import extract_all_awards, extract_tag, output_import_awards_xml
 from funder_pipeline.stages.transform.routing import route_all_awards_to_handlers, route_single_award_to_handler
 import logging
+import re
 from funder_pipeline.utils.current_funder import funders
 from funder_pipeline.utils.logging import log_stage, log_summary
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_output_name(value):
+    """Convert user/API values into a filesystem-safe filename segment."""
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value)).strip("_") or "unknown"
 
 
 def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
@@ -176,11 +182,12 @@ def get_one_award_data(award_id, funder_id, skip_routing=False):
     )
 
     if success:
+        safe_award_id = _safe_output_name(award_id)
         output_dir = (
             Path("outputs")
             / "import_awards"
             / "single"
-            / f"{funder_id}_{award_id}_skip_{skip_routing}_single_imported_awards.csv"
+            / f"{funder_id}_{safe_award_id}_skip_{skip_routing}_single_imported_awards.csv"
         )
         output_import_awards_xml([xml_result], output_dir)
 

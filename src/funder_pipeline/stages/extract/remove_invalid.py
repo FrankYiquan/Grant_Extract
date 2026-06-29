@@ -88,7 +88,7 @@ def filter_invalid_assets(awards, funder_name, start_year, end_year):
     
     # filtering
     valid_awards = []
-    invalid_dois = {}
+    invalid_dois = set()
 
     with ThreadPoolExecutor(max_workers=20) as executor:
         future_to_doi = {
@@ -105,10 +105,10 @@ def filter_invalid_assets(awards, funder_name, start_year, end_year):
                       award["asset_id"] = asset_id
                     valid_awards.extend(awards_sort_by_doi[doi])
                 else:
-                    invalid_dois.append(doi)
+                    invalid_dois.add(doi)
             except Exception as e:
                 # print(f"Error processing DOI {doi}: {e}")
-                invalid_dois.append(doi)
+                invalid_dois.add(doi)
     
     # write invalid assets doi to csv
     invalid_asset_output_dir = (
