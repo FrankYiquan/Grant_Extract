@@ -14,14 +14,18 @@ def log_stage(title, metrics):
 
 
 def log_summary(summary):
+    value_width = max(42, *(len(str(value)) for value in summary.values()))
+    inner_width = 1 + 25 + 1 + value_width + 1
+
     logger.info("")
-    logger.info("┌" + "─" * 70 + "┐")
+    logger.info("┌" + "─" * inner_width + "┐")
 
     for key, value in summary.items():
         logger.info(
-            "│ %-25s %-42s │",
+            "│ %-25s %-*s │",
             key,
+            value_width,
             str(value)
         )
 
-    logger.info("└" + "─" * 70 + "┘")
+    logger.info("└" + "─" * inner_width + "┘")

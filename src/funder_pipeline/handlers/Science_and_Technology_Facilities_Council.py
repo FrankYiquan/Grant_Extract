@@ -8,6 +8,18 @@ from datetime import datetime
 
 
 def extract_Science_and_Technology_Facilities_Council_award(grantId, funder_name):
+
+    # sometimes, the grant id contain ATLAS or Upgrades or both, which impact the API calling
+    # e.g. ST/J005509/1 ATLAS Upgrades
+    # note: ATLAS is a valid award id
+    if grantId.strip() not in ("ATLAS", "ATLAS Upgrades"):
+        grantId = (
+            grantId.replace("ATLAS Upgrades", "")
+                .replace("ATLAS Upgrade", "")
+                .replace("ATLAS", "")
+                .strip()
+        )
+
     url = f"https://gtr.ukri.org/api/projects?ref={grantId}"
 
     response = requests.get(url, headers={"Accept": "application/json"})

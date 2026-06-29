@@ -16,6 +16,29 @@ def _safe_output_name(value):
     return re.sub(r"[^A-Za-z0-9._-]+", "_", str(value)).strip("_") or "unknown"
 
 
+def _normalize_doi(doi):
+    return str(doi).split("https://doi.org/")[-1] if doi else None
+
+
+def _unique_count(records, *fields):
+    values = set()
+    for record in records:
+        for field in fields:
+            value = record.get(field)
+            if value:
+                values.add(value)
+                break
+    return len(values)
+
+
+def _count_summary(total, unique_awards=None, unique_assets=None):
+    return (
+        f"{total} "
+        f"(unique awards: {unique_awards}, "
+        f"unique assets: {unique_assets})"
+    )
+
+
 def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
     """The main function to run the entire pipeline for a given funder and year range."""
 
@@ -54,6 +77,11 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
         startYear,
         endYear
     )
+    invalid_awards = [
+        award
+        for award in assets_awards
+        if _normalize_doi(award.get("doi")) in invalid_dois
+    ]
 
     log_stage(
         "[2/4] Asset Validation",
@@ -108,13 +136,41 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
         {
             "Funder": funder_name,
             "Years": f"{startYear}-{endYear}",
-            "Awards Collected": len(assets_awards),
-            "Valid Awards": len(valid_awards),
-            "Invalid Awards": len(invalid_dois),
-            "Awards Routed": len(routing_outcomes),
-            "Extract Success": extraction_summary["success_count"],
-            "Extract Failed": extraction_summary["failed_count"],
-            "Extract Error": extraction_summary["error_count"],
+            "Awards Collected": _count_summary(
+                len(assets_awards),
+                _unique_count(assets_awards, "award_id", "award"),
+                _unique_count(assets_awards, "asset_id", "openAlex_id"),
+            ),
+            "Valid Awards": _count_summary(
+                len(valid_awards),
+                _unique_count(valid_awards, "award_id", "award"),
+                _unique_count(valid_awards, "asset_id", "openAlex_id"),
+            ),
+            "Invalid Awards": _count_summary(
+                len(invalid_dois),
+                _unique_count(invalid_awards, "award_id", "award"),
+                len(invalid_dois),
+            ),
+            "Awards Routed": _count_summary(
+                len(routing_outcomes),
+                _unique_count(routing_outcomes, "award", "award_id"),
+                _unique_count(routing_outcomes, "asset_id", "openAlex_id"),
+            ),
+            "Extract Success": _count_summary(
+                extraction_summary["success_count"],
+                extraction_summary["success_unique_awards"],
+                extraction_summary["success_unique_assets"],
+            ),
+            "Extract Failed": _count_summary(
+                extraction_summary["failed_count"],
+                extraction_summary["failed_unique_awards"],
+                extraction_summary["failed_unique_assets"],
+            ),
+            "Extract Error": _count_summary(
+                extraction_summary["error_count"],
+                extraction_summary["error_unique_awards"],
+                extraction_summary["error_unique_assets"],
+            ),
         }
     )
 

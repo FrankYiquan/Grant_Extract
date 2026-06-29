@@ -1,5 +1,6 @@
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
 import re, csv
 
 def extract_tag(xml, tag):
@@ -12,6 +13,10 @@ def extract_tag(xml, tag):
     )
     return match.group(1).strip() if match else None
 
+
+def count_unique(records, field):
+    return len({record.get(field) for record in records if record.get(field)})
+
 def extract_all_awards(awards, start_year, end_year, funder_name):
     """Extract information for all awards by routing them to their appropriate handlers and return the extraction results."""
 
@@ -19,20 +24,32 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
     failed_awards = [] # awards where its info can not be found through successfully calling the funder API
     error_awards = [] # awards that when calling the funder API, return an error - for debugging purpose
     award_asset_links = [] # used to link award - asset after importing the successful awards into Espero 
+    awards_by_cache_key = defaultdict(list)
+
+    for award in awards:
+        cache_key = (
+            award["handler"],
+            award["award"],
+            award["final_funder_name"],
+        )
+        awards_by_cache_key[cache_key].append(award)
 
     with ThreadPoolExecutor(max_workers=20) as executor:
-        # submit all awards to their respective handlers and collect the futures
-        future_to_award = {
+        # Submit one handler call per unique award, then apply that result to
+        # every DOI/asset row attached to the award.
+        future_to_cache_key = {
             executor.submit(
-                award["handler"],
-                award["award"],
-                award["final_funder_name"]
-            ): award
-            for award in awards
+                handler,
+                award_id,
+                final_funder_name
+            ): cache_key
+            for cache_key in awards_by_cache_key
+            for handler, award_id, final_funder_name in [cache_key]
         }
 
-        for future in as_completed(future_to_award):
-            award = future_to_award[future]
+        for future in as_completed(future_to_cache_key):
+            cache_key = future_to_cache_key[future]
+            cached_awards = awards_by_cache_key[cache_key]
 
             try:
                 xml_result = future.result()
@@ -41,33 +58,36 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
                 amount = extract_tag(xml_result, "amount")
 
                 if amount in (None, "", "None"):
-                    failed_awards.append({
-                        "award": award["award"],
-                        "doi": award["doi"],   
-                        "asset_id": award["asset_id"]
-                    })
+                    for award in cached_awards:
+                        failed_awards.append({
+                            "award": award["award"],
+                            "doi": award["doi"],   
+                            "asset_id": award["asset_id"]
+                        })
                 else:
-                    # the award is valid and successfully extracted
-                    successful_awards.append(xml_result)
-
                     # since the award id will been through normalization, use the extracted award id as ground truth
                     final_award_id = extract_tag(xml_result, "grantId")
-                    award_asset_links.append({
-                        "award": final_award_id,
-                        "doi": award["doi"],
-                        "asset_id": award["asset_id"]
-                    })
+                    for award in cached_awards:
+                        # the award is valid and successfully extracted
+                        successful_awards.append(xml_result)
+
+                        award_asset_links.append({
+                            "award": final_award_id,
+                            "doi": award["doi"],
+                            "asset_id": award["asset_id"]
+                        })
 
             # record error logs
             except Exception as e:
-                error_awards.append({
-                    "award": award["award"],
-                    "doi": award["doi"],
-                    "asset_id": award["asset_id"],
-                    "funder_name": award["final_funder_name"],
-                    "error_type": type(e).__name__,
-                    "error_message": str(e)
-                })
+                for award in cached_awards:
+                    error_awards.append({
+                        "award": award["award"],
+                        "doi": award["doi"],
+                        "asset_id": award["asset_id"],
+                        "funder_name": award["final_funder_name"],
+                        "error_type": type(e).__name__,
+                        "error_message": str(e)
+                    })
 
     # output extraction logs to csv     
     import_awards_output_dir, failed_awards_output_dir, error_awards_output_dir, award_asset_links_output_dir = output_extraction_logs(
@@ -83,6 +103,12 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
         "success_count": len(successful_awards),
         "failed_count": len(failed_awards),
         "error_count": len(error_awards),
+        "success_unique_awards": count_unique(award_asset_links, "award"),
+        "success_unique_assets": count_unique(award_asset_links, "asset_id"),
+        "failed_unique_awards": count_unique(failed_awards, "award"),
+        "failed_unique_assets": count_unique(failed_awards, "asset_id"),
+        "error_unique_awards": count_unique(error_awards, "award"),
+        "error_unique_assets": count_unique(error_awards, "asset_id"),
         "success_file": import_awards_output_dir,
         "failed_file": failed_awards_output_dir,
         "error_file": error_awards_output_dir,
@@ -180,4 +206,3 @@ def output_extraction_logs(funder_name, start_year, end_year, successful_awards,
 
     return import_awards_output_dir, failed_awards_output_dir, error_awards_output_dir, award_asset_links_output_dir
     
-
