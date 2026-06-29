@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
-utils/sqs_config.py
+**/utils/sqs_config.py
 .DS_Store
 chrome_profile/
 *.egg-info/
