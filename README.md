@@ -9,7 +9,7 @@ To address these challenges, we developed an automated ETL (Extract, Transform, 
 
 ## Overview of the Pipeline
 
-The pipeline currently supports **97** of the most commonly used funding agencies. 
+The pipeline currently supports **95** of the most commonly used funding agencies. 
 
 It is designed with extensibility in mind, allowing additional funders to be integrated with minimal effort as needed. A complete list of the currently supported funders can be found in the [`current_funder.py`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/utils/current_funder.py) file.
 
@@ -99,6 +99,8 @@ For each funder, the pipeline:
 4. Extracts award metadata from funder APIs or websites.
 5. Generates XML files ready for Esploro import.
 6. Produces award-to-asset linking files used in Stage 4.
+
+For detail information of each stage, please read the substages below. 
 
 ### Command
 
