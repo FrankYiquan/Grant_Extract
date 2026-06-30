@@ -34,7 +34,7 @@ def extract_all_awards(awards, start_year, end_year, funder_name):
         )
         awards_by_cache_key[cache_key].append(award)
 
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         # Submit one handler call per unique award, then apply that result to
         # every DOI/asset row attached to the award.
         future_to_cache_key = {

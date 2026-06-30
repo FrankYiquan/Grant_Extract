@@ -68,11 +68,13 @@ def normalize_id(award_id: str, funder_name: str) -> list[str]:
 
 def extract_US_Spending_award(award_id: str, funder_name: str) -> str:
     # clean out the characters that are not acceptable by API
-    distracted_characters = ["-", " "]
+    distracted_characters = ["-", " ", "Contract", "Contract No.", "No."]
     cleaned_award_id = award_id
     for ch in distracted_characters:
         if ch in award_id:
             cleaned_award_id = award_id.replace(ch, "")
+    
+    cleaned_award_id = cleaned_award_id.strip()
 
     normalize_award_ids = normalize_id(cleaned_award_id, funder_name)
     # print(f"Normalized award ID: {normalize_award_ids}")

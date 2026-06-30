@@ -145,7 +145,7 @@ def extract_NIH_award(award_id: str, funder_name: str):
             # print(f"No results for original award ID {original_award_id}, normalized award ID {award_id}")
             award_id = original_award_id
 
-        result = f"""<grant>
+    result = f"""<grant>
     <grantId>{award_id}</grantId>
     <grantName>{title}</grantName>
     <funderCode>{funderCode}</funderCode>
@@ -158,7 +158,7 @@ def extract_NIH_award(award_id: str, funder_name: str):
     <status>{status}</status>
 </grant>"""
         
-        return result
+    return result
         
 
 #list of NIH institutes

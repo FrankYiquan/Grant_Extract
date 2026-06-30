@@ -146,11 +146,6 @@ def get_award_data(startYear, endYear, openAlex_id, institutionsId="I6902469"):
                 _unique_count(valid_awards, "award_id", "award"),
                 _unique_count(valid_awards, "asset_id", "openAlex_id"),
             ),
-            "Invalid Awards": _count_summary(
-                len(invalid_dois),
-                _unique_count(invalid_awards, "award_id", "award"),
-                len(invalid_dois),
-            ),
             "Awards Routed": _count_summary(
                 len(routing_outcomes),
                 _unique_count(routing_outcomes, "award", "award_id"),

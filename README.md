@@ -411,3 +411,29 @@ To integrate a new funder-specific handler:
 Esploro assigns a unique 41 code to each funder for internal identification. We maintain a mapping of funders and their corresponding 41 codes in [`funder_41Code.csv`](https://github.com/FrankYiquan/Grant_Extract/blob/main/src/funder_pipeline/resources/funder_41Code.csv). These codes are required when importing awards into Esploro.
 
 The process of matching funders to Esploro 41 codes is maintained in a separate repository. For details on how 41 codes are assigned and managed, please refer to the [`Funder_41_Code_Matching`](https://github.com/FrankYiquan/Funder_41_Code_Matching) repository.
+
+## Rate Limits
+
+Many funder APIs enforce rate limits. For example, the NIH API publicly states:
+
+> "By default, this rate limit is set at 5 requests per second (rps)."
+
+Exceeding a funder's rate limit can cause otherwise valid award lookups to fail, even when the award exists in the funder's database. In these cases, the API may reject or throttle requests because it lacks the capacity to process them, causing the extraction pipeline to incorrectly classify the award as a failed extraction.
+
+To mitigate this issue, the maximum number of concurrent asynchronous API requests is currently limited to **3** in `src/funder_pipeline/stages/transform/extract_awards.py` (line 37). This value was chosen to stay within the NIH API's documented rate limit while allowing efficient parallel processing.
+
+## Arguments Containing Spaces
+
+If an argument value contains spaces, wrap the entire value in double quotes (`"`). Otherwise, the shell will interpret each space-separated word as a separate argument.
+
+For example, instead of:
+
+```bash
+fp extract_one_award --funder_id F4320332161 --award_id F32 NS112453
+```
+
+use:
+
+```bash
+fp extract_one_award --funder_id F4320332161 --award_id "F32 NS112453"
+```

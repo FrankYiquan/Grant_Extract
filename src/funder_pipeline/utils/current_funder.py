@@ -126,7 +126,7 @@ funders = {
 
     "F4320322930": {
         "name": "Ministerio de Ciencia e Innovación",
-        "prefixes": ["SEV", "PGC", "MDM", "ESP", "MCIN", "AEI"],
+        "prefixes": ["SEV", "PGC", "MDM", "ESP", "MCIN", "AEI", "RYC", "PID"],
         "handler": extract_MDI_award
     },
 
